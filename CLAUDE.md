@@ -1,3 +1,61 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What This App Is
+
+A page builder application built on Laravel 13 + Inertia.js v3 + React 19. It ships with Fortify-based authentication (login, register, email verification, password reset, 2FA via TOTP), user settings (profile, security, appearance/theme), and a sidebar layout shell ready for page builder features.
+
+## Commands
+
+```bash
+# Development
+composer run dev          # Start Laravel + queue worker + Vite concurrently
+
+# Build
+npm run build             # Production asset build
+npm run build:ssr         # Build with SSR
+
+# Tests
+php artisan test --compact                        # Run all tests
+php artisan test --compact --filter=TestName      # Run a single test
+
+# Code quality (run before finalising changes)
+vendor/bin/pint --dirty --format agent            # Fix PHP style
+npm run lint                                      # Fix JS/TS lint issues
+npm run format                                    # Fix JS/TS formatting
+npm run types:check                               # TypeScript type check
+
+# CI check (runs all of the above)
+composer run ci:check
+```
+
+## Architecture
+
+### Backend (`app/`)
+
+- **`app/Actions/Fortify/`** — Business logic for registration and password reset (Fortify action pattern).
+- **`app/Concerns/`** — Shared validation rule traits (`PasswordValidationRules`, `ProfileValidationRules`).
+- **`app/Http/Controllers/Settings/`** — `ProfileController` and `SecurityController` handle user settings; all other auth routes are handled by Fortify internally.
+- **`app/Http/Middleware/HandleInertiaRequests.php`** — Shares `auth.user`, `app.name`, and sidebar state as Inertia shared props to every page.
+- **`app/Http/Middleware/HandleAppearance.php`** — Passes theme preference cookie to Blade for initial `dark` class application.
+- Routes are split across `routes/web.php` (dashboard) and `routes/settings.php` (profile/security/appearance).
+
+### Frontend (`resources/js/`)
+
+- **Pages** live in `resources/js/pages/` and are loaded dynamically by Inertia. Sub-folders: `auth/`, `settings/`.
+- **Layout resolution** is in `resources/js/app.tsx`: `welcome` → no layout; `auth/*` → `AuthLayout`; `settings/*` → `[AppLayout, SettingsLayout]`; everything else → `AppLayout`.
+- **`resources/js/components/ui/`** — shadcn/ui primitives (Button, Input, Dialog, etc.). Check here before writing new components.
+- **`resources/js/hooks/use-appearance.tsx`** — Dark/light/system theme hook; preference stored in a cookie.
+- **`resources/js/lib/utils.ts`** — Exports `cn()` (clsx + tailwind-merge).
+- **`resources/js/types/`** — Shared TypeScript types: `auth.ts`, `navigation.ts`, `ui.ts`.
+- Wayfinder generates typed route/action helpers into `resources/js/actions/` and `resources/js/routes/` — import from `@/actions/` or `@/routes/` instead of hardcoding URLs.
+
+### Database
+
+- Core tables: `users` (+ 2FA columns), `cache`, `jobs`.
+- `UserFactory` is the only factory; use it in tests instead of creating model data manually.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

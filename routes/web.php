@@ -12,3 +12,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+
+use App\Http\Controllers\PublicPageController;
+
+// Public page catch-all — must be last
+Route::get('{slug}', [PublicPageController::class, 'show'])
+    ->name('page.show')
+    ->where('slug', '[a-z0-9\-]+');
