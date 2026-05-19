@@ -1,13 +1,20 @@
+import { Head } from '@inertiajs/react';
 import { sectionRegistry } from '@/sections';
 import type { Page, PageSection } from '@/types/builder';
-import { Head } from '@inertiajs/react';
 
 type Props = {
     page: Page;
-    sections: PageSection[];
+    headerSections: PageSection[];
+    bodySections: PageSection[];
+    footerSections: PageSection[];
 };
 
-export default function PublicPage({ page, sections }: Props) {
+export default function PublicPage({
+    page,
+    headerSections,
+    bodySections,
+    footerSections,
+}: Props) {
     return (
         <>
             <Head title={page.meta_title ?? page.title}>
@@ -19,16 +26,43 @@ export default function PublicPage({ page, sections }: Props) {
                 )}
             </Head>
 
+            {headerSections.map((section) => {
+                const registration = sectionRegistry[section.section_type];
+
+                if (!registration) {
+                    return null;
+                }
+
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
+            })}
+
             <div>
-                {sections.map((section) => {
+                {bodySections.map((section) => {
                     const registration = sectionRegistry[section.section_type];
+
                     if (!registration) {
                         return null;
                     }
+
                     const Component = registration.default;
+
                     return <Component key={section.id} {...section.props} />;
                 })}
             </div>
+
+            {footerSections.map((section) => {
+                const registration = sectionRegistry[section.section_type];
+
+                if (!registration) {
+                    return null;
+                }
+
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
+            })}
         </>
     );
 }

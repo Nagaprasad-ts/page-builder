@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { getDefaultProps } from '@/sections';
 import type { Page, PageSection, SectionInstance } from '@/types/builder';
-import { useState } from 'react';
+
+type Region = 'header' | 'body' | 'footer';
 
 type BuilderInitial = {
     page?: Partial<Page>;
@@ -13,12 +15,16 @@ type BuilderPayload = {
     meta_title: string;
     meta_description: string;
     meta_keywords: string;
+    custom_header: boolean;
+    custom_footer: boolean;
     sections: {
+        region: Region;
         section_type: string;
         sort_order: number;
         props: Record<string, unknown>;
     }[];
 };
+
 
 function generateSlug(title: string): string {
     return title
@@ -37,14 +43,26 @@ export function useBuilder(initial: BuilderInitial = {}) {
     const [title, setTitle] = useState(initial.page?.title ?? '');
     const [slug, setSlug] = useState(initial.page?.slug ?? '');
     const [metaTitle, setMetaTitle] = useState(initial.page?.meta_title ?? '');
-    const [metaDescription, setMetaDescription] = useState(initial.page?.meta_description ?? '');
-    const [metaKeywords, setMetaKeywords] = useState(initial.page?.meta_keywords ?? '');
+    const [metaDescription, setMetaDescription] = useState(
+        initial.page?.meta_description ?? '',
+    );
+    const [metaKeywords, setMetaKeywords] = useState(
+        initial.page?.meta_keywords ?? '',
+    );
+    const [customHeader, setCustomHeader] = useState(
+        initial.page?.custom_header ?? false,
+    );
+    const [customFooter, setCustomFooter] = useState(
+        initial.page?.custom_footer ?? false,
+    );
+    const [activeRegion, setActiveRegion] = useState<Region>('body');
 
     const [sections, setSections] = useState<SectionInstance[]>(() =>
         (initial.sections ?? []).map((s) => ({
             id: crypto.randomUUID(),
             section_type: s.section_type,
             sort_order: s.sort_order,
+            region: s.region ?? 'body',
             props: s.props ?? {},
         })),
     );
@@ -52,30 +70,39 @@ export function useBuilder(initial: BuilderInitial = {}) {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-    const [mediaPickerFieldKey, setMediaPickerFieldKey] = useState<string | null>(null);
+    const [mediaPickerFieldKey, setMediaPickerFieldKey] = useState<
+        string | null
+    >(null);
 
     /** Updates title and auto-generates slug for new pages */
     const handleTitleChange = (value: string) => {
         setTitle(value);
+
         if (!isExistingPage) {
             setSlug(generateSlug(value));
         }
     };
 
     const addSection = (sectionType: string, atIndex?: number) => {
+        const regionSections = sections.filter((s) => s.region === activeRegion);
         const newSection: SectionInstance = {
             id: crypto.randomUUID(),
             section_type: sectionType,
-            sort_order: sections.length,
+            sort_order: regionSections.length,
+            region: activeRegion,
             props: getDefaultProps(sectionType),
         };
 
         setSections((prev) => {
             if (atIndex !== undefined) {
-                const next = [...prev];
-                next.splice(atIndex, 0, newSection);
-                return next;
+                // Insert within the active region at the given index
+                const regionItems = prev.filter((s) => s.region === activeRegion);
+                const otherItems = prev.filter((s) => s.region !== activeRegion);
+                regionItems.splice(atIndex, 0, newSection);
+
+                return [...otherItems, ...regionItems];
             }
+
             return [...prev, newSection];
         });
 
@@ -84,17 +111,25 @@ export function useBuilder(initial: BuilderInitial = {}) {
 
     const removeSection = (id: string) => {
         setSections((prev) => prev.filter((s) => s.id !== id));
+
         if (selectedId === id) {
             setSelectedId(null);
         }
     };
 
     const reorderSections = (newOrder: SectionInstance[]) => {
-        setSections(newOrder);
+        // Replace sections for the active region with the new order, keeping other regions intact
+        setSections((prev) => {
+            const otherItems = prev.filter((s) => s.region !== activeRegion);
+
+            return [...otherItems, ...newOrder];
+        });
     };
 
     const updateSectionProps = (id: string, props: Record<string, unknown>) => {
-        setSections((prev) => prev.map((s) => (s.id === id ? { ...s, props } : s)));
+        setSections((prev) =>
+            prev.map((s) => (s.id === id ? { ...s, props } : s)),
+        );
     };
 
     const openMediaPicker = (fieldKey: string) => {
@@ -103,12 +138,19 @@ export function useBuilder(initial: BuilderInitial = {}) {
     };
 
     const handleMediaSelect = (url: string) => {
-        if (selectedId && mediaPickerFieldKey) {
+        if (url && selectedId && mediaPickerFieldKey) {
             const section = sections.find((s) => s.id === selectedId);
+
             if (section) {
-                updateSectionProps(selectedId, { ...section.props, [mediaPickerFieldKey]: url });
+                updateSectionProps(selectedId, {
+                    ...section.props,
+                    [mediaPickerFieldKey]: url,
+                });
             }
         }
+    };
+
+    const closeMediaPicker = () => {
         setMediaPickerOpen(false);
         setMediaPickerFieldKey(null);
     };
@@ -120,7 +162,10 @@ export function useBuilder(initial: BuilderInitial = {}) {
         meta_title: metaTitle,
         meta_description: metaDescription,
         meta_keywords: metaKeywords,
+        custom_header: customHeader,
+        custom_footer: customFooter,
         sections: sections.map((s, index) => ({
+            region: s.region,
             section_type: s.section_type,
             sort_order: index,
             props: s.props,
@@ -129,6 +174,10 @@ export function useBuilder(initial: BuilderInitial = {}) {
 
     const selectedSection = sections.find((s) => s.id === selectedId) ?? null;
 
+    const headerSections = sections.filter((s) => s.region === 'header');
+    const bodySections = sections.filter((s) => s.region === 'body');
+    const footerSections = sections.filter((s) => s.region === 'footer');
+
     return {
         // Page meta
         title,
@@ -136,10 +185,19 @@ export function useBuilder(initial: BuilderInitial = {}) {
         metaTitle,
         metaDescription,
         metaKeywords,
+        customHeader,
+        customFooter,
         isExistingPage,
+
+        // Region
+        activeRegion,
+        setActiveRegion,
 
         // Sections
         sections,
+        headerSections,
+        bodySections,
+        footerSections,
         selectedId,
         selectedSection,
 
@@ -153,6 +211,8 @@ export function useBuilder(initial: BuilderInitial = {}) {
         setMetaTitle,
         setMetaDescription,
         setMetaKeywords,
+        setCustomHeader,
+        setCustomFooter,
         addSection,
         removeSection,
         reorderSections,
@@ -161,6 +221,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         setSettingsOpen,
         openMediaPicker,
         handleMediaSelect,
+        closeMediaPicker,
         buildPayload,
     };
 }

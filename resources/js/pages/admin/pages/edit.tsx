@@ -1,3 +1,5 @@
+import { Head, router, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import { BuilderCanvas } from '@/components/builder/builder-canvas';
 import { BuilderTopBar } from '@/components/builder/builder-top-bar';
 import { PageSettingsSheet } from '@/components/builder/page-settings-sheet';
@@ -5,39 +7,55 @@ import { PropertiesPanel } from '@/components/builder/properties-panel';
 import { SectionBrowser } from '@/components/builder/section-browser';
 import { MediaPickerModal } from '@/components/media/media-picker-modal';
 import { useBuilder } from '@/hooks/use-builder';
+import { cn } from '@/lib/utils';
 import type { Page, PageSection } from '@/types/builder';
-import { Head, router, useHttp, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 
 type Props = {
     page: Page;
     sections: PageSection[];
 };
 
+const REGIONS = ['header', 'body', 'footer'] as const;
+
 export default function EditPage({ page, sections }: Props) {
     const { auth } = usePage().props;
     const builder = useBuilder({ page, sections });
     const [processing, setProcessing] = useState(false);
-    const http = useHttp();
 
     const handleSave = () => {
         setProcessing(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         router.put(`/admin/pages/${page.id}`, builder.buildPayload() as any, {
             preserveScroll: true,
             onFinish: () => setProcessing(false),
         });
     };
 
-    const handlePublish = async () => {
-        await http.post(`/admin/pages/${page.id}/publish`);
+    const handlePublish = () => {
+        router.post(`/admin/pages/${page.id}/publish`, {}, { preserveScroll: true });
     };
 
-    const handleUnpublish = async () => {
-        await http.post(`/admin/pages/${page.id}/unpublish`);
+    const handleUnpublish = () => {
+        router.post(`/admin/pages/${page.id}/unpublish`, {}, { preserveScroll: true });
     };
 
     const canPublish = auth.user.role === 'admin';
+
+    const activeSections =
+        builder.activeRegion === 'header'
+            ? builder.headerSections
+            : builder.activeRegion === 'footer'
+              ? builder.footerSections
+              : builder.bodySections;
+
+    const showGlobalNotice =
+        (builder.activeRegion === 'header' && !builder.customHeader) ||
+        (builder.activeRegion === 'footer' && !builder.customFooter);
+
+    const globalNoticeText =
+        builder.activeRegion === 'header'
+            ? 'Using global header — enable Custom header in Page Settings to override.'
+            : 'Using global footer — enable Custom footer in Page Settings to override.';
 
     return (
         <>
@@ -65,8 +83,33 @@ export default function EditPage({ page, sections }: Props) {
                     {/* Center: canvas */}
                     <main className="flex-1 overflow-y-auto p-6">
                         <div className="mx-auto max-w-4xl">
+                            {/* Region tabs */}
+                            <div className="mb-4 flex gap-1">
+                                {REGIONS.map((region) => (
+                                    <button
+                                        key={region}
+                                        onClick={() => builder.setActiveRegion(region)}
+                                        className={cn(
+                                            'rounded-md px-3 py-1.5 text-xs font-medium capitalize',
+                                            builder.activeRegion === region
+                                                ? 'bg-primary text-primary-foreground'
+                                                : 'bg-muted text-muted-foreground hover:bg-muted/80',
+                                        )}
+                                    >
+                                        {region}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {/* Global layout notice */}
+                            {showGlobalNotice && (
+                                <p className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
+                                    {globalNoticeText}
+                                </p>
+                            )}
+
                             <BuilderCanvas
-                                sections={builder.sections}
+                                sections={activeSections}
                                 selectedId={builder.selectedId}
                                 onSelect={builder.setSelectedId}
                                 onReorder={builder.reorderSections}
@@ -95,17 +138,26 @@ export default function EditPage({ page, sections }: Props) {
                 metaDescription={builder.metaDescription}
                 metaKeywords={builder.metaKeywords}
                 isExistingPage={true}
+                customHeader={builder.customHeader}
+                customFooter={builder.customFooter}
                 onChange={(field, value) => {
-                    if (field === 'slug') builder.setSlug(value);
-                    else if (field === 'metaTitle') builder.setMetaTitle(value);
-                    else if (field === 'metaDescription') builder.setMetaDescription(value);
-                    else if (field === 'metaKeywords') builder.setMetaKeywords(value);
+                    if (field === 'slug') {
+                        builder.setSlug(value);
+                    } else if (field === 'metaTitle') {
+                        builder.setMetaTitle(value);
+                    } else if (field === 'metaDescription') {
+                        builder.setMetaDescription(value);
+                    } else if (field === 'metaKeywords') {
+                        builder.setMetaKeywords(value);
+                    }
                 }}
+                onCustomHeaderChange={builder.setCustomHeader}
+                onCustomFooterChange={builder.setCustomFooter}
             />
 
             <MediaPickerModal
                 open={builder.mediaPickerOpen}
-                onClose={() => builder.handleMediaSelect('')}
+                onClose={builder.closeMediaPicker}
                 onSelect={builder.handleMediaSelect}
             />
         </>

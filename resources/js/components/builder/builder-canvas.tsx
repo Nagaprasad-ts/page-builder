@@ -1,6 +1,6 @@
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
     DndContext,
-    DragEndEvent,
     DragOverlay,
     KeyboardSensor,
     PointerSensor,
@@ -8,7 +8,12 @@ import {
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, arrayMove, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+    SortableContext,
+    arrayMove,
+    sortableKeyboardCoordinates,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { LayoutTemplate } from 'lucide-react';
 import { useState } from 'react';
 import { sectionRegistry } from '@/sections';
@@ -24,12 +29,21 @@ type Props = {
     onDropNewSection?: (sectionType: string, atIndex?: number) => void;
 };
 
-export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRemove, onDropNewSection }: Props) {
+export function BuilderCanvas({
+    sections,
+    selectedId,
+    onSelect,
+    onReorder,
+    onRemove,
+    onDropNewSection,
+}: Props) {
     const [activeId, setActiveId] = useState<string | null>(null);
 
     const sensors = useSensors(
         useSensor(PointerSensor),
-        useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+        useSensor(KeyboardSensor, {
+            coordinateGetter: sortableKeyboardCoordinates,
+        }),
     );
 
     function handleDragEnd(event: DragEndEvent) {
@@ -41,10 +55,17 @@ export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRem
         }
 
         // New section dragged from the browser panel
-        if (typeof active.id === 'string' && active.id.startsWith('new-section:')) {
+        if (
+            typeof active.id === 'string' &&
+            active.id.startsWith('new-section:')
+        ) {
             const sectionType = active.id.replace('new-section:', '');
             const overIndex = sections.findIndex((s) => s.id === over.id);
-            onDropNewSection?.(sectionType, overIndex >= 0 ? overIndex : undefined);
+            onDropNewSection?.(
+                sectionType,
+                overIndex >= 0 ? overIndex : undefined,
+            );
+
             return;
         }
 
@@ -61,8 +82,12 @@ export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRem
         return (
             <div className="flex h-full min-h-[400px] flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-background p-12 text-center">
                 <LayoutTemplate className="mb-4 h-12 w-12 text-muted-foreground/40" />
-                <p className="text-sm font-medium text-muted-foreground">No sections yet</p>
-                <p className="mt-1 text-xs text-muted-foreground/60">Click a section in the left panel to add it</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                    No sections yet
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground/60">
+                    Click a section in the left panel to add it
+                </p>
             </div>
         );
     }
@@ -74,7 +99,10 @@ export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRem
             onDragStart={({ active }) => setActiveId(String(active.id))}
             onDragEnd={handleDragEnd}
         >
-            <SortableContext items={sections.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext
+                items={sections.map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+            >
                 <div className="space-y-3">
                     {sections.map((section) => {
                         const reg = sectionRegistry[section.section_type];
@@ -89,7 +117,7 @@ export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRem
                                 onRemove={() => onRemove(section.id)}
                             >
                                 {Component ? (
-                                    <div className="scale-[0.85] origin-top">
+                                    <div className="origin-top scale-[0.85]">
                                         <Component {...section.props} />
                                     </div>
                                 ) : (
@@ -105,8 +133,10 @@ export function BuilderCanvas({ sections, selectedId, onSelect, onReorder, onRem
 
             <DragOverlay>
                 {activeId && (
-                    <div className="rounded-lg border-2 border-primary bg-white p-3 shadow-xl opacity-80">
-                        <span className="text-xs font-medium text-muted-foreground">Moving section…</span>
+                    <div className="rounded-lg border-2 border-primary bg-white p-3 opacity-80 shadow-xl">
+                        <span className="text-xs font-medium text-muted-foreground">
+                            Moving section…
+                        </span>
                     </div>
                 )}
             </DragOverlay>

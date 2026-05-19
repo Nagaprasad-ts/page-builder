@@ -1,6 +1,15 @@
 import type React from 'react';
 
-export type FieldType = 'text' | 'textarea' | 'richtext' | 'image' | 'url' | 'boolean' | 'number' | 'select' | 'array';
+export type FieldType =
+    | 'text'
+    | 'textarea'
+    | 'richtext'
+    | 'image'
+    | 'url'
+    | 'boolean'
+    | 'number'
+    | 'select'
+    | 'array';
 
 export type FieldDef = {
     type: FieldType;
@@ -35,6 +44,7 @@ export type SectionInstance = {
     id: string;
     section_type: string;
     sort_order: number;
+    region: 'header' | 'body' | 'footer';
     props: Record<string, unknown>;
 };
 
@@ -47,6 +57,8 @@ export type Page = {
     meta_keywords: string | null;
     status: 'draft' | 'published';
     published_at: string | null;
+    custom_header: boolean;
+    custom_footer: boolean;
     created_by: number;
     updated_by: number;
     created_at: string;
@@ -56,6 +68,7 @@ export type Page = {
 export type PageSection = {
     id: number;
     page_id: number;
+    region: 'header' | 'body' | 'footer';
     section_type: string;
     sort_order: number;
     props: Record<string, unknown>;

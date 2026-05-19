@@ -1,12 +1,18 @@
+import { Image, Trash2, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import type { FieldDef } from '@/types/builder';
-import { Image, Trash2, Plus } from 'lucide-react';
 import { RichtextEditor } from './richtext-editor';
-import { Button } from '@/components/ui/button';
 
 type Props = {
     fieldKey: string;
@@ -16,20 +22,34 @@ type Props = {
     onOpenMediaPicker?: () => void;
 };
 
-export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker }: Props) {
+export function FieldEditor({
+    fieldKey,
+    def,
+    value,
+    onChange,
+    onOpenMediaPicker,
+}: Props) {
     const id = `field-${fieldKey}`;
 
     if (def.type === 'array') {
-        const items = (Array.isArray(value) ? value : []) as Record<string, unknown>[];
+        const items = (Array.isArray(value) ? value : []) as Record<
+            string,
+            unknown
+        >[];
         const itemSchema = def.itemSchema ?? {};
 
         return (
             <div className="space-y-3">
                 <Label>{def.label}</Label>
                 {items.map((item, index) => (
-                    <div key={index} className="rounded-lg border border-input bg-muted/30 p-3 space-y-2">
+                    <div
+                        key={index}
+                        className="space-y-2 rounded-lg border border-input bg-muted/30 p-3"
+                    >
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-muted-foreground">Item {index + 1}</span>
+                            <span className="text-xs font-medium text-muted-foreground">
+                                Item {index + 1}
+                            </span>
                             <Button
                                 type="button"
                                 variant="ghost"
@@ -52,7 +72,10 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
                                 value={item[subKey] ?? subDef.default ?? null}
                                 onChange={(v) => {
                                     const next = [...items];
-                                    next[index] = { ...next[index], [subKey]: v };
+                                    next[index] = {
+                                        ...next[index],
+                                        [subKey]: v,
+                                    };
                                     onChange(next);
                                 }}
                                 onOpenMediaPicker={onOpenMediaPicker}
@@ -66,8 +89,11 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
                     size="sm"
                     className="w-full"
                     onClick={() => {
-                        const defaults = Object.entries(itemSchema).reduce<Record<string, unknown>>((acc, [k, d]) => {
+                        const defaults = Object.entries(itemSchema).reduce<
+                            Record<string, unknown>
+                        >((acc, [k, d]) => {
                             acc[k] = d.default ?? null;
+
                             return acc;
                         }, {});
                         onChange([...items, defaults]);
@@ -84,13 +110,21 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
         <div className="space-y-1.5">
             {def.type !== 'boolean' && <Label htmlFor={id}>{def.label}</Label>}
 
-            {def.type === 'text' || def.type === 'url' || def.type === 'number' ? (
+            {def.type === 'text' ||
+            def.type === 'url' ||
+            def.type === 'number' ? (
                 <Input
                     id={id}
                     type={def.type === 'number' ? 'number' : 'text'}
                     value={(value as string) ?? ''}
                     placeholder={def.type === 'url' ? 'https://' : ''}
-                    onChange={(e) => onChange(def.type === 'number' ? Number(e.target.value) : e.target.value)}
+                    onChange={(e) =>
+                        onChange(
+                            def.type === 'number'
+                                ? Number(e.target.value)
+                                : e.target.value,
+                        )
+                    }
                 />
             ) : def.type === 'textarea' ? (
                 <Textarea
@@ -100,7 +134,10 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
                     onChange={(e) => onChange(e.target.value)}
                 />
             ) : def.type === 'richtext' ? (
-                <RichtextEditor value={(value as string) ?? ''} onChange={onChange} />
+                <RichtextEditor
+                    value={(value as string) ?? ''}
+                    onChange={onChange}
+                />
             ) : def.type === 'image' ? (
                 <div className="space-y-2">
                     {!!value && (
@@ -113,7 +150,7 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
                             <button
                                 type="button"
                                 onClick={() => onChange(null)}
-                                className="absolute right-1 top-1 rounded bg-black/60 p-1 text-white hover:bg-black/80"
+                                className="absolute top-1 right-1 rounded bg-black/60 p-1 text-white hover:bg-black/80"
                             >
                                 <Trash2 className="h-3 w-3" />
                             </button>
@@ -140,7 +177,10 @@ export function FieldEditor({ fieldKey, def, value, onChange, onOpenMediaPicker 
                     <Label htmlFor={id}>{def.label}</Label>
                 </div>
             ) : def.type === 'select' ? (
-                <Select value={(value as string) ?? ''} onValueChange={onChange}>
+                <Select
+                    value={(value as string) ?? ''}
+                    onValueChange={onChange}
+                >
                     <SelectTrigger id={id}>
                         <SelectValue placeholder="Select…" />
                     </SelectTrigger>

@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { MediaItem } from '@/types/builder';
 import { Trash2, Upload } from 'lucide-react';
 import { useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import type { MediaItem } from '@/types/builder';
 
 type Props = {
     media: MediaItem[];
@@ -14,14 +14,25 @@ type Props = {
 };
 
 function csrfToken(): string {
-    return document.head.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+    return (
+        document.head
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content') ?? ''
+    );
 }
 
-export function MediaLibrary({ media, onMediaChange, onSelect, selectable = false, loading = false }: Props) {
+export function MediaLibrary({
+    media,
+    onMediaChange,
+    onSelect,
+    selectable = false,
+    loading = false,
+}: Props) {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
+
         if (!file) {
             return;
         }
@@ -31,7 +42,11 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
 
         const res = await fetch('/admin/media', {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': csrfToken(), 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
             body: formData,
         });
 
@@ -49,7 +64,11 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
     const handleDelete = async (item: MediaItem) => {
         await fetch(`/admin/media/${item.id}`, {
             method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': csrfToken(), 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
+            headers: {
+                'X-CSRF-TOKEN': csrfToken(),
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
         });
         onMediaChange(media.filter((m) => m.id !== item.id));
     };
@@ -57,8 +76,14 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
     return (
         <div className="flex h-full flex-col">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
-                <p className="text-sm font-medium">{media.length} item{media.length !== 1 ? 's' : ''}</p>
-                <Button size="sm" variant="outline" onClick={() => fileInputRef.current?.click()}>
+                <p className="text-sm font-medium">
+                    {media.length} item{media.length !== 1 ? 's' : ''}
+                </p>
+                <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                >
                     <Upload className="mr-1.5 h-3.5 w-3.5" />
                     Upload
                 </Button>
@@ -75,7 +100,10 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
                 {loading ? (
                     <div className="grid grid-cols-4 gap-3">
                         {Array.from({ length: 8 }).map((_, i) => (
-                            <Skeleton key={i} className="aspect-square rounded-lg" />
+                            <Skeleton
+                                key={i}
+                                className="aspect-square rounded-lg"
+                            />
                         ))}
                     </div>
                 ) : media.length === 0 ? (
@@ -90,9 +118,12 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
                                     type="button"
                                     className={cn(
                                         'relative aspect-square w-full overflow-hidden rounded-lg border border-border bg-muted transition-all',
-                                        selectable && 'hover:ring-2 hover:ring-primary hover:ring-offset-1 cursor-pointer',
+                                        selectable &&
+                                            'cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-1',
                                     )}
-                                    onClick={() => selectable && onSelect?.(item)}
+                                    onClick={() =>
+                                        selectable && onSelect?.(item)
+                                    }
                                     title={item.original_name}
                                 >
                                     <img
@@ -105,7 +136,7 @@ export function MediaLibrary({ media, onMediaChange, onSelect, selectable = fals
                                     <button
                                         type="button"
                                         onClick={() => handleDelete(item)}
-                                        className="absolute right-1 top-1 hidden rounded bg-destructive p-1 text-destructive-foreground group-hover:flex"
+                                        className="absolute top-1 right-1 hidden rounded bg-destructive p-1 text-destructive-foreground group-hover:flex"
                                     >
                                         <Trash2 className="h-3 w-3" />
                                     </button>

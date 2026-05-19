@@ -16,6 +16,7 @@ createInertiaApp({
             case name === 'site/page':
             case name === 'admin/pages/create':
             case name === 'admin/pages/edit':
+            case name === 'admin/layout/edit':
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;

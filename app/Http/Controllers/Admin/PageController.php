@@ -134,7 +134,7 @@ class PageController extends Controller
     /**
      * Delete all existing sections and bulk-insert the new set.
      *
-     * @param  array<int, array{section_type: string, sort_order: int, props: array<string, mixed>}>  $sections
+     * @param  array<int, array{section_type: string, sort_order: int, region: string, props: array<string, mixed>}>  $sections
      */
     private function syncSections(Page $page, array $sections): void
     {
@@ -147,6 +147,7 @@ class PageController extends Controller
         $now = now();
         $rows = array_map(fn (array $section): array => [
             'page_id' => $page->id,
+            'region' => $section['region'] ?? 'body',
             'section_type' => $section['section_type'],
             'sort_order' => $section['sort_order'],
             'props' => json_encode($section['props'] ?? []),

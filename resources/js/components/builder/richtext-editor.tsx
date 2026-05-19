@@ -1,6 +1,6 @@
+import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
 import { Bold, Italic, Link as LinkIcon } from 'lucide-react';
 import { Toggle } from '@/components/ui/toggle';
 import { cn } from '@/lib/utils';
@@ -24,15 +24,28 @@ export function RichtextEditor({ value, onChange, className }: Props) {
         if (!editor) {
             return;
         }
-        const url = window.prompt('URL', editor.getAttributes('link').href ?? '');
+
+        const url = window.prompt(
+            'URL',
+            editor.getAttributes('link').href ?? '',
+        );
+
         if (url === null) {
             return;
         }
+
         if (url === '') {
             editor.chain().focus().extendMarkRange('link').unsetLink().run();
+
             return;
         }
-        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+
+        editor
+            .chain()
+            .focus()
+            .extendMarkRange('link')
+            .setLink({ href: url })
+            .run();
     };
 
     return (
@@ -41,7 +54,9 @@ export function RichtextEditor({ value, onChange, className }: Props) {
                 <Toggle
                     size="sm"
                     pressed={editor?.isActive('bold') ?? false}
-                    onPressedChange={() => editor?.chain().focus().toggleBold().run()}
+                    onPressedChange={() =>
+                        editor?.chain().focus().toggleBold().run()
+                    }
                     aria-label="Bold"
                 >
                     <Bold className="h-3.5 w-3.5" />
@@ -49,7 +64,9 @@ export function RichtextEditor({ value, onChange, className }: Props) {
                 <Toggle
                     size="sm"
                     pressed={editor?.isActive('italic') ?? false}
-                    onPressedChange={() => editor?.chain().focus().toggleItalic().run()}
+                    onPressedChange={() =>
+                        editor?.chain().focus().toggleItalic().run()
+                    }
                     aria-label="Italic"
                 >
                     <Italic className="h-3.5 w-3.5" />

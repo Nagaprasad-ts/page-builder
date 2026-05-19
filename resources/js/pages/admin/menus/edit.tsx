@@ -1,10 +1,10 @@
-import { Button } from '@/components/ui/button';
-import { MenuItemForm } from '@/components/menu-builder/menu-item-form';
-import { MenuItemTree } from '@/components/menu-builder/menu-item-tree';
-import type { Menu, MenuItem } from '@/types/menu';
 import { Head } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 import { useState } from 'react';
+import { MenuItemForm } from '@/components/menu-builder/menu-item-form';
+import { MenuItemTree } from '@/components/menu-builder/menu-item-tree';
+import { Button } from '@/components/ui/button';
+import type { Menu, MenuItem } from '@/types/menu';
 
 type PageRef = { id: number; title: string; slug: string };
 
@@ -23,7 +23,11 @@ type FormData = {
 };
 
 function csrfToken(): string {
-    return document.head.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+    return (
+        document.head
+            .querySelector('meta[name="csrf-token"]')
+            ?.getAttribute('content') ?? ''
+    );
 }
 
 const jsonHeaders = {
@@ -33,7 +37,11 @@ const jsonHeaders = {
     'X-Requested-With': 'XMLHttpRequest',
 };
 
-function apiFetch(method: string, url: string, data?: unknown): Promise<unknown> {
+function apiFetch(
+    method: string,
+    url: string,
+    data?: unknown,
+): Promise<unknown> {
     return fetch(url, {
         method,
         headers: { ...jsonHeaders, 'X-CSRF-TOKEN': csrfToken() },
@@ -62,12 +70,22 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
 
     const handleSave = async (data: FormData) => {
         setSaving(true);
+
         try {
             if (editingItem) {
-                await apiFetch('PUT', `/admin/menus/${initialMenu.id}/items/${editingItem.id}`, data);
+                await apiFetch(
+                    'PUT',
+                    `/admin/menus/${initialMenu.id}/items/${editingItem.id}`,
+                    data,
+                );
             } else {
-                await apiFetch('POST', `/admin/menus/${initialMenu.id}/items`, data);
+                await apiFetch(
+                    'POST',
+                    `/admin/menus/${initialMenu.id}/items`,
+                    data,
+                );
             }
+
             refreshItems();
         } finally {
             setSaving(false);
@@ -76,13 +94,20 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
     };
 
     const handleDelete = async (item: MenuItem) => {
-        await apiFetch('DELETE', `/admin/menus/${initialMenu.id}/items/${item.id}`);
+        await apiFetch(
+            'DELETE',
+            `/admin/menus/${initialMenu.id}/items/${item.id}`,
+        );
         refreshItems();
     };
 
     const refreshItems = async () => {
         // Re-fetch the menu to get updated items with children
-        const response = (await apiFetch('GET', `/admin/menus/${initialMenu.id}/items`)) as { items: MenuItem[] } | null;
+        const response = (await apiFetch(
+            'GET',
+            `/admin/menus/${initialMenu.id}/items`,
+        )) as { items: MenuItem[] } | null;
+
         if (response?.items) {
             setItems(response.items);
         }
@@ -92,10 +117,12 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
         <>
             <Head title={`Edit menu — ${initialMenu.name}`} />
 
-            <div className="mx-auto max-w-2xl space-y-6 p-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-bold">{initialMenu.name}</h1>
+                        <h1 className="text-2xl font-bold">
+                            {initialMenu.name}
+                        </h1>
                         <p className="mt-1 text-sm text-muted-foreground capitalize">
                             {initialMenu.location.replace('_', ' ')}
                         </p>
@@ -117,7 +144,11 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
                     <div className="rounded-xl border border-border bg-background">
                         <div className="border-b border-border px-4 py-3">
                             <h3 className="text-sm font-semibold">
-                                {editingItem ? 'Edit item' : parentId ? 'Add child item' : 'Add menu item'}
+                                {editingItem
+                                    ? 'Edit item'
+                                    : parentId
+                                      ? 'Add child item'
+                                      : 'Add menu item'}
                             </h3>
                         </div>
                         <MenuItemForm

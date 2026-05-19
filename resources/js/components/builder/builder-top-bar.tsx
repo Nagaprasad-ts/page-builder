@@ -1,7 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Link } from '@inertiajs/react';
 import { ArrowLeft, Loader2, Settings, Globe, FileEdit } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 type Props = {
     title: string;
@@ -64,19 +64,35 @@ export function BuilderTopBar({
                     Settings
                 </Button>
 
-                <Button variant="outline" size="sm" onClick={onSave} disabled={isSaving}>
-                    {isSaving && <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />}
-                    Save draft
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onSave}
+                    disabled={isSaving}
+                >
+                    {isSaving && (
+                        <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
+                    )}
+                    {status === 'published' ? 'Republish' : 'Save draft'}
                 </Button>
 
                 {canPublish && (
                     <>
                         {status === 'draft' ? (
-                            <Button size="sm" onClick={onPublish} disabled={isSaving}>
+                            <Button
+                                size="sm"
+                                onClick={onPublish}
+                                disabled={isSaving}
+                            >
                                 Publish
                             </Button>
                         ) : (
-                            <Button variant="secondary" size="sm" onClick={onUnpublish} disabled={isSaving}>
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={onUnpublish}
+                                disabled={isSaving}
+                            >
                                 Unpublish
                             </Button>
                         )}

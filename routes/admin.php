@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\GlobalLayoutController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\MenuItemController;
@@ -23,6 +24,10 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])
         Route::get('media', [MediaController::class, 'index'])->name('media.index');
         Route::post('media', [MediaController::class, 'store'])->name('media.store');
         Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
+
+        // Global layout — admin only
+        Route::get('layout', [GlobalLayoutController::class, 'edit'])->name('layout.edit')->middleware('role:admin');
+        Route::post('layout', [GlobalLayoutController::class, 'update'])->name('layout.update')->middleware('role:admin');
 
         // Menus — admin only
         Route::resource('menus', MenuController::class)

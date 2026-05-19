@@ -1,6 +1,6 @@
+import { GripVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { MenuItem } from '@/types/menu';
-import { GripVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 
 type Props = {
     items: MenuItem[];
@@ -17,7 +17,13 @@ type ItemRowProps = {
     onAddChild: (parentId: number) => void;
 };
 
-function ItemRow({ item, depth = 0, onEdit, onDelete, onAddChild }: ItemRowProps) {
+function ItemRow({
+    item,
+    depth = 0,
+    onEdit,
+    onDelete,
+    onAddChild,
+}: ItemRowProps) {
     return (
         <>
             <div
@@ -25,12 +31,12 @@ function ItemRow({ item, depth = 0, onEdit, onDelete, onAddChild }: ItemRowProps
                 style={{ marginLeft: depth * 20 }}
             >
                 <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground/40" />
-                <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{item.label}</p>
-                    <p className="text-xs text-muted-foreground truncate">
+                <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{item.label}</p>
+                    <p className="truncate text-xs text-muted-foreground">
                         {item.type === 'page' && item.page
                             ? `/${item.page.slug}`
-                            : item.url ?? '—'}
+                            : (item.url ?? '—')}
                     </p>
                 </div>
                 <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">

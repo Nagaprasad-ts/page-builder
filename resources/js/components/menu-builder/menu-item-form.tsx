@@ -1,9 +1,15 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { MenuItem } from '@/types/menu';
-import { useState } from 'react';
 
 type PageRef = { id: number; title: string; slug: string };
 
@@ -25,7 +31,14 @@ type Props = {
     isSaving?: boolean;
 };
 
-export function MenuItemForm({ item, pages, parentId = null, onSave, onCancel, isSaving }: Props) {
+export function MenuItemForm({
+    item,
+    pages,
+    parentId = null,
+    onSave,
+    onCancel,
+    isSaving,
+}: Props) {
     const [form, setForm] = useState<FormData>({
         label: item?.label ?? '',
         type: item?.type ?? 'url',
@@ -58,7 +71,10 @@ export function MenuItemForm({ item, pages, parentId = null, onSave, onCancel, i
 
             <div className="space-y-1.5">
                 <Label htmlFor="type">Link type</Label>
-                <Select value={form.type} onValueChange={(v) => set('type', v as 'page' | 'url')}>
+                <Select
+                    value={form.type}
+                    onValueChange={(v) => set('type', v as 'page' | 'url')}
+                >
                     <SelectTrigger id="type">
                         <SelectValue />
                     </SelectTrigger>
@@ -82,7 +98,10 @@ export function MenuItemForm({ item, pages, parentId = null, onSave, onCancel, i
                         <SelectContent>
                             {pages.map((p) => (
                                 <SelectItem key={p.id} value={String(p.id)}>
-                                    {p.title} <span className="text-muted-foreground">/{p.slug}</span>
+                                    {p.title}{' '}
+                                    <span className="text-muted-foreground">
+                                        /{p.slug}
+                                    </span>
                                 </SelectItem>
                             ))}
                         </SelectContent>
@@ -103,7 +122,12 @@ export function MenuItemForm({ item, pages, parentId = null, onSave, onCancel, i
 
             <div className="space-y-1.5">
                 <Label htmlFor="target">Open in</Label>
-                <Select value={form.target} onValueChange={(v) => set('target', v as '_self' | '_blank')}>
+                <Select
+                    value={form.target}
+                    onValueChange={(v) =>
+                        set('target', v as '_self' | '_blank')
+                    }
+                >
                     <SelectTrigger id="target">
                         <SelectValue />
                     </SelectTrigger>
@@ -118,7 +142,12 @@ export function MenuItemForm({ item, pages, parentId = null, onSave, onCancel, i
                 <Button type="submit" size="sm" disabled={isSaving}>
                     {item ? 'Update' : 'Add item'}
                 </Button>
-                <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={onCancel}
+                >
                     Cancel
                 </Button>
             </div>

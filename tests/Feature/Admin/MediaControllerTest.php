@@ -54,5 +54,5 @@ test('admin can delete media', function (): void {
 });
 
 test('unauthenticated user cannot access media endpoints', function (): void {
-    $this->getJson('/admin/media')->assertRedirect();
+    $this->get('/admin/media')->assertRedirect();
 });

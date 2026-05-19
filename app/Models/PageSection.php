@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Database\Factories\PageSectionFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['page_id', 'section_type', 'sort_order', 'props'])]
+#[Fillable(['page_id', 'region', 'section_type', 'sort_order', 'props'])]
 class PageSection extends Model
 {
-    /** @use HasFactory<\Database\Factories\PageSectionFactory> */
+    /** @use HasFactory<PageSectionFactory> */
     use HasFactory;
 
     /**

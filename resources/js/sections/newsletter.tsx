@@ -4,12 +4,18 @@ export const meta: SectionMeta = {
     name: 'newsletter',
     category: 'Marketing',
     icon: 'Mail',
-    description: 'Email subscription section with a heading, rich body text, and a subscribe button.',
+    description:
+        'Email subscription section with a heading, rich body text, and a subscribe button.',
 };
 
 export const schema: SectionSchema = {
     heading: { type: 'text', label: 'Heading', default: 'Stay in the loop' },
-    body: { type: 'richtext', label: 'Body', default: '<p>Subscribe to our newsletter for the latest news and updates.</p>' },
+    body: {
+        type: 'richtext',
+        label: 'Body',
+        default:
+            '<p>Subscribe to our newsletter for the latest news and updates.</p>',
+    },
     buttonLabel: { type: 'text', label: 'Button Label', default: 'Subscribe' },
     buttonUrl: { type: 'url', label: 'Button URL', default: '#' },
 };
@@ -21,7 +27,12 @@ type Props = {
     buttonUrl?: string;
 };
 
-export default function NewsletterSection({ heading, body, buttonLabel, buttonUrl }: Props) {
+export default function NewsletterSection({
+    heading,
+    body,
+    buttonLabel,
+    buttonUrl,
+}: Props) {
     return (
         <section className="bg-indigo-600 py-20 text-white">
             <div className="mx-auto max-w-2xl px-6 text-center">

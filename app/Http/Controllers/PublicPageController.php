@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LayoutSection;
 use App\Models\Page;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,9 +19,22 @@ class PublicPageController extends Controller
             ->with('sections')
             ->firstOrFail();
 
+        $globalHeader = LayoutSection::where('region', 'header')->orderBy('sort_order')->get();
+        $globalFooter = LayoutSection::where('region', 'footer')->orderBy('sort_order')->get();
+
+        $bodySections = $page->sections->where('region', 'body')->values();
+        $headerSections = $page->custom_header
+            ? $page->sections->where('region', 'header')->values()
+            : $globalHeader;
+        $footerSections = $page->custom_footer
+            ? $page->sections->where('region', 'footer')->values()
+            : $globalFooter;
+
         return Inertia::render('site/page', [
             'page' => $page,
-            'sections' => $page->sections,
+            'headerSections' => $headerSections,
+            'bodySections' => $bodySections,
+            'footerSections' => $footerSections,
         ]);
     }
 }

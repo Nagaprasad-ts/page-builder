@@ -1,6 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FileText, FolderGit2, LayoutGrid, Menu } from 'lucide-react';
-import { useCurrentUrl } from '@/hooks/use-current-url';
+import { BookOpen, FileText, FolderGit2, Layout, LayoutGrid, Menu } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -14,6 +13,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useCurrentUrl } from '@/hooks/use-current-url';
 import { dashboard } from '@/routes';
 import type { NavItem } from '@/types';
 
@@ -41,7 +41,8 @@ const footerNavItems: NavItem[] = [
 export function AppSidebar() {
     const { auth } = usePage().props;
     const isAdmin = auth.user.role === 'admin';
-    const isEditorOrAdmin = auth.user.role === 'admin' || auth.user.role === 'editor';
+    const isEditorOrAdmin =
+        auth.user.role === 'admin' || auth.user.role === 'editor';
 
     const adminNavItems: NavItem[] = [
         {
@@ -55,6 +56,11 @@ export function AppSidebar() {
                       title: 'Menus',
                       href: '/admin/menus',
                       icon: Menu,
+                  } as NavItem,
+                  {
+                      title: 'Layout',
+                      href: '/admin/layout',
+                      icon: Layout,
                   } as NavItem,
               ]
             : []),
@@ -92,7 +98,7 @@ function NavAdmin({ items }: { items: NavItem[] }) {
 
     return (
         <div className="px-2 py-0">
-            <p className="mb-1 px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
+            <p className="mb-1 px-2 py-1.5 text-xs font-semibold tracking-wider text-muted-foreground/70 uppercase">
                 Admin
             </p>
             <div className="space-y-0.5">
@@ -103,7 +109,7 @@ function NavAdmin({ items }: { items: NavItem[] }) {
                         className={[
                             'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors hover:bg-accent hover:text-accent-foreground',
                             isCurrentOrParentUrl(item.href)
-                                ? 'bg-accent text-accent-foreground font-medium'
+                                ? 'bg-accent font-medium text-accent-foreground'
                                 : 'text-muted-foreground',
                         ].join(' ')}
                     >

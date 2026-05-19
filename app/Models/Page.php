@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Database\Factories\PageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'status', 'published_at', 'created_by', 'updated_by'])]
+#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'status', 'published_at', 'custom_header', 'custom_footer', 'created_by', 'updated_by'])]
 class Page extends Model
 {
-    /** @use HasFactory<\Database\Factories\PageFactory> */
+    /** @use HasFactory<PageFactory> */
     use HasFactory;
 
     /**
@@ -23,6 +25,8 @@ class Page extends Model
     {
         return [
             'published_at' => 'datetime',
+            'custom_header' => 'boolean',
+            'custom_footer' => 'boolean',
         ];
     }
 
@@ -53,7 +57,7 @@ class Page extends Model
     /**
      * Scope to only published pages.
      */
-    public function scopePublished(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published');
     }
