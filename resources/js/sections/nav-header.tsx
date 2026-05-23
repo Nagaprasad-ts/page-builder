@@ -3,7 +3,6 @@ import { usePage } from '@inertiajs/react';
 import {
     NavigationMenu,
     NavigationMenuContent,
-    NavigationMenuIndicator,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
@@ -173,7 +172,6 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                         </NavigationMenuItem>
                                     );
                                 })}
-                                <NavigationMenuIndicator />
                             </NavigationMenuList>
                         </NavigationMenu>
                     )}

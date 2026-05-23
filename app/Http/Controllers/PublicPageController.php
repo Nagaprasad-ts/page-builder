@@ -10,6 +10,21 @@ use Inertia\Response;
 class PublicPageController extends Controller
 {
     /**
+     * Serve the homepage — looks for a published page with slug "home",
+     * then falls back to the first published page, then 404.
+     */
+    public function home(): Response
+    {
+        $page = Page::where('status', 'published')
+            ->with('sections')
+            ->orderByRaw("CASE WHEN slug = 'home' THEN 0 ELSE 1 END")
+            ->orderBy('created_at')
+            ->firstOrFail();
+
+        return $this->render($page);
+    }
+
+    /**
      * Serve a published page at its slug.
      */
     public function show(string $slug): Response
@@ -19,6 +34,11 @@ class PublicPageController extends Controller
             ->with('sections')
             ->firstOrFail();
 
+        return $this->render($page);
+    }
+
+    private function render(Page $page): Response
+    {
         $globalHeader = LayoutSection::where('region', 'header')->orderBy('sort_order')->get();
         $globalFooter = LayoutSection::where('region', 'footer')->orderBy('sort_order')->get();
 
