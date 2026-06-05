@@ -1,4 +1,5 @@
 import { Head, router, usePage } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { BuilderCanvas } from '@/components/builder/builder-canvas';
 import { BuilderTopBar } from '@/components/builder/builder-top-bar';
@@ -21,6 +22,7 @@ export default function EditPage({ page, sections }: Props) {
     const { auth } = usePage().props;
     const builder = useBuilder({ page, sections });
     const [processing, setProcessing] = useState(false);
+    const [panelOpen, setPanelOpen] = useState(true);
 
     const handleSave = () => {
         setProcessing(true);
@@ -119,13 +121,34 @@ export default function EditPage({ page, sections }: Props) {
                         </div>
                     </main>
 
-                    {/* Right: properties */}
-                    <aside className="w-80 shrink-0 overflow-y-auto border-l border-border bg-background">
-                        <PropertiesPanel
-                            section={builder.selectedSection}
-                            onChange={builder.updateSectionProps}
-                            onOpenMediaPicker={builder.openMediaPicker}
-                        />
+                    {/* Right: properties (collapsible) */}
+                    <aside
+                        className={cn(
+                            'relative shrink-0 border-l border-border bg-background transition-all duration-200',
+                            panelOpen ? 'w-80' : 'w-8',
+                        )}
+                    >
+                        {/* Toggle button */}
+                        <button
+                            type="button"
+                            onClick={() => setPanelOpen((v) => !v)}
+                            title={panelOpen ? 'Hide panel' : 'Show panel'}
+                            className="absolute -left-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground"
+                        >
+                            {panelOpen ? (
+                                <ChevronRight className="h-3 w-3" />
+                            ) : (
+                                <ChevronLeft className="h-3 w-3" />
+                            )}
+                        </button>
+
+                        <div className={cn('h-full overflow-y-auto', !panelOpen && 'invisible')}>
+                            <PropertiesPanel
+                                section={builder.selectedSection}
+                                onChange={builder.updateSectionProps}
+                                onOpenMediaPicker={builder.openMediaPicker}
+                            />
+                        </div>
                     </aside>
                 </div>
             </div>

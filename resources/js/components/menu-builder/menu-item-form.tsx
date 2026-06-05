@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,9 +10,106 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { cn } from '@/lib/utils';
 import type { MenuItem } from '@/types/menu';
 
 type PageRef = { id: number; title: string; slug: string };
+
+function PageCombobox({
+    pages,
+    value,
+    onChange,
+}: {
+    pages: PageRef[];
+    value: number | null;
+    onChange: (id: number | null) => void;
+}) {
+    const [open, setOpen] = useState(false);
+    const [query, setQuery] = useState('');
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const selected = pages.find((p) => p.id === value) ?? null;
+
+    const filtered = pages.filter(
+        (p) =>
+            p.title.toLowerCase().includes(query.toLowerCase()) ||
+            p.slug.toLowerCase().includes(query.toLowerCase()),
+    );
+
+    // Close on outside click
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+                setOpen(false);
+                setQuery('');
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    return (
+        <div ref={containerRef} className="relative w-full">
+            <button
+                type="button"
+                onClick={() => {
+                    setOpen((v) => !v);
+                    setQuery('');
+                }}
+                className={cn(
+                    'flex w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring',
+                )}
+            >
+                <span className={selected ? 'text-foreground' : 'text-muted-foreground'}>
+                    {selected ? `${selected.title}  ${selected.slug.startsWith('/') ? selected.slug : `/${selected.slug}`}` : 'Select a page…'}
+                </span>
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+            </button>
+
+            {open && (
+                <div className="absolute z-50 mt-1 w-full rounded-md border border-border bg-popover shadow-lg">
+                    <div className="p-2">
+                        <Input
+                            autoFocus
+                            placeholder="Search by name or URL…"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            className="h-8 text-sm"
+                        />
+                    </div>
+                    <ul className="max-h-48 overflow-y-auto pb-1">
+                        {filtered.length === 0 ? (
+                            <li className="px-3 py-2 text-sm text-muted-foreground">No pages found.</li>
+                        ) : (
+                            filtered.map((p) => (
+                                <li key={p.id}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onChange(p.id);
+                                            setOpen(false);
+                                            setQuery('');
+                                        }}
+                                        className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent hover:text-accent-foreground"
+                                    >
+                                        <Check
+                                            className={cn(
+                                                'h-3.5 w-3.5 shrink-0',
+                                                value === p.id ? 'opacity-100' : 'opacity-0',
+                                            )}
+                                        />
+                                        <span className="font-medium">{p.title}</span>
+                                        <span className="ml-1 text-muted-foreground">{p.slug.startsWith('/') ? p.slug : `/${p.slug}`}</span>
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </ul>
+                </div>
+            )}
+        </div>
+    );
+}
 
 type FormData = {
     label: string;
@@ -57,7 +155,8 @@ export function MenuItemForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 p-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Row 1: Label */}
             <div className="space-y-1.5">
                 <Label htmlFor="label">Label</Label>
                 <Input
@@ -69,43 +168,50 @@ export function MenuItemForm({
                 />
             </div>
 
-            <div className="space-y-1.5">
-                <Label htmlFor="type">Link type</Label>
-                <Select
-                    value={form.type}
-                    onValueChange={(v) => set('type', v as 'page' | 'url')}
-                >
-                    <SelectTrigger id="type">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="page">Page</SelectItem>
-                        <SelectItem value="url">Custom URL</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            {form.type === 'page' ? (
+            {/* Row 2: Link type + Open in */}
+            <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                    <Label htmlFor="page">Page</Label>
+                    <Label htmlFor="type">Link type</Label>
                     <Select
-                        value={form.page_id ? String(form.page_id) : ''}
-                        onValueChange={(v) => set('page_id', Number(v))}
+                        value={form.type}
+                        onValueChange={(v) => set('type', v as 'page' | 'url')}
                     >
-                        <SelectTrigger id="page">
-                            <SelectValue placeholder="Select a page…" />
+                        <SelectTrigger id="type" className="w-full">
+                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            {pages.map((p) => (
-                                <SelectItem key={p.id} value={String(p.id)}>
-                                    {p.title}{' '}
-                                    <span className="text-muted-foreground">
-                                        /{p.slug}
-                                    </span>
-                                </SelectItem>
-                            ))}
+                            <SelectItem value="page">Page</SelectItem>
+                            <SelectItem value="url">Custom URL</SelectItem>
                         </SelectContent>
                     </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                    <Label htmlFor="target">Open in</Label>
+                    <Select
+                        value={form.target}
+                        onValueChange={(v) => set('target', v as '_self' | '_blank')}
+                    >
+                        <SelectTrigger id="target" className="w-full">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="_self">Same tab</SelectItem>
+                            <SelectItem value="_blank">New tab</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
+
+            {/* Row 3: URL or Page picker */}
+            {form.type === 'page' ? (
+                <div className="space-y-1.5">
+                    <Label>Page</Label>
+                    <PageCombobox
+                        pages={pages}
+                        value={form.page_id}
+                        onChange={(id) => set('page_id', id)}
+                    />
                 </div>
             ) : (
                 <div className="space-y-1.5">
@@ -120,34 +226,11 @@ export function MenuItemForm({
                 </div>
             )}
 
-            <div className="space-y-1.5">
-                <Label htmlFor="target">Open in</Label>
-                <Select
-                    value={form.target}
-                    onValueChange={(v) =>
-                        set('target', v as '_self' | '_blank')
-                    }
-                >
-                    <SelectTrigger id="target">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="_self">Same tab</SelectItem>
-                        <SelectItem value="_blank">New tab</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
             <div className="flex gap-2 pt-2">
                 <Button type="submit" size="sm" disabled={isSaving}>
                     {item ? 'Update' : 'Add item'}
                 </Button>
-                <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={onCancel}
-                >
+                <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
                     Cancel
                 </Button>
             </div>

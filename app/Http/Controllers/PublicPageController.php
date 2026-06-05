@@ -17,7 +17,7 @@ class PublicPageController extends Controller
     {
         $page = Page::where('status', 'published')
             ->with('sections')
-            ->orderByRaw("CASE WHEN slug = 'home' THEN 0 ELSE 1 END")
+            ->orderByRaw("CASE WHEN slug = '/' THEN 0 WHEN slug = 'home' THEN 1 ELSE 2 END")
             ->orderBy('created_at')
             ->firstOrFail();
 

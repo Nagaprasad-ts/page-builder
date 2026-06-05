@@ -6,7 +6,7 @@ import { FieldEditor } from './field-editor';
 type Props = {
     section: SectionInstance | null;
     onChange: (id: string, props: Record<string, unknown>) => void;
-    onOpenMediaPicker: (fieldKey: string) => void;
+    onOpenMediaPicker: (onSelect: (url: string) => void) => void;
 };
 
 export function PropertiesPanel({
@@ -58,7 +58,7 @@ export function PropertiesPanel({
                                 [key]: v,
                             });
                         }}
-                        onOpenMediaPicker={() => onOpenMediaPicker(key)}
+                        onOpenMediaPicker={onOpenMediaPicker}
                     />
                 ))}
             </div>

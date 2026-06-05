@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -9,8 +9,8 @@ import {
     NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
-import type { MenuItem } from '@/types/menu';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import type { MenuItem } from '@/types/menu';
 
 export const meta: SectionMeta = {
     name: 'nav-header',
@@ -34,7 +34,13 @@ type Props = {
 };
 
 function itemHref(item: MenuItem): string {
-    return item.type === 'page' && item.page ? `/${item.page.slug}` : (item.url ?? '#');
+    if (item.type === 'page' && item.page) {
+        const slug = item.page.slug;
+        
+        return slug.startsWith('/') ? slug : `/${slug}`;
+    }
+
+    return item.url ?? '#';
 }
 
 // ─── Mobile accordion item ────────────────────────────────────────────────────
@@ -107,7 +113,10 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
 
     useEffect(() => {
         document.body.style.overflow = mobileOpen ? 'hidden' : '';
-        return () => { document.body.style.overflow = ''; };
+        
+        return () => { 
+            document.body.style.overflow = ''; 
+        };
     }, [mobileOpen]);
 
     return (
@@ -140,7 +149,7 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                                     >
                                                         {item.label}
                                                     </NavigationMenuTrigger>
-                                                    <NavigationMenuContent className="min-w-[180px] !bg-white !text-gray-900 !border-gray-200 !shadow-md">
+                                                    <NavigationMenuContent className="min-w-45 bg-white! text-gray-900! border-gray-200! shadow-md!">
                                                         <ul className="flex flex-col py-1">
                                                             {item.children.map((child) => (
                                                                 <li key={child.id}>

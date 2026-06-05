@@ -1,14 +1,14 @@
 import { Head, router } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { BuilderCanvas } from '@/components/builder/builder-canvas';
 import { PropertiesPanel } from '@/components/builder/properties-panel';
 import { SectionBrowser } from '@/components/builder/section-browser';
 import { MediaPickerModal } from '@/components/media/media-picker-modal';
 import { Button } from '@/components/ui/button';
-import { getDefaultProps } from '@/sections';
 import { cn } from '@/lib/utils';
+import { getDefaultProps } from '@/sections';
 import type { PageSection, SectionInstance } from '@/types/builder';
 
 type Region = 'header' | 'footer';
@@ -36,8 +36,9 @@ export default function GlobalLayoutEdit({ headerSections, footerSections }: Pro
     const [footer, setFooter] = useState<SectionInstance[]>(() => toInstances(footerSections));
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-    const [mediaPickerFieldKey, setMediaPickerFieldKey] = useState<string | null>(null);
+    const [mediaPickerCallback, setMediaPickerCallback] = useState<((url: string) => void) | null>(null);
     const [processing, setProcessing] = useState(false);
+    const [panelOpen, setPanelOpen] = useState(true);
 
     const activeSections = activeRegion === 'header' ? header : footer;
     const setActiveSections = activeRegion === 'header' ? setHeader : setFooter;
@@ -86,26 +87,19 @@ export default function GlobalLayoutEdit({ headerSections, footerSections }: Pro
         );
     };
 
-    const openMediaPicker = (fieldKey: string) => {
-        setMediaPickerFieldKey(fieldKey);
+    const closeMediaPicker = () => {
+        setMediaPickerOpen(false);
+        setMediaPickerCallback(null);
+    };
+
+    const openMediaPicker = (onSelect: (url: string) => void) => {
+        setMediaPickerCallback(() => onSelect);
         setMediaPickerOpen(true);
     };
 
-    const closeMediaPicker = () => {
-        setMediaPickerOpen(false);
-        setMediaPickerFieldKey(null);
-    };
-
     const handleMediaSelect = (url: string) => {
-        if (url && selectedId && mediaPickerFieldKey) {
-            const section = activeSections.find((s) => s.id === selectedId);
-
-            if (section) {
-                updateSectionProps(selectedId, {
-                    ...section.props,
-                    [mediaPickerFieldKey]: url,
-                });
-            }
+        if (url && mediaPickerCallback) {
+            mediaPickerCallback(url);
         }
     };
 
@@ -205,13 +199,33 @@ export default function GlobalLayoutEdit({ headerSections, footerSections }: Pro
                         </div>
                     </main>
 
-                    {/* Right: properties */}
-                    <aside className="w-80 shrink-0 overflow-y-auto border-l border-border bg-background">
-                        <PropertiesPanel
-                            section={selectedSection}
-                            onChange={updateSectionProps}
-                            onOpenMediaPicker={openMediaPicker}
-                        />
+                    {/* Right: properties (collapsible) */}
+                    <aside
+                        className={cn(
+                            'relative shrink-0 border-l border-border bg-background transition-all duration-200',
+                            panelOpen ? 'w-80' : 'w-8',
+                        )}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => setPanelOpen((v) => !v)}
+                            title={panelOpen ? 'Hide panel' : 'Show panel'}
+                            className="absolute -left-3 top-6 z-10 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-sm hover:text-foreground"
+                        >
+                            {panelOpen ? (
+                                <ChevronRight className="h-3 w-3" />
+                            ) : (
+                                <ChevronLeft className="h-3 w-3" />
+                            )}
+                        </button>
+
+                        <div className={cn('h-full overflow-y-auto', !panelOpen && 'invisible')}>
+                            <PropertiesPanel
+                                section={selectedSection}
+                                onChange={updateSectionProps}
+                                onOpenMediaPicker={(cb) => openMediaPicker(cb)}
+                            />
+                        </div>
                     </aside>
                 </div>
             </div>

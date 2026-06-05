@@ -4,6 +4,12 @@ import { useState } from 'react';
 import { MenuItemForm } from '@/components/menu-builder/menu-item-form';
 import { MenuItemTree } from '@/components/menu-builder/menu-item-tree';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import type { Menu, MenuItem } from '@/types/menu';
 
 type PageRef = { id: number; title: string; slug: string };
@@ -93,6 +99,23 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
         }
     };
 
+    const handleReorder = async (reordered: MenuItem[]) => {
+        // Optimistic update
+        setItems(reordered);
+
+        await apiFetch(
+            'POST',
+            `/admin/menus/${initialMenu.id}/items/reorder`,
+            {
+                items: reordered.map((item, index) => ({
+                    id: item.id,
+                    sort_order: index,
+                    parent_id: item.parent_id,
+                })),
+            },
+        );
+    };
+
     const handleDelete = async (item: MenuItem) => {
         await apiFetch(
             'DELETE',
@@ -138,19 +161,20 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
                     onEdit={openEditForm}
                     onDelete={handleDelete}
                     onAddChild={(pid) => openAddForm(pid)}
+                    onReorder={handleReorder}
                 />
 
-                {formOpen && (
-                    <div className="rounded-xl border border-border bg-background">
-                        <div className="border-b border-border px-4 py-3">
-                            <h3 className="text-sm font-semibold">
+                <Dialog open={formOpen} onOpenChange={(v) => !v && setFormOpen(false)}>
+                    <DialogContent className="sm:max-w-md">
+                        <DialogHeader>
+                            <DialogTitle>
                                 {editingItem
                                     ? 'Edit item'
                                     : parentId
                                       ? 'Add child item'
                                       : 'Add menu item'}
-                            </h3>
-                        </div>
+                            </DialogTitle>
+                        </DialogHeader>
                         <MenuItemForm
                             item={editingItem}
                             pages={pages}
@@ -159,8 +183,8 @@ export default function EditMenu({ menu: initialMenu, pages }: Props) {
                             onCancel={() => setFormOpen(false)}
                             isSaving={saving}
                         />
-                    </div>
-                )}
+                    </DialogContent>
+                </Dialog>
             </div>
         </>
     );

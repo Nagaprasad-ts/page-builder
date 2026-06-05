@@ -19,7 +19,8 @@ type Props = {
     def: FieldDef;
     value: unknown;
     onChange: (value: unknown) => void;
-    onOpenMediaPicker?: () => void;
+    /** Called with the field's own onChange so the picker knows exactly where to write the URL */
+    onOpenMediaPicker?: (onSelect: (url: string) => void) => void;
 };
 
 export function FieldEditor({
@@ -161,7 +162,7 @@ export function FieldEditor({
                         variant="outline"
                         size="sm"
                         className="w-full"
-                        onClick={onOpenMediaPicker}
+                        onClick={() => onOpenMediaPicker?.(onChange as (url: string) => void)}
                     >
                         <Image className="mr-1.5 h-3.5 w-3.5" />
                         {value ? 'Change image' : 'Choose image'}

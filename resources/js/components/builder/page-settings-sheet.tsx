@@ -58,19 +58,33 @@ export function PageSettingsSheet({
                             <Label htmlFor="slug" className="text-sm font-medium">
                                 URL slug
                             </Label>
-                            <div className="flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-                                <span className="select-none border-r border-input px-3 py-2 text-sm text-muted-foreground">
-                                    /
-                                </span>
-                                <input
-                                    id="slug"
-                                    value={slug}
-                                    onChange={(e) => onChange('slug', e.target.value)}
-                                    placeholder="my-page"
-                                    className="flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground"
-                                />
-                            </div>
-                            {isExistingPage && (
+                            {slug === '/' ? (
+                                <div className="flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                    <input
+                                        id="slug"
+                                        value="/"
+                                        onChange={(e) => onChange('slug', e.target.value)}
+                                        className="flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+                                    <span className="select-none border-r border-input px-3 py-2 text-sm text-muted-foreground">
+                                        /
+                                    </span>
+                                    <input
+                                        id="slug"
+                                        value={slug}
+                                        onChange={(e) => onChange('slug', e.target.value)}
+                                        placeholder="my-page"
+                                        className="flex-1 bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground"
+                                    />
+                                </div>
+                            )}
+                            <p className="text-xs text-muted-foreground">
+                                Use <code className="rounded bg-muted px-1">/</code> to set this page as the homepage.
+                            </p>
+                            {isExistingPage && slug !== '/' && (
                                 <p className="flex items-center gap-1.5 text-xs text-amber-600">
                                     <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                                     Changing this will break existing links to this page.

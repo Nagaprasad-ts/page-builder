@@ -70,9 +70,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [settingsOpen, setSettingsOpen] = useState(false);
     const [mediaPickerOpen, setMediaPickerOpen] = useState(false);
-    const [mediaPickerFieldKey, setMediaPickerFieldKey] = useState<
-        string | null
-    >(null);
+    const [mediaPickerCallback, setMediaPickerCallback] = useState<((url: string) => void) | null>(null);
 
     /** Updates title and auto-generates slug for new pages */
     const handleTitleChange = (value: string) => {
@@ -132,27 +130,21 @@ export function useBuilder(initial: BuilderInitial = {}) {
         );
     };
 
-    const openMediaPicker = (fieldKey: string) => {
-        setMediaPickerFieldKey(fieldKey);
+    const openMediaPicker = (onSelect: (url: string) => void) => {
+        // useState setter with a function value must be wrapped to avoid being called as updater
+        setMediaPickerCallback(() => onSelect);
         setMediaPickerOpen(true);
     };
 
     const handleMediaSelect = (url: string) => {
-        if (url && selectedId && mediaPickerFieldKey) {
-            const section = sections.find((s) => s.id === selectedId);
-
-            if (section) {
-                updateSectionProps(selectedId, {
-                    ...section.props,
-                    [mediaPickerFieldKey]: url,
-                });
-            }
+        if (url && mediaPickerCallback) {
+            mediaPickerCallback(url);
         }
     };
 
     const closeMediaPicker = () => {
         setMediaPickerOpen(false);
-        setMediaPickerFieldKey(null);
+        setMediaPickerCallback(null);
     };
 
     /** Builds the payload to send to the backend */

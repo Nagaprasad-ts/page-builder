@@ -23,10 +23,17 @@ class Media extends Model
 
     /**
      * Get the public URL for this media item.
+     * Forces HTTPS when the app is served over HTTPS (e.g. via Herd secure).
      */
     public function getUrlAttribute(): string
     {
-        return Storage::disk($this->disk)->url($this->path);
+        $url = Storage::disk($this->disk)->url($this->path);
+
+        if (request()->isSecure()) {
+            $url = preg_replace('/^http:\/\//', 'https://', $url);
+        }
+
+        return $url;
     }
 
     /**

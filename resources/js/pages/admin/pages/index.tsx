@@ -97,7 +97,7 @@ export default function PagesIndex({ pages }: Props) {
                                             {page.title}
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">
-                                            /{page.slug}
+                                            {page.slug.startsWith('/') ? page.slug : `/${page.slug}`}
                                         </td>
                                         <td className="px-4 py-3">
                                             {page.status === 'published' ? (

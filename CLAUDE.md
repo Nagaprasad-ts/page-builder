@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What This App Is
 
-A page builder application built on Laravel 13 + Inertia.js v3 + React 19. It ships with Fortify-based authentication (login, register, email verification, password reset, 2FA via TOTP), user settings (profile, security, appearance/theme), and a sidebar layout shell ready for page builder features.
+A full-stack page builder on Laravel 13 + Inertia.js v3 + React 19. Admins drag-and-drop React section templates onto a canvas, edit their content inline, configure SEO, and publish pages at custom slugs. The same section components render identically in the builder preview and on public pages. Fortify provides authentication (login, register, email verification, password reset, 2FA/TOTP). Roles: `admin` (full access) and `editor` (can create/edit pages, cannot publish or manage menus/layout).
 
 ## Commands
 
@@ -13,7 +13,7 @@ A page builder application built on Laravel 13 + Inertia.js v3 + React 19. It sh
 composer run dev          # Start Laravel + queue worker + Vite concurrently
 
 # Build
-npm run build             # Production asset build
+npm run build             # Production asset build (user runs this — never run npm commands yourself)
 npm run build:ssr         # Build with SSR
 
 # Tests
@@ -30,31 +30,82 @@ npm run types:check                               # TypeScript type check
 composer run ci:check
 ```
 
+> **Important**: Never run `npm` commands yourself — always ask the user to run them.
+
 ## Architecture
+
+### Routes
+
+- `routes/web.php` — dashboard, homepage (`/` → `PublicPageController::home`), catch-all public page (`{slug}`)
+- `routes/admin.php` — all `/admin/*` routes, guarded by `auth + verified + role:admin,editor`
+- `routes/settings.php` — profile / security / appearance
+- The catch-all uses `where('slug', '[a-z0-9\-]+')` so it never shadows `/admin`, `/settings`, etc.
 
 ### Backend (`app/`)
 
-- **`app/Actions/Fortify/`** — Business logic for registration and password reset (Fortify action pattern).
-- **`app/Concerns/`** — Shared validation rule traits (`PasswordValidationRules`, `ProfileValidationRules`).
-- **`app/Http/Controllers/Settings/`** — `ProfileController` and `SecurityController` handle user settings; all other auth routes are handled by Fortify internally.
-- **`app/Http/Middleware/HandleInertiaRequests.php`** — Shares `auth.user`, `app.name`, and sidebar state as Inertia shared props to every page.
-- **`app/Http/Middleware/HandleAppearance.php`** — Passes theme preference cookie to Blade for initial `dark` class application.
-- Routes are split across `routes/web.php` (dashboard) and `routes/settings.php` (profile/security/appearance).
+- **`app/Http/Controllers/Admin/`** — `PageController`, `MediaController`, `MenuController`, `MenuItemController`, `GlobalLayoutController`
+- **`app/Http/Controllers/PublicPageController`** — `home()` finds the published page with slug `/` or `home` (or first published); `show($slug)` serves any published page
+- **`app/Http/Middleware/EnsureUserHasRole.php`** — `role:admin,editor` alias; registered in `bootstrap/app.php`
+- **`app/Http/Middleware/HandleInertiaRequests.php`** — shares `auth.user`, `app.name`, `sidebarOpen`, and **`menus`** (all menus keyed by location, loaded with `Inertia::always()` so they refresh on partial reloads)
+- **`app/Models/`**: `Page` (has `sections()`, `scopePublished()`), `PageSection` (props cast to array), `LayoutSection` (global header/footer sections), `Media` (appended `url` attr rewrites http→https when request is secure), `Menu` + `MenuItem` (nested with children)
+- **Section sync**: `PageController` deletes all sections then bulk-inserts on every save — no diffing
+- **`MediaController`** returns JSON (not Inertia) — consumed by the media picker modal
+- **`MenuItemController`** returns JSON — consumed by the menu editor SPA
 
 ### Frontend (`resources/js/`)
 
-- **Pages** live in `resources/js/pages/` and are loaded dynamically by Inertia. Sub-folders: `auth/`, `settings/`.
-- **Layout resolution** is in `resources/js/app.tsx`: `welcome` → no layout; `auth/*` → `AuthLayout`; `settings/*` → `[AppLayout, SettingsLayout]`; everything else → `AppLayout`.
-- **`resources/js/components/ui/`** — shadcn/ui primitives (Button, Input, Dialog, etc.). Check here before writing new components.
-- **`resources/js/hooks/use-appearance.tsx`** — Dark/light/system theme hook; preference stored in a cookie.
-- **`resources/js/lib/utils.ts`** — Exports `cn()` (clsx + tailwind-merge).
-- **`resources/js/types/`** — Shared TypeScript types: `auth.ts`, `navigation.ts`, `ui.ts`.
-- Wayfinder generates typed route/action helpers into `resources/js/actions/` and `resources/js/routes/` — import from `@/actions/` or `@/routes/` instead of hardcoding URLs.
+**Layout resolution** (`app.tsx`): `welcome`, `site/page`, `admin/pages/create`, `admin/pages/edit`, `admin/layout/edit` → `null` (full-screen); `auth/*` → `AuthLayout`; `settings/*` → `[AppLayout, SettingsLayout]`; everything else → `AppLayout`.
+
+**Section Registry** (`resources/js/sections/`):
+- `index.ts` auto-discovers all `.tsx` files via `import.meta.glob` — every section file must export `meta` (SectionMeta), `schema` (SectionSchema), and a default React component
+- `sectionRegistry[name]` maps section type → registration; used by the builder canvas, properties panel, and public page renderer
+- `getDefaultProps(sectionType)` seeds new sections with schema defaults
+- Adding a new section = drop a new `.tsx` into `resources/js/sections/` — no registration step needed
+
+**Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`
+
+**Section anatomy notes**:
+- `alternate-cards` — two separate schema arrays: `images` (image-only slots) and `items` (text-only slots); interleaved into an 8-slot 4-column checkerboard at render time
+- `trusted-partners` — left 30% heading, right 70% logo grid (3 rows × 4); logos array with image + alt
+- `quote-stats` — large quote with decorative `&ldquo;` behind text, tilted image with blue accent shape, divider, achievement text + 3 stats in a row
+- `services-grid` — heading with blue circle accent, full-width featured image link + two smaller image links; entire card is an `<a>` tag (no text overlay)
+- Right properties panel in builder pages (create/edit/layout) is collapsible via a `panelOpen` toggle button on the panel's left edge
+
+**Builder components** (`resources/js/components/builder/`):
+- `builder-canvas.tsx` — `DndContext id="builder-canvas"` + `SortableContext` for reordering; handles cross-panel drop for inserting new sections
+- `sortable-item.tsx` — drag handle, selection ring, remove button
+- `properties-panel.tsx` — reads `sectionRegistry[section_type].schema` and renders `FieldEditor` per field
+- `field-editor.tsx` — dispatches by `FieldDef.type`: text/url/number → Input, textarea → Textarea, richtext → TiptapEditor, image → thumbnail + "Choose Image" → `onOpenMediaPicker`, boolean → Checkbox, array → repeatable sub-list
+- `builder-top-bar.tsx`, `page-settings-sheet.tsx` — title editing, SEO fields, publish/unpublish
+
+**Media picker pattern**: `onOpenMediaPicker: (onSelect: (url: string) => void) => void` — each field passes its own `onChange` as the callback so nested array fields update correctly. `useState` setter for the callback must be wrapped: `setMediaPickerCallback(() => onSelect)`.
+
+**`useBuilder` hook** (`resources/js/hooks/use-builder.ts`): centralises all builder state — sections[], selectedId, mediaPickerOpen, mediaPickerCallback, region (header/body/footer), `buildPayload()`.
+
+**Menu builder** (`resources/js/components/menu-builder/`):
+- `menu-item-tree.tsx` — dnd-kit sortable with `DndContext id="menu-item-tree"`; calls `/admin/menus/{id}/items/reorder` on drag end
+- `menu-item-form.tsx` — opens in a Dialog; custom `PageCombobox` with search for the page selector
+
+**Public page renderer** (`resources/js/pages/site/page.tsx`): iterates `sections`, looks up `sectionRegistry[section_type]`, renders `<Component {...section.props} />`. Layout is `null`.
+
+**Global layout** (`resources/js/pages/admin/layout/edit.tsx`): separate header/footer region tabs; saves to `LayoutSection` table via `POST /admin/layout`.
+
+**`menus` shared prop**: available on every page as `usePage().props.menus` keyed by location (`desktop_nav`, `mobile_nav`, `footer`). The `nav-header` section reads `menus.desktop_nav` from this.
 
 ### Database
 
-- Core tables: `users` (+ 2FA columns), `cache`, `jobs`.
-- `UserFactory` is the only factory; use it in tests instead of creating model data manually.
+- **`pages`** — title, slug (unique; `/` is valid for homepage), meta_*, status (draft/published), custom_header, custom_footer, created_by/updated_by FK
+- **`page_sections`** — page_id, section_type, sort_order, props (JSON)
+- **`layout_sections`** — region (header/footer), section_type, sort_order, props (JSON) — global site header/footer
+- **`media`** — filename, path, disk, mime_type, size, alt, uploaded_by
+- **`menus`** / **`menu_items`** — menus keyed by location; menu_items support parent_id for one level of nesting
+- **`users`** — includes `role` (admin/editor) and 2FA columns
+
+### TypeScript Types
+
+- `resources/js/types/builder.ts` — `FieldDef`, `SectionSchema`, `SectionMeta`, `SectionRegistration`, `SectionInstance`, `Page`, `PageSection`, `MediaItem`
+- `resources/js/types/menu.ts` — `MenuItem`, `Menu`
+- `resources/js/types/index.ts` — `User` (includes `role: 'admin' | 'editor'`)
 
 <laravel-boost-guidelines>
 === foundation rules ===

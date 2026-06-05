@@ -94,6 +94,7 @@ export function BuilderCanvas({
 
     return (
         <DndContext
+            id="builder-canvas"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={({ active }) => setActiveId(String(active.id))}

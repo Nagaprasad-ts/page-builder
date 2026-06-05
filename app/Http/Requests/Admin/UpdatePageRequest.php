@@ -30,7 +30,7 @@ class UpdatePageRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('pages', 'slug')->ignore($this->route('page')),
-                'regex:/^[a-z0-9\-]+$/',
+                'regex:/^(\/|[a-z0-9][a-z0-9\-]*)$/',
             ],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
