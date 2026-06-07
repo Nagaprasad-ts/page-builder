@@ -1,10 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, Loader2, Settings, Globe, FileEdit } from 'lucide-react';
+import { ArrowLeft, Eye, Loader2, Settings, Globe, FileEdit } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 type Props = {
     title: string;
+    slug?: string;
     status: 'draft' | 'published';
     onTitleChange: (title: string) => void;
     onOpenSettings: () => void;
@@ -17,6 +18,7 @@ type Props = {
 
 export function BuilderTopBar({
     title,
+    slug,
     status,
     onTitleChange,
     onOpenSettings,
@@ -26,6 +28,9 @@ export function BuilderTopBar({
     canPublish,
     isSaving,
 }: Props) {
+    const previewUrl = slug
+        ? (status === 'published' ? `/${slug}` : `/draft/${slug}`)
+        : null;
     return (
         <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background px-4">
             <Link
@@ -59,6 +64,18 @@ export function BuilderTopBar({
             )}
 
             <div className="ml-auto flex items-center gap-2">
+                {previewUrl && (
+                    <a
+                        href={previewUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-muted-foreground transition hover:bg-accent hover:text-foreground"
+                    >
+                        <Eye className="h-4 w-4" />
+                        Preview
+                    </a>
+                )}
+
                 <Button variant="ghost" size="sm" onClick={onOpenSettings}>
                     <Settings className="mr-1.5 h-4 w-4" />
                     Settings

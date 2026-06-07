@@ -49,6 +49,7 @@ export default function CreatePage() {
             <div className="flex h-screen flex-col overflow-hidden bg-muted/20">
                 <BuilderTopBar
                     title={builder.title}
+                    slug={builder.slug}
                     status="draft"
                     onTitleChange={builder.handleTitleChange}
                     onOpenSettings={() => builder.setSettingsOpen(true)}

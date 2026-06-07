@@ -4,8 +4,7 @@ export const meta: SectionMeta = {
     name: 'hero',
     category: 'Marketing',
     icon: 'Sparkles',
-    description:
-        'Full-width hero banner with heading, subtext, and a call-to-action button.',
+    description: 'Hero banner — text left, image right, 50/50 split.',
 };
 
 export const schema: SectionSchema = {
@@ -22,7 +21,8 @@ export const schema: SectionSchema = {
     },
     ctaLabel: { type: 'text', label: 'Button Label', default: 'Talk to Us' },
     ctaUrl: { type: 'url', label: 'Button URL', default: '/' },
-    backgroundImage: { type: 'image', label: 'Background Image' },
+    image: { type: 'image', label: 'Hero Image (right side)' },
+    textBgImage: { type: 'image', label: 'Text Background Image (decorative)' },
 };
 
 type Props = {
@@ -30,77 +30,89 @@ type Props = {
     subtext?: string;
     ctaLabel?: string;
     ctaUrl?: string;
-    backgroundImage?: string | null;
+    image?: string | null;
+    backgroundImage?: string | null; // legacy compat
+    textBgImage?: string | null;
 };
 
-export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, backgroundImage }: Props) {
+export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image, backgroundImage, textBgImage }: Props) {
+    const heroImage = image ?? backgroundImage ?? null;
+
     return (
-        <section
-            className="relative flex h-screen items-center justify-center overflow-hidden bg-white"
-            style={
-                backgroundImage
-                    ? { backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
-                    : undefined
-            }
-        >
-            {backgroundImage && <div className="absolute inset-0 bg-white/70" />}
+        <section className="relative overflow-hidden bg-white md:h-screen">
+            <div className="h-full mx-auto max-w-7xl px-6">
+                <div className="flex flex-col md:flex-row md:h-full md:items-center">
 
-            {/* ── Decorative geometric shapes ── */}
+                    {/* ── Left 50%: Text ── */}
+                    <div className="relative z-10 flex w-full flex-col justify-center py-10 md:w-1/2 md:py-24 md:pr-12">
 
-            {/* Top-left quarter circle */}
-            <div className="pointer-events-none absolute -left-16 top-12 h-40 w-40 rounded-full bg-blue-100 opacity-70" />
+                        {/* Arrow / decorative background image */}
+                        {textBgImage && (
+                            <img
+                                src={textBgImage}
+                                alt=""
+                                className="pointer-events-none absolute inset-0 -top-18 md:-top-10 h-full w-full object-contain opacity-70 select-none"
+                                style={{ zIndex: 0 }}
+                            />
+                        )}
 
-            {/* Top-right small half-circle */}
-            <div className="pointer-events-none absolute right-24 top-8 h-16 w-16 overflow-hidden">
-                <div className="h-16 w-16 rounded-full border-12 border-blue-200 opacity-60" />
-            </div>
+                        {/* Decorative circles — text side */}
+                        <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-accent-brand/10" />
+                        <div className="pointer-events-none absolute -bottom-8 left-1/3 h-24 w-24 rounded-full bg-accent-brand/5" />
+                        <div className="pointer-events-none absolute left-2/3 top-1/4 flex flex-col gap-2">
+                            <div className="h-3 w-3 rounded-full bg-accent-brand/50" />
+                            <div className="h-2 w-2 rounded-full bg-accent-brand/30" />
+                        </div>
 
-            {/* Mid-left pill */}
-            <div className="pointer-events-none absolute left-8 top-1/2 h-10 w-20 -translate-y-1/2 rounded-full bg-blue-50 opacity-80" />
+                        {heading && (
+                            <h1 className="relative mb-6 text-3xl md:text-5xl font-extrabold leading-tight tracking-tight text-gray-900">
+                                {heading.split('\n').map((line, i) => (
+                                    <span key={i} className="block">{line}</span>
+                                ))}
+                            </h1>
+                        )}
 
-            {/* Large accent circle — top center */}
-            <div className="pointer-events-none absolute -top-10 left-1/2 h-28 w-28 -translate-x-1/2 rounded-full bg-blue-500 opacity-90" />
+                        {subtext && (
+                            <p className="mb-8 max-w-lg text-lg leading-relaxed text-gray-500">
+                                {subtext}
+                            </p>
+                        )}
 
-            {/* Bottom-right half circle */}
-            <div className="pointer-events-none absolute -right-10 bottom-16 h-32 w-32 rounded-full bg-blue-100 opacity-60" />
+                        {ctaLabel && ctaUrl && (
+                            <div>
+                                <a
+                                    href={ctaUrl}
+                                    className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition hover:bg-brand/90 hover:shadow-brand/30"
+                                >
+                                    {ctaLabel}
+                                </a>
+                            </div>
+                        )}
+                    </div>
 
-            {/* Bottom-left arc */}
-            <div className="pointer-events-none absolute bottom-8 left-1/4 h-12 w-24 overflow-hidden">
-                <div className="h-24 w-24 rounded-full border-10 border-blue-300 opacity-50" />
-            </div>
+                    {/* ── Right 50%: Image ── */}
+                    <div className="relative w-full md:w-1/2">
+                        {/* Decorative accent behind image */}
+                        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent-brand/10" />
+                        <div className="pointer-events-none absolute -bottom-10 right-1/4 h-32 w-32 rounded-full bg-accent-brand/5" />
+                        <div className="pointer-events-none absolute right-8 top-1/3 h-16 w-16 overflow-hidden rounded-full border-8 border-accent-brand/20" />
 
-            {/* Mid-right dot cluster */}
-            <div className="pointer-events-none absolute right-16 top-1/3 flex flex-col gap-2">
-                <div className="h-3 w-3 rounded-full bg-blue-400 opacity-70" />
-                <div className="h-2 w-2 rounded-full bg-blue-300 opacity-50" />
-            </div>
+                        <div className="relative h-72 w-full overflow-hidden md:h-full md:aspect-auto">
+                            {heroImage ? (
+                                <img
+                                    src={heroImage}
+                                    alt=""
+                                    className="w-130 rounded-3xl object-cover"
+                                />
+                            ) : (
+                                <div className="flex h-full min-h-[400px] rounded-3xl w-full items-center justify-center bg-gradient-to-br from-accent-brand/10 to-brand/10">
+                                    <span className="text-sm text-gray-400">Add hero image</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-            {/* ── Content ── */}
-            <div className="relative z-10 mx-auto max-w-4xl px-6 py-8 text-center">
-                {heading && (
-                    <h1 className="mb-8 text-5xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
-                        {heading.split('\n').map((line, i) => (
-                            <span key={i} className="block">
-                                {line}
-                            </span>
-                        ))}
-                    </h1>
-                )}
-
-                {subtext && (
-                    <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-gray-500">
-                        {subtext}
-                    </p>
-                )}
-
-                {ctaLabel && ctaUrl && (
-                    <a
-                        href={ctaUrl}
-                        className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700 hover:shadow-blue-300"
-                    >
-                        {ctaLabel}
-                    </a>
-                )}
+                </div>
             </div>
         </section>
     );

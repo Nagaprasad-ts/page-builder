@@ -11,17 +11,17 @@ export const schema: SectionSchema = {
     quote: {
         type: 'textarea',
         label: 'Quote',
-        default: 'We understand your needs better than anybody and we know boring when we see it. So we will keep your audience engaged.',
+        default: 'Great talent doesn\'t just join companies, they join cultures. And branding problems, they hide in plain sight. At EVP HQ, we help organizations identify them and build organic, long-term solutions that strengthen perception, trust, and lasting business growth.',
     },
-    authorName: { type: 'text', label: 'Author name', default: 'Jane Brooklyn' },
-    authorTitle: { type: 'text', label: 'Author title', default: 'New company director' },
+    authorName: { type: 'text', label: 'Author name', default: 'Pradeep Gowda' },
+    authorTitle: { type: 'text', label: 'Author title', default: 'Chief Executive Officer, EVP HQ' },
     authorImage: { type: 'image', label: 'Author photo' },
     mainImage: { type: 'image', label: 'Main image' },
-    achievementHeading: { type: 'text', label: 'Achievement heading', default: 'What we achieved' },
+    achievementHeading: { type: 'text', label: 'Achievement heading', default: 'We want you to stand out' },
     achievementText: {
         type: 'textarea',
         label: 'Achievement text',
-        default: 'We know how to make the science behind content interesting. So you can drive home great content and keep your audience engaged.',
+        default: 'We know how to make an employer feel authentic. So you can attract the right talent, strengthen culture, and build a workplace people genuinely connect with.',
     },
     stat1Value: { type: 'text', label: 'Stat 1 value', default: '158+' },
     stat1Label: { type: 'text', label: 'Stat 1 label', default: 'number of videos produced' },
@@ -77,7 +77,7 @@ export default function QuoteStatsSection({
 
                     {/* Quote */}
                     <div className="relative">
-                        <span className="pointer-events-none absolute -left-20 -top-20 select-none text-[18rem] font-black leading-none text-blue-400" style={{ zIndex: 0 }}>&ldquo;</span>
+                        <span className="pointer-events-none absolute -left-20 -top-20 select-none text-[18rem] font-black leading-none text-accent-brand/40" style={{ zIndex: 0 }}>&ldquo;</span>
                         {quote && (
                             <p className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl" style={{ zIndex: 1 }}>
                                 {quote}
@@ -106,7 +106,7 @@ export default function QuoteStatsSection({
                     <div className="flex justify-center">
                         <div className="relative aspect-square w-full max-w-md">
                             {/* Blue tilted bg */}
-                            <div className="absolute inset-0 rotate-6 rounded-2xl bg-blue-400" />
+                            <div className="absolute inset-0 rotate-6 rounded-2xl bg-accent-brand/70" />
 
                             {mainImage ? (
                                 <img
@@ -132,7 +132,7 @@ export default function QuoteStatsSection({
                     {/* Achievement text */}
                     <div>
                         {achievementHeading && (
-                            <p className="mb-2 text-sm font-semibold text-blue-500">
+                            <p className="mb-2 text-sm font-semibold text-brand">
                                 {achievementHeading}
                             </p>
                         )}

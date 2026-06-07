@@ -52,7 +52,7 @@ export default function TrustedPartners({ heading, logos }: Props) {
                     {/* Left 30%: heading */}
                     <div className="lg:w-[30%] lg:pr-12">
                         {heading && (
-                            <h2 className="text-5xl font-extrabold leading-snug tracking-tight text-gray-900">
+                            <h2 className="text-4xl font-extrabold leading-snug tracking-tight text-gray-900">
                                 {heading}
                             </h2>
                         )}

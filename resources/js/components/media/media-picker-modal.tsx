@@ -58,7 +58,7 @@ export function MediaPickerModal({ open, onClose, onSelect }: Props) {
 
     return (
         <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
-            <DialogContent className="flex h-[70vh] max-w-3xl flex-col p-0">
+            <DialogContent className="flex h-[90vh] w-[95vw] max-w-[95vw] sm:max-w-[95vw] flex-col p-0">
                 <DialogHeader className="px-6 pt-6">
                     <DialogTitle>Media library</DialogTitle>
                     <DialogDescription className="sr-only">

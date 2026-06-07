@@ -49,7 +49,7 @@ class MenuController extends Controller
     {
         return Inertia::render('admin/menus/edit', [
             'menu' => $menu->load('items.children.page:id,title,slug'),
-            'pages' => Page::published()->select('id', 'title', 'slug')->get(),
+            'pages' => Page::published()->select('id', 'title', 'slug')->orderBy('title')->get(),
         ]);
     }
 

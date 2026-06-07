@@ -124,7 +124,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                     {/* ── Left 40%: heading + subtext + arrows ── */}
                     <div className="lg:w-[40%] lg:shrink-0">
                         {/* Blue accent bar */}
-                        <div className="mb-5 h-1 w-12 rounded-full bg-blue-600" />
+                        <div className="mb-5 h-1 w-12 rounded-full bg-brand" />
 
                         {heading && (
                             <h2 className="mb-5 text-3xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-4xl">
@@ -133,19 +133,19 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                         )}
 
                         {subtext && (
-                            <p className="mb-10 text-base leading-relaxed text-gray-500">
+                            <p className="md:mb-10 text-base leading-relaxed text-gray-500">
                                 {subtext}
                             </p>
                         )}
 
                         {/* Arrow controls */}
-                        <div className="flex items-center gap-3">
+                        <div className="hidden md:flex items-center gap-3">
                             <button
                                 type="button"
                                 onClick={prev}
                                 disabled={index === 0}
                                 aria-label="Previous"
-                                className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-blue-600 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-30"
+                                className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-brand hover:bg-brand/10 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
                             >
                                 <ArrowLeft className="h-5 w-5" />
                             </button>
@@ -154,7 +154,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                 onClick={next}
                                 disabled={index >= maxIndex}
                                 aria-label="Next"
-                                className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-blue-600 hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-30"
+                                className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-brand hover:bg-brand/10 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
                             >
                                 <ArrowRight className="h-5 w-5" />
                             </button>
@@ -169,7 +169,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                         className={[
                                             'h-1.5 rounded-full transition-all',
                                             i === index
-                                                ? 'w-6 bg-blue-600'
+                                                ? 'w-6 bg-brand'
                                                 : 'w-1.5 bg-gray-300 hover:bg-gray-400',
                                         ].join(' ')}
                                         aria-label={`Go to slide ${i + 1}`}
@@ -196,8 +196,8 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                         />
                                     </div>
                                 ) : (
-                                    <div className="flex h-48 w-full items-center justify-center bg-blue-50">
-                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-lg font-bold text-blue-600">
+                                    <div className="flex h-48 w-full items-center justify-center bg-brand/10">
+                                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand/10 text-lg font-bold text-brand">
                                             {String(index + i + 1).padStart(2, '0')}
                                         </div>
                                     </div>
@@ -206,7 +206,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                 <div className="flex flex-1 flex-col p-6">
                                     {/* Blue number badge — shown only when image is present */}
                                     {card.image && (
-                                        <div className="mb-3 text-xs font-bold text-blue-600">
+                                        <div className="mb-3 text-xs font-bold text-brand">
                                             {String(index + i + 1).padStart(2, '0')}
                                         </div>
                                     )}
@@ -222,7 +222,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                     {card.linkLabel && card.linkUrl && (
                                         <a
                                             href={card.linkUrl}
-                                            className="group inline-flex items-center gap-2 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
+                                            className="group inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand/80"
                                         >
                                             {card.linkLabel}
                                             <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -236,6 +236,46 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                         {visible.length < visibleCount && (
                             <div className="flex-1" />
                         )}
+                    </div>
+
+                    {/* Arrow controls */}
+                    <div className="flex md:hidden items-center gap-3">
+                        <button
+                            type="button"
+                            onClick={prev}
+                            disabled={index === 0}
+                            aria-label="Previous"
+                            className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-brand hover:bg-brand/10 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+                        >
+                            <ArrowLeft className="h-5 w-5" />
+                        </button>
+                        <button
+                            type="button"
+                            onClick={next}
+                            disabled={index >= maxIndex}
+                            aria-label="Next"
+                            className="flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 text-gray-500 transition hover:border-brand hover:bg-brand/10 hover:text-brand disabled:cursor-not-allowed disabled:opacity-30"
+                        >
+                            <ArrowRight className="h-5 w-5" />
+                        </button>
+
+                        {/* Dot indicators */}
+                        <div className="ml-2 flex items-center gap-1.5">
+                            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    onClick={() => setIndex(i)}
+                                    className={[
+                                        'h-1.5 rounded-full transition-all',
+                                        i === index
+                                            ? 'w-6 bg-brand'
+                                            : 'w-1.5 bg-gray-300 hover:bg-gray-400',
+                                    ].join(' ')}
+                                    aria-label={`Go to slide ${i + 1}`}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>

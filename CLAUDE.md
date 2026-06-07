@@ -62,14 +62,57 @@ composer run ci:check
 - `getDefaultProps(sectionType)` seeds new sections with schema defaults
 - Adding a new section = drop a new `.tsx` into `resources/js/sections/` — no registration step needed
 
-**Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`
+**Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`, `service-package`, `testimonials`, `section-intro`, `audience-split`, `content-grid`, `featured-work`, `testimonial-cta`, `faq`, `contact-banner`, `get-in-touch`
+
+**Brand theme**:
+- `--color-brand: #142345` — primary dark navy; use `text-brand`, `bg-brand`, `border-brand`
+- `--color-accent-brand: #547ed1` — accent blue; use `text-accent-brand`, `bg-accent-brand`
+- Fonts: `Fraunces` (variable, headings via `h1–h6` base style), `Nexa` (body, weight 300=ExtraLight / 700=Heavy). Body base `font-weight: 700` so Nexa Heavy is default
+- Font files live in `resources/fonts/` and are referenced via `@font-face` in `resources/css/app.css`
 
 **Section anatomy notes**:
-- `alternate-cards` — two separate schema arrays: `images` (image-only slots) and `items` (text-only slots); interleaved into an 8-slot 4-column checkerboard at render time
+- `alternate-cards` — 4-column checkerboard desktop grid; mobile = horizontal snap carousel with dot indicators. Two schema arrays: `images` + `items` interleaved into 8 slots. Heading split: `headingLine1` + `headingLine2` (backward compat: falls back to `heading`)
 - `trusted-partners` — left 30% heading, right 70% logo grid (3 rows × 4); logos array with image + alt
-- `quote-stats` — large quote with decorative `&ldquo;` behind text, tilted image with blue accent shape, divider, achievement text + 3 stats in a row
-- `services-grid` — heading with blue circle accent, full-width featured image link + two smaller image links; entire card is an `<a>` tag (no text overlay)
+- `quote-stats` — large `&ldquo;` as `absolute` behind quote text (no layout space), tilted image with `accent-brand` accent shape, achievement text + 3 stats
+- `services-grid` — heading with `accent-brand` circle accent, full-width featured image link + two smaller image links; entire card is an `<a>` tag
+- `service-package` — number + label, two-line heading with absolute decorative circle, description, primary pill CTA + secondary download link, image right
+- `section-intro` — number, two-line heading, description, 3-column icon grid; icons editable via Lucide name text field
+- `audience-split` — left 3/5 with number + heading + circle + description + 4-col icon grid (Lucide names editable), right 2/5 image
+- `content-grid` — left 2/5 text + CTA, right 2×2 white card grid; all icons editable via `DynamicIcon` (Lucide name string)
+- `featured-work` — left 30% label/heading/CTA, right 3 portrait cards with title + category
+- `testimonial-cta` — two-column: left = testimonial slider with `&ldquo;` as `absolute` background, right = CTA with circle accent + image
+- `faq` — left 2/5 label/heading/description, right 3/5 accordion (one open at a time, `+`/`−` icons)
+- `contact-banner` / `get-in-touch` — dark `bg-brand` card with concentric white rings on right side (hardcoded pixel sizes, no CSS variables), glassmorphic pill buttons with metallic arrow badge
 - Right properties panel in builder pages (create/edit/layout) is collapsible via a `panelOpen` toggle button on the panel's left edge
+
+**Dynamic icon pattern** (used in `section-intro`, `audience-split`, `content-grid`):
+```tsx
+import * as LucideIcons from 'lucide-react';
+function DynamicIcon({ name, className }: { name?: string; className?: string }) {
+    const Icon = (LucideIcons as Record<string, unknown>)[name ?? ''] as React.ComponentType<{ className?: string }> | undefined;
+    if (!Icon) return <span className={className}>{name}</span>;
+    return <Icon className={className} />;
+}
+```
+Schema field: `{ type: 'text', label: 'Icon (Lucide name e.g. FileText)', default: 'FileText' }`
+
+**Decorative circle behind text** pattern (consistent across sections):
+```tsx
+<span className="relative inline-block">
+    <span className="absolute rounded-full bg-accent-brand"
+        style={{ top: '-10px', bottom: '-10px', left: '-8px', right: '-8px', zIndex: 0 }} />
+    <span className="relative" style={{ zIndex: 1 }}>{word}</span>
+</span>
+```
+
+**`&ldquo;` decorative quote** — always render as `absolute` so it takes no layout space:
+```tsx
+<span className="pointer-events-none absolute -left-4 -top-6 select-none text-8xl font-black leading-none text-accent-brand/30" style={{ zIndex: 0 }}>&ldquo;</span>
+```
+
+**Section browser** (`section-browser.tsx`) — renders live scaled thumbnails of each section at `RENDER_WIDTH=1200px`, scaled to `220px` using `position: absolute` inside a fixed-height container. The inner div must be `position: absolute` (not in flow) to prevent layout blowout.
+
+**Draft preview**: `GET /draft/{slug}` (auth-protected) serves any page regardless of status via `PublicPageController::preview()`.
 
 **Builder components** (`resources/js/components/builder/`):
 - `builder-canvas.tsx` — `DndContext id="builder-canvas"` + `SortableContext` for reordering; handles cross-panel drop for inserting new sections

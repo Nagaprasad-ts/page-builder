@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\MediaFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['filename', 'original_name', 'path', 'disk', 'mime_type', 'size', 'alt', 'uploaded_by'])]
+#[Fillable(['filename', 'original_name', 'path', 'disk', 'mime_type', 'size', 'alt', 'uploaded_by', 'original_name'])]
 class Media extends Model
 {
-    /** @use HasFactory<\Database\Factories\MediaFactory> */
+    /** @use HasFactory<MediaFactory> */
     use HasFactory;
 
     /**

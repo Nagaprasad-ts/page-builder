@@ -66,6 +66,7 @@ export default function EditPage({ page, sections }: Props) {
             <div className="flex h-screen flex-col overflow-hidden bg-muted/20">
                 <BuilderTopBar
                     title={builder.title}
+                    slug={builder.slug}
                     status={page.status}
                     onTitleChange={builder.handleTitleChange}
                     onOpenSettings={() => builder.setSettingsOpen(true)}

@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, FileText, FolderGit2, Layout, LayoutGrid, Menu } from 'lucide-react';
+import { BookOpen, FileText, FolderGit2, Image, Layout, LayoutGrid, Menu } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -49,6 +49,11 @@ export function AppSidebar() {
             title: 'Pages',
             href: '/admin/pages',
             icon: FileText,
+        },
+        {
+            title: 'Media',
+            href: '/admin/media',
+            icon: Image,
         },
         ...(isAdmin
             ? [

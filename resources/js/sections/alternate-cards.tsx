@@ -1,3 +1,4 @@
+﻿import { useRef, useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
@@ -44,10 +45,15 @@ const DEFAULT_ITEMS = [
 ];
 
 export const schema: SectionSchema = {
-    heading: {
+    headingLine1: {
         type: 'text',
-        label: 'Heading',
-        default: 'Initiatives that matter, the most!',
+        label: 'Heading Line 1',
+        default: 'Initiatives that matter,',
+    },
+    headingLine2: {
+        type: 'text',
+        label: 'Heading Line 2',
+        default: 'the most!',
     },
     images: {
         type: 'array',
@@ -79,7 +85,8 @@ type ContentCard = {
 };
 
 type Props = {
-    heading?: string;
+    headingLine1?: string;
+    headingLine2?: string;
     images?: ImageSlot[];
     items?: ContentCard[];
 };
@@ -90,11 +97,11 @@ type Props = {
 function isImageSlot(index: number): boolean {
     const col = index % 4;
     const row = Math.floor(index / 4);
-    
+
     return (col + row) % 2 === 0;
 }
 
-export default function AlternateCardsSection({ heading, images, items }: Props) {
+export default function AlternateCardsSection({ headingLine1, headingLine2, images, items }: Props) {
     const imageList: ImageSlot[] = (images ? Object.values(images) : []).length > 0
         ? Object.values(images ?? {})
         : DEFAULT_IMAGES;
@@ -102,7 +109,7 @@ export default function AlternateCardsSection({ heading, images, items }: Props)
         ? Object.values(items ?? {})
         : DEFAULT_ITEMS;
 
-    // Build an 8-slot grid: 4 image slots + 4 text slots interleaved
+    // Build an 8-slot grid: 4 image slots + 4 text slots interleaved across 2 rows of 4 columns
     const totalSlots = 8;
     let imgIdx = 0;
     let txtIdx = 0;
@@ -115,95 +122,199 @@ export default function AlternateCardsSection({ heading, images, items }: Props)
         }
     });
 
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const handleScroll = () => {
+        const el = scrollRef.current;
+        if (!el) return;
+        const index = Math.round(el.scrollLeft / el.offsetWidth);
+        setActiveIndex(index);
+    };
+
+    const scrollTo = (index: number) => {
+        const el = scrollRef.current;
+        if (!el) return;
+        el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
+        setActiveIndex(index);
+    };
+
+    const renderCard = (slot: typeof slots[number], i: number) => {
+        if (slot.type === 'image') {
+            const { data } = slot as { type: 'image'; data: ImageSlot };
+
+            return (
+                <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                    {data.image ? (
+                        <img
+                            src={data.image}
+                            alt=""
+                            className="h-full w-full object-cover transition duration-500"
+                        />
+                    ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-brand/10 to-brand/20">
+                            <span className="text-5xl font-black text-brand/40 select-none">
+                                IMG
+                            </span>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const { data, num } = slot as { type: 'text'; data: ContentCard; num: number };
+        const isBlueCard = num % 4 === 1 || num % 4 === 0;
+
+        return (
+            <div
+                className={cn(
+                    'flex aspect-square flex-col justify-between p-6 rounded-2xl transition',
+                    isBlueCard ? 'bg-accent-brand' : 'bg-gray-100',
+                )}
+            >
+                <div>
+                    {data.title && (
+                        <h3 className={cn('mb-2 text-3xl font-extrabold leading-snug', isBlueCard ? 'text-white' : 'text-gray-900')}>
+                            {data.title}
+                        </h3>
+                    )}
+                    {data.description && (
+                        <p className={cn('text-base leading-relaxed line-clamp-4', isBlueCard ? 'text-white/80' : 'text-gray-900')}>
+                            {data.description}
+                        </p>
+                    )}
+                </div>
+                {data.linkLabel && data.linkUrl && (
+                    <div className="flex items-center justify-between">
+                        <p className={cn('text-md font-semibold', isBlueCard ? 'text-white' : 'text-gray-900')}>{data.linkLabel}</p>
+                        <a
+                            href={data.linkUrl}
+                            className={cn(
+                                'flex w-fit items-center rounded-full border p-3 transition',
+                                isBlueCard
+                                    ? 'border-white bg-white text-accent-brand hover:bg-accent-brand/10 hover:text-white'
+                                    : 'border-gray-800 bg-gray-900 text-white hover:bg-white hover:text-gray-900 hover:border-gray-800',
+                            )}
+                        >
+                            <ArrowRight className="h-5 w-5 transition-all duration-300" />
+                        </a>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-8xl px-6">
+            <div className="mx-auto max-w-7xl px-6">
 
                 {/* Heading */}
-                {heading && (
-                    <div className="mb-12 text-center">
-                        <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-blue-600" />
-                        <h2 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
-                            {heading}
+                {(headingLine1 || headingLine2) && (
+                    <div className="relative mb-12 text-center">
+                        <div className="absolute size-16 rounded-full bg-accent-brand right-1/2 -translate-x-16 -top-4 z-0" />
+                        <h2 className="relative z-10 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl">
+                            {headingLine1 && <span className="block">{headingLine1}</span>}
+                            {headingLine2 && <span className="block">{headingLine2}</span>}
                         </h2>
                     </div>
                 )}
 
-                {/* 4-column checkerboard grid */}
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                    {slots.map((slot, i) => {
-                        if (slot.type === 'image') {
-                            const { data } = slot as { type: 'image'; data: ImageSlot };
-                            
+                {/* Mobile: horizontal scroll carousel â€” each slide is image on top + text card below */}
+                <div className="md:hidden">
+                    <div
+                        ref={scrollRef}
+                        onScroll={handleScroll}
+                        className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4"
+                        style={{ scrollbarWidth: 'none' }}
+                    >
+                        {imageList.map((imgData, i) => {
+                            const cardData = contentList[i];
+                            const num = i + 1;
+                            const isBlueCard = num % 4 === 1 || num % 4 === 0;
+
                             return (
-                                <div
-                                    key={i}
-                                    className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-100"
-                                >
-                                    {data.image ? (
-                                        <img
-                                            src={data.image}
-                                            alt=""
-                                            className="h-full w-full object-cover transition duration-500"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-100 to-blue-200">
-                                            <span className="text-5xl font-black text-blue-300 select-none">
-                                                IMG
-                                            </span>
+                                <div key={i} className="shrink-0 w-[80vw] snap-center flex flex-col gap-4">
+                                    {/* Image */}
+                                    <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                                        {imgData.image ? (
+                                            <img
+                                                src={imgData.image}
+                                                alt=""
+                                                className="h-full w-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-brand/10 to-brand/20">
+                                                <span className="text-5xl font-black text-brand/40 select-none">IMG</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Text card */}
+                                    {cardData && (
+                                        <div className={cn(
+                                            'flex aspect-square flex-col justify-between p-6 rounded-2xl',
+                                            isBlueCard ? 'bg-accent-brand' : 'bg-gray-100',
+                                        )}>
+                                            <div>
+                                                {cardData.title && (
+                                                    <h3 className={cn('mb-2 text-3xl font-extrabold leading-snug', isBlueCard ? 'text-white' : 'text-gray-900')}>
+                                                        {cardData.title}
+                                                    </h3>
+                                                )}
+                                                {cardData.description && (
+                                                    <p className={cn('text-base leading-relaxed line-clamp-4', isBlueCard ? 'text-white/80' : 'text-gray-900')}>
+                                                        {cardData.description}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            {cardData.linkLabel && cardData.linkUrl && (
+                                                <div className="flex items-center justify-between">
+                                                    <p className={cn('text-md font-semibold', isBlueCard ? 'text-white' : 'text-gray-900')}>{cardData.linkLabel}</p>
+                                                    <a
+                                                        href={cardData.linkUrl}
+                                                        className={cn(
+                                                            'flex w-fit items-center rounded-full border p-3 transition',
+                                                            isBlueCard
+                                                                ? 'border-brand bg-brand text-white hover:bg-brand/10 hover:text-brand'
+                                                                : 'border-gray-800 bg-gray-900 text-white hover:bg-white hover:text-gray-900',
+                                                        )}
+                                                    >
+                                                        <ArrowRight className="h-5 w-5" />
+                                                    </a>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             );
-                        }
+                        })}
+                    </div>
 
-                        const { data, num } = slot as { type: 'text'; data: ContentCard; num: number };
-
-                        const isBlueCard = num % 4 === 1 || num % 4 === 0;
-
-                        return (
-                            <div
+                    {/* Dot indicators */}
+                    <div className="mt-4 flex justify-center gap-2">
+                        {imageList.map((_, i) => (
+                            <button
                                 key={i}
+                                onClick={() => scrollTo(i)}
                                 className={cn(
-                                    'flex aspect-square flex-col justify-between p-6 rounded-2xl transition',
-                                    isBlueCard ? 'bg-blue-100' : 'bg-gray-100',
+                                    'h-2 rounded-full transition-all duration-300',
+                                    i === activeIndex ? 'w-6 bg-brand' : 'w-2 bg-gray-300',
                                 )}
-                            >
-                                <div>
-                                    {data.title && (
-                                        <h3 className="mb-2 text-3xl font-extrabold leading-snug text-gray-900">
-                                            {data.title}
-                                        </h3>
-                                    )}
-
-                                    {data.description && (
-                                        <p className="text-base leading-relaxed text-gray-900 line-clamp-4">
-                                            {data.description}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {data.linkLabel && data.linkUrl && (
-                                    <div className="flex items-center justify-between">
-                                        <p className="text-md font-semibold text-gray-900">{data.linkLabel}</p>
-                                        <a
-                                            href={data.linkUrl}
-                                            className={cn(
-                                                'flex w-fit items-center rounded-full border p-3 transition',
-                                                isBlueCard
-                                                    ? 'border-blue-500 bg-blue-500 text-white hover:bg-blue-50 hover:text-blue-500'
-                                                    : 'border-gray-800 bg-gray-900 text-white hover:bg-white hover:text-gray-900 hover:border-gray-800',
-                                            )}
-                                        >
-                                            <ArrowRight className="h-5 w-5 transition-all duration-300" />
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                            />
+                        ))}
+                    </div>
                 </div>
+
+                {/* Desktop: 4-column checkerboard grid */}
+                <div className="hidden md:grid md:grid-cols-4 gap-4">
+                    {slots.map((slot, i) => (
+                        <div key={i}>{renderCard(slot, i)}</div>
+                    ))}
+                </div>
+
             </div>
         </section>
     );
 }
+
+

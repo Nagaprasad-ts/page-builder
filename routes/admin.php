@@ -23,6 +23,7 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])
         // Media — any admin/editor can manage media
         Route::get('media', [MediaController::class, 'index'])->name('media.index');
         Route::post('media', [MediaController::class, 'store'])->name('media.store');
+        Route::patch('media/{media}', [MediaController::class, 'update'])->name('media.update');
         Route::delete('media/{media}', [MediaController::class, 'destroy'])->name('media.destroy');
 
         // Global layout — admin only

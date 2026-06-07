@@ -5,6 +5,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+
+    // Draft preview — accessible only to authenticated users
+    Route::get('draft/{slug}', [PublicPageController::class, 'preview'])
+        ->name('page.preview')
+        ->where('slug', '[a-z0-9\-]+');
 });
 
 require __DIR__.'/settings.php';

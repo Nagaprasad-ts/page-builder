@@ -37,6 +37,18 @@ class PublicPageController extends Controller
         return $this->render($page);
     }
 
+    /**
+     * Preview any page (draft or published) — auth-only.
+     */
+    public function preview(string $slug): Response
+    {
+        $page = Page::where('slug', $slug)
+            ->with('sections')
+            ->firstOrFail();
+
+        return $this->render($page);
+    }
+
     private function render(Page $page): Response
     {
         $globalHeader = LayoutSection::where('region', 'header')->orderBy('sort_order')->get();
