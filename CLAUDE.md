@@ -74,7 +74,7 @@ composer run ci:check
 - `alternate-cards` — 4-column checkerboard desktop grid; mobile = horizontal snap carousel with dot indicators. Two schema arrays: `images` + `items` interleaved into 8 slots. Heading split: `headingLine1` + `headingLine2` (backward compat: falls back to `heading`)
 - `trusted-partners` — left 30% heading, right 70% logo grid (3 rows × 4); logos array with image + alt
 - `quote-stats` — large `&ldquo;` as `absolute` behind quote text (no layout space), tilted image with `accent-brand` accent shape, achievement text + 3 stats
-- `services-grid` — heading with `accent-brand` circle accent, full-width featured image link + two smaller image links; entire card is an `<a>` tag
+- `services-grid` — heading with `accent-brand` circle accent, dark `bg-black` cards; featured card has title + description + button + 3 stacked images (centre image offset up); two smaller cards each have title + description + button + single image side-by-side
 - `service-package` — number + label, two-line heading with absolute decorative circle, description, primary pill CTA + secondary download link, image right
 - `section-intro` — number, two-line heading, description, 3-column icon grid; icons editable via Lucide name text field
 - `audience-split` — left 3/5 with number + heading + circle + description + 4-col icon grid (Lucide names editable), right 2/5 image
