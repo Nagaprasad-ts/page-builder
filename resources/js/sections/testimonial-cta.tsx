@@ -11,7 +11,6 @@ export const meta: SectionMeta = {
 
 export const schema: SectionSchema = {
     /* ── Left: testimonial ── */
-    testimonialNumber: { type: 'text', label: 'Testimonial number', default: '09' },
     testimonialHeading: { type: 'text', label: 'Testimonial heading', default: 'What Our Clients Say' },
     testimonials: {
         type: 'array',
@@ -33,7 +32,6 @@ export const schema: SectionSchema = {
     },
 
     /* ── Right: CTA ── */
-    ctaNumber: { type: 'text', label: 'CTA number', default: '10' },
     ctaHeadingLine1: { type: 'text', label: 'CTA heading line 1', default: 'Ready to Elevate' },
     ctaHeadingLine2: { type: 'text', label: 'CTA heading line 2', default: 'Your Content?' },
     ctaDescription: {
@@ -94,11 +92,6 @@ export default function TestimonialCtaSection({
 
                 {/* ── Left: Testimonial ── */}
                 <div className="flex w-full flex-col justify-between border-b border-border py-10 lg:w-1/2 lg:border-b-0 lg:border-r lg:py-0 lg:pr-12">
-                    {testimonialNumber && (
-                        <span className="mb-4 block text-sm font-bold text-accent-brand">
-                            {String(testimonialNumber).padStart(2, '0')}
-                        </span>
-                    )}
 
                     {testimonialHeading && (
                         <h2 className="mb-6 text-2xl font-extrabold text-gray-900 lg:text-3xl">
@@ -167,11 +160,6 @@ export default function TestimonialCtaSection({
                 {/* ── Right: CTA ── */}
                 <div className="flex w-full gap-8 py-10 lg:w-1/2 lg:pl-12 lg:py-0">
                     <div className="flex-1">
-                        {ctaNumber && (
-                            <span className="mb-4 block text-sm font-bold text-accent-brand">
-                                {String(ctaNumber).padStart(2, '0')}
-                            </span>
-                        )}
 
                         <h2 className="mb-5 text-2xl font-extrabold leading-tight text-gray-900 lg:text-3xl">
                             {ctaHeadingLine1 && (

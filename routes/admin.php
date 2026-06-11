@@ -19,6 +19,8 @@ Route::middleware(['auth', 'verified', 'role:admin,editor'])
         Route::post('pages/{page}/unpublish', [PageController::class, 'unpublish'])
             ->name('pages.unpublish')
             ->middleware('role:admin');
+        Route::post('pages/{page}/duplicate', [PageController::class, 'duplicate'])
+            ->name('pages.duplicate');
 
         // Media — any admin/editor can manage media
         Route::get('media', [MediaController::class, 'index'])->name('media.index');

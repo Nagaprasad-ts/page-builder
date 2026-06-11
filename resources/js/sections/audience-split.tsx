@@ -9,7 +9,6 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    number: { type: 'text', label: 'Number', default: '03' },
     heading: { type: 'text', label: 'Heading', default: "Who It's For" },
     description: {
         type: 'textarea',
@@ -69,13 +68,6 @@ export default function AudienceSplitSection({
 
                 {/* ── Left ── */}
                 <div className="w-full lg:w-3/5">
-
-                    {/* Number */}
-                    {number && (
-                        <span className="mb-2 block text-sm font-bold text-accent-brand">
-                            {String(number).padStart(2, '0')}
-                        </span>
-                    )}
 
                     {/* Heading + decorative circle */}
                     {heading && (

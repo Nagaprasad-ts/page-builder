@@ -10,7 +10,6 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    number: { type: 'text', label: 'Number', default: '04' },
     heading: { type: 'text', label: 'Heading', default: 'What We Create' },
     description: {
         type: 'textarea',
@@ -73,12 +72,6 @@ export default function ContentGridSection({
 
                 {/* ── Left ── */}
                 <div className="w-full lg:w-2/5 lg:shrink-0">
-
-                    {number && (
-                        <span className="mb-3 block text-sm font-bold text-accent-brand">
-                            {String(number).padStart(2, '0')}
-                        </span>
-                    )}
 
                     {heading && (
                         <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900">

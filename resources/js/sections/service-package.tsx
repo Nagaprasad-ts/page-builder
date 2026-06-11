@@ -9,7 +9,6 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    number: { type: 'text', label: 'Number', default: '01' },
     label: { type: 'text', label: 'Label', default: 'OUR SERVICE PACKAGE' },
     headingLine1: { type: 'text', label: 'Heading line 1', default: 'Content Creation' },
     headingLine2: { type: 'text', label: 'Heading line 2 (gets circle)', default: 'Package' },
@@ -55,14 +54,6 @@ export default function ServicePackageSection({
 
             {/* ── Left: text ── */}
             <div>
-                {/* 01 + label */}
-                {number && (
-                    <span className="text-lg font-extrabold text-brand">{String(number).padStart(2, '0')}</span>
-                )}
-                {label && (
-                    <p className="mb-5 text-xl font-bold uppercase tracking-widest text-accent-brand">{label}</p>
-                )}
-
                 {/* Heading */}
                 <div className='bg-accent-brand absolute z-0 size-16 rounded-full -top-9 -left-12'></div>
                 <h2 className="mb-5 text-5xl text-brand font-extrabold leading-tight z-10 relative">

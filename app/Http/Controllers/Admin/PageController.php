@@ -9,6 +9,7 @@ use App\Models\Page;
 use App\Models\PageSection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -97,6 +98,48 @@ class PageController extends Controller
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Page deleted.']);
 
         return to_route('admin.pages.index');
+    }
+
+    /**
+     * Duplicate a page with a new title and slug.
+     */
+    public function duplicate(Request $request, Page $page): RedirectResponse
+    {
+        $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'slug'  => ['required', 'string', 'max:255', 'unique:pages,slug'],
+        ]);
+
+        $newPage = DB::transaction(function () use ($request, $page): Page {
+            $created = $page->replicate(['published_at']);
+            $created->title      = $request->input('title');
+            $created->slug       = $request->input('slug');
+            $created->status     = 'draft';
+            $created->created_by = auth()->id();
+            $created->updated_by = auth()->id();
+            $created->save();
+
+            $now = now();
+            $sections = $page->sections()->get()->map(fn ($s) => [
+                'page_id'      => $created->id,
+                'region'       => $s->region,
+                'section_type' => $s->section_type,
+                'sort_order'   => $s->sort_order,
+                'props'        => json_encode($s->props ?? []),
+                'created_at'   => $now,
+                'updated_at'   => $now,
+            ])->all();
+
+            if (! empty($sections)) {
+                PageSection::insert($sections);
+            }
+
+            return $created;
+        });
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Page duplicated.']);
+
+        return to_route('admin.pages.edit', $newPage);
     }
 
     /**

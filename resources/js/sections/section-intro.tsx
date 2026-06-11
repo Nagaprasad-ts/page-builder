@@ -9,7 +9,6 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    number: { type: 'text', label: 'Number', default: '02' },
     headingLine1: { type: 'text', label: 'Heading line 1', default: 'What Is' },
     headingLine2: { type: 'text', label: 'Heading line 2', default: 'Content Creation?' },
     description: {
@@ -24,6 +23,7 @@ export const schema: SectionSchema = {
         default: [
             { icon: 'Headphones', title: 'Strategy-Driven', body: 'Every piece is planned with purpose.' },
             { icon: 'PlusSquare', title: 'Audience-Focused', body: 'We create for people, not just platforms.' },
+            { icon: 'Share2', title: 'Results-Oriented', body: 'Content that drives engagement and growth.' },
             { icon: 'Share2', title: 'Results-Oriented', body: 'Content that drives engagement and growth.' },
         ],
         itemSchema: {
@@ -65,12 +65,6 @@ export default function SectionIntro({
     return (
         <section className="bg-gray-50 py-16">
             <div className="mx-auto max-w-7xl px-6">
-                {/* Number */}
-                {number && (
-                    <span className="mb-4 block text-sm font-bold text-accent-brand">
-                        {String(number).padStart(2, '0')}
-                    </span>
-                )}
 
                 {/* Heading */}
                 <h2 className="mb-5 text-4xl font-extrabold leading-tight text-gray-900 lg:text-5xl">
@@ -85,7 +79,7 @@ export default function SectionIntro({
 
                 {/* Feature columns */}
                 {items.length > 0 && (
-                    <div className="grid gap-8 sm:grid-cols-3">
+                    <div className="grid gap-8 sm:grid-cols-4">
                         {items.map((item, i) => (
                             <div key={i}>
                                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border-2 border-accent-brand text-accent-brand">
