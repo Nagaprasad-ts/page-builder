@@ -127,7 +127,7 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                     {/* Logo / site name */}
                     <a href="/" className="flex shrink-0 items-center gap-2">
                         {logoUrl ? (
-                            <img src={logoUrl} alt={siteName ?? 'Logo'} className="size-16" />
+                            <img src={logoUrl} alt={siteName ?? 'Logo'} className="w-auto h-16" />
                         ) : (
                             <span className="text-lg font-bold text-gray-900">{siteName ?? 'My Site'}</span>
                         )}
