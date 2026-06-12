@@ -8,9 +8,9 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    siteName: { type: 'text', label: 'Site name', default: 'My Site' },
+    siteName: { type: 'text', label: 'Site name', default: 'EVP Headquarters' },
     tagline: { type: 'text', label: 'Tagline', default: 'Building great things.' },
-    copyrightText: { type: 'text', label: 'Copyright text', default: '© 2025 My Site. All rights reserved.' },
+    copyrightText: { type: 'text', label: 'Copyright text', default: '© 2025 EVP Headquarters. All rights reserved.' },
 };
 
 type Props = {
