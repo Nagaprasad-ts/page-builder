@@ -147,7 +147,13 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                                     <NavigationMenuTrigger
                                                         className="h-auto bg-transparent px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 data-[state=open]:bg-gray-100 data-[state=open]:text-gray-900"
                                                     >
-                                                        {item.label}
+                                                        <a
+                                                            href={itemHref(item)}
+                                                            target={item.target}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            {item.label}
+                                                        </a>
                                                     </NavigationMenuTrigger>
                                                     <NavigationMenuContent className="min-w-45 bg-white! text-gray-900! border-gray-200! shadow-md!">
                                                         <ul className="flex flex-col py-1">

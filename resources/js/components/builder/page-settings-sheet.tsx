@@ -41,6 +41,10 @@ export function PageSettingsSheet({
     onCustomHeaderChange,
     onCustomFooterChange,
 }: Props) {
+    const slugError = slug !== '/' && slug.startsWith('/')
+        ? 'Remove the leading slash — the / prefix is added automatically.'
+        : null;
+
     return (
         <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
             <SheetContent className="flex w-full flex-col sm:max-w-125 px-3">
@@ -82,9 +86,15 @@ export function PageSettingsSheet({
                                 </div>
                             )}
                             <p className="text-xs text-muted-foreground">
-                                Use <code className="rounded bg-muted px-1">/</code> to set this page as the homepage.
+                                Use <code className="rounded bg-muted px-1">/</code> for homepage, or <code className="rounded bg-muted px-1">solutions/branding</code> for nested pages.
                             </p>
-                            {isExistingPage && slug !== '/' && (
+                            {slugError && (
+                                <p className="flex items-center gap-1.5 text-xs text-red-600">
+                                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                                    {slugError}
+                                </p>
+                            )}
+                            {isExistingPage && slug !== '/' && !slugError && (
                                 <p className="flex items-center gap-1.5 text-xs text-amber-600">
                                     <AlertCircle className="h-3.5 w-3.5 shrink-0" />
                                     Changing this will break existing links to this page.
