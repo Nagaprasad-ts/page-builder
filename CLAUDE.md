@@ -38,7 +38,7 @@ composer run ci:check
 
 - `routes/web.php` — dashboard, homepage (`/` → `PublicPageController::home`), catch-all public page (`{slug}`)
 - `routes/admin.php` — all `/admin/*` routes, guarded by `auth + verified + role:admin,editor`
-- `routes/settings.php` — profile / security / appearance
+- `routes/settings.php` — profile / security
 - The catch-all uses `where('slug', '[a-z0-9\-]+')` so it never shadows `/admin`, `/settings`, etc.
 
 ### Backend (`app/`)
@@ -63,6 +63,8 @@ composer run ci:check
 - Adding a new section = drop a new `.tsx` into `resources/js/sections/` — no registration step needed
 
 **Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`, `service-package`, `testimonials`, `section-intro`, `audience-split`, `content-grid`, `featured-work`, `testimonial-cta`, `faq`, `contact-banner`, `get-in-touch`
+
+**Dark mode**: removed. `use-appearance.tsx` still exists but `initializeTheme()` is not called. The `dark` class is never applied. All `dark:` Tailwind classes throughout UI components are inert. Do not re-introduce dark mode.
 
 **Brand theme**:
 - `--color-brand: #142345` — primary dark navy; use `text-brand`, `bg-brand`, `border-brand`
@@ -136,6 +138,13 @@ Schema field: `{ type: 'text', label: 'Icon (Lucide name e.g. FileText)', defaul
 **`menus` shared prop**: available on every page as `usePage().props.menus` keyed by location (`desktop_nav`, `mobile_nav`, `footer`). The `nav-header` section reads `menus.desktop_nav` from this.
 
 ### Database
+
+**Driver**: PostgreSQL (AWS RDS — `database-1.cteaa8oiijpl.eu-north-1.rds.amazonaws.com`, database `pagebuilder`). Local `.env` uses `DB_CONNECTION=pgsql`. On local machine, connection goes via SSH tunnel through EC2 (`51.21.85.185`) since RDS is in a private VPC.
+
+> **Sequence reset**: If data is migrated from SQLite, PostgreSQL auto-increment sequences will be out of sync. Run this on the server to fix all tables at once:
+> ```bash
+> php artisan tinker --execute 'foreach(DB::select("SELECT tablename FROM pg_tables WHERE schemaname = '"'"'public'"'"'") as $table) { $t = $table->tablename; $has_int_id = DB::select("SELECT 1 FROM information_schema.columns WHERE table_name = '"'"'{$t}'"'"' AND column_name = '"'"'id'"'"' AND data_type IN ('"'"'integer'"'"', '"'"'bigint'"'"')"); if($has_int_id) { DB::statement("SELECT setval('"'"'{$t}_id_seq'"'"', COALESCE((SELECT MAX(id) FROM \"{$t}\"), 1))"); } }'
+> ```
 
 - **`pages`** — title, slug (unique; `/` is valid for homepage), meta_*, status (draft/published), custom_header, custom_footer, created_by/updated_by FK
 - **`page_sections`** — page_id, section_type, sort_order, props (JSON)

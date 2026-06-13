@@ -29,7 +29,7 @@ export default function SiteFooterSection({ siteName, tagline, copyrightText }: 
                         {tagline && <p className="mt-1 text-sm text-gray-500">{tagline}</p>}
                     </div>
                 </div>
-                <div className="mt-8 border-t border-gray-200 pt-8">
+                <div className="mt-8 border-t border-gray-200 pt-7">
                     <p className="text-sm text-gray-400">{copyrightText ?? '© 2025 My Site. All rights reserved.'}</p>
                 </div>
             </div>
