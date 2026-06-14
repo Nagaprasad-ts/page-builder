@@ -225,7 +225,6 @@ export default function SiteFooterSection({
                         <div className="absolute bottom-[-20px] right-[130px] w-20 h-20 rounded-full bg-gray-500/30" />
                     </div>
                 </div>
-
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
 
                     {/* Column 1: Logo & Tagline */}

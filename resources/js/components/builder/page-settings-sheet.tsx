@@ -48,6 +48,10 @@ export function PageSettingsSheet({
     onCustomHeaderChange,
     onCustomFooterChange,
 }: Props) {
+    const slugError = slug !== '/' && slug.startsWith('/')
+        ? 'Remove the leading slash — the / prefix is added automatically.'
+        : null;
+
     return (
         <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
             <SheetContent className="flex w-full flex-col sm:max-w-125 px-3">
