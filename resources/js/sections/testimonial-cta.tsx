@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'testimonial-cta',
@@ -44,6 +45,7 @@ export const schema: SectionSchema = {
     secondaryLabel: { type: 'text', label: 'Secondary link label', default: 'Or contact us directly' },
     secondaryUrl: { type: 'url', label: 'Secondary link URL', default: '#' },
     ctaImage: { type: 'image', label: 'CTA image' },
+    ctaImageAlt: { type: 'text', label: 'CTA Image Alt Text', default: '' },
 };
 
 type TestimonialItem = {
@@ -66,6 +68,7 @@ type Props = {
     secondaryLabel?: string;
     secondaryUrl?: string;
     ctaImage?: string | null;
+    ctaImageAlt?: string;
 };
 
 export default function TestimonialCtaSection({
@@ -81,17 +84,22 @@ export default function TestimonialCtaSection({
     secondaryLabel,
     secondaryUrl,
     ctaImage,
+    ctaImageAlt,
 }: Props) {
     const [index, setIndex] = useState(0);
     const current = testimonials[index] ?? {};
     const total = testimonials.length;
 
+    const ctaWords = ctaHeadingLine2 ? ctaHeadingLine2.split(' ') : [];
+    const ctaLastWord = ctaWords.pop() || '';
+    const ctaMainHeading = ctaWords.join(' ');
+
     return (
-        <section className="bg-gray-50 py-16">
-            <div className="mx-auto flex max-w-7xl flex-col gap-0 px-6 lg:flex-row">
+        <section className="bg-gray-50 py-16 lg:py-24">
+            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 lg:flex-row lg:items-stretch lg:gap-0">
 
                 {/* ── Left: Testimonial ── */}
-                <div className="flex w-full flex-col justify-between border-b border-border py-10 lg:w-1/2 lg:border-b-0 lg:border-r lg:py-0 lg:pr-12">
+                <div className="flex w-full flex-col justify-between border-b border-gray-200/80 py-10 lg:w-[40%] lg:border-b-0 lg:border-r lg:border-gray-200/80 lg:py-0 lg:pr-10">
 
                     {testimonialHeading && (
                         <h2 className="mb-6 text-2xl font-extrabold text-gray-900 lg:text-3xl">
@@ -99,13 +107,13 @@ export default function TestimonialCtaSection({
                         </h2>
                     )}
 
-                    {/* Quote text with decorative quote mark behind */}
-                    {current.quote && (
-                        <div className="relative mb-8">
-                            <span className="pointer-events-none absolute -left-4 -top-6 select-none text-8xl font-black leading-none text-accent-brand/30" style={{ zIndex: 0 }}>&ldquo;</span>
-                            <p className="relative text-sm leading-relaxed text-gray-600" style={{ zIndex: 1 }}>{current.quote}</p>
-                        </div>
-                    )}
+                    {/* Quote text with solid quote mark above */}
+                    <div className="relative mb-8">
+                        <span className="block text-4xl font-serif font-black text-accent-brand leading-none mb-4 select-none">&ldquo;</span>
+                        {current.quote && (
+                            <p className="text-sm leading-relaxed text-gray-600">{current.quote}</p>
+                        )}
+                    </div>
 
                     {/* Author + navigation */}
                     <div className="flex items-center justify-between">
@@ -136,86 +144,75 @@ export default function TestimonialCtaSection({
                         </div>
 
                         {/* Arrows */}
-                        {total > 1 && (
-                            <div className="flex gap-2">
-                                <button
-                                    type="button"
-                                    onClick={() => setIndex((i) => (i - 1 + total) % total)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-gray-500 transition hover:border-accent-brand hover:text-accent-brand"
-                                >
-                                    <ArrowLeft className="h-4 w-4" />
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setIndex((i) => (i + 1) % total)}
-                                    className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-brand text-white transition hover:bg-accent-brand/90"
-                                >
-                                    <ArrowRight className="h-4 w-4" />
-                                </button>
-                            </div>
-                        )}
+                        <div className="flex gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setIndex((i) => (i - 1 + total) % total)}
+                                disabled={total <= 1}
+                                className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition hover:border-accent-brand hover:text-accent-brand disabled:opacity-40"
+                            >
+                                <ArrowLeft className="h-4 w-4" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setIndex((i) => (i + 1) % total)}
+                                disabled={total <= 1}
+                                className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-brand text-white transition hover:bg-accent-brand/90 disabled:opacity-40"
+                            >
+                                <ArrowRight className="h-4 w-4" />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                {/* ── Right: CTA ── */}
-                <div className="flex w-full gap-8 py-10 lg:w-1/2 lg:pl-12 lg:py-0">
-                    <div className="flex-1">
-
-                        <h2 className="mb-5 text-2xl font-extrabold leading-tight text-gray-900 lg:text-3xl">
-                            {ctaHeadingLine1 && (
-                                <span className="flex items-center gap-3">
-                                    <span>{ctaHeadingLine1}</span>
-                                    <span
-                                        className="inline-block shrink-0 rounded-full bg-accent-brand"
-                                        style={{ width: '1.5rem', height: '1.5rem' }}
-                                    />
+                {/* ── Middle: CTA Text ── */}
+                <div className="w-full flex flex-col justify-between border-b border-gray-200/80 py-10 lg:w-[35%] lg:border-b-0 lg:py-0 lg:px-10">
+                    <div>
+                        <h2 className="mb-5 text-3xl font-extrabold leading-tight text-brand lg:text-4xl">
+                            {ctaHeadingLine1 && <span className="block">{ctaHeadingLine1}</span>}
+                            {ctaHeadingLine2 && (
+                                <span className="relative inline-block z-10">
+                                    {ctaMainHeading}{' '}
+                                    <span className="relative inline-block z-10">
+                                        {ctaLastWord}
+                                        <span
+                                            className="absolute bottom-1 -right-3 -z-10 h-7 w-7 rounded-full bg-accent-brand sm:h-9 sm:w-9"
+                                        />
+                                    </span>
                                 </span>
                             )}
-                            {ctaHeadingLine2 && <span className="block">{ctaHeadingLine2}</span>}
                         </h2>
 
                         {ctaDescription && (
                             <p className="mb-8 text-sm leading-relaxed text-gray-500">{ctaDescription}</p>
                         )}
-
-                        <div className="flex flex-col gap-4">
-                            {primaryLabel && primaryUrl && (
-                                <a
-                                    href={primaryUrl}
-                                    className="inline-flex w-fit items-center gap-3 rounded-full bg-gray-900 py-3 pl-6 pr-2 text-sm font-semibold text-white transition hover:bg-gray-800"
-                                >
-                                    {primaryLabel}
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-brand">
-                                        <ArrowRight className="h-3.5 w-3.5 text-white" />
-                                    </span>
-                                </a>
-                            )}
-                            {secondaryLabel && secondaryUrl && (
-                                <a
-                                    href={secondaryUrl}
-                                    className="ml-5 inline-flex w-fit items-center gap-2 text-sm font-semibold text-gray-700 transition hover:text-accent-brand"
-                                >
-                                    {secondaryLabel}
-                                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-brand/20 text-accent-brand">
-                                        <ArrowRight className="h-3 w-3" />
-                                    </span>
-                                </a>
-                            )}
-                        </div>
                     </div>
 
-                    {/* CTA image */}
+                    <div className="flex flex-col gap-4 items-stretch w-full max-w-xs">
+                        {primaryLabel && primaryUrl && (
+                            <BrandButton variant="secondary" href={primaryUrl} className="w-full shadow-none">
+                                {primaryLabel}
+                            </BrandButton>
+                        )}
+                        {secondaryLabel && secondaryUrl && (
+                            <BrandButton variant="outline" href={secondaryUrl} className="w-full">
+                                {secondaryLabel}
+                            </BrandButton>
+                        )}
+                    </div>
+                </div>
+
+                {/* ── Right: CTA Image ── */}
+                <div className="w-full lg:w-[25%] lg:shrink-0 flex flex-col justify-stretch py-10 lg:py-0">
                     {ctaImage ? (
-                        <div className="hidden w-40 shrink-0 lg:block">
-                            <img
-                                src={ctaImage}
-                                alt=""
-                                className="h-full w-full rounded-2xl object-cover"
-                            />
-                        </div>
+                        <img
+                            src={ctaImage}
+                            alt={ctaImageAlt ?? ''}
+                            className="w-full h-full min-h-[350px] lg:min-h-full rounded-3xl object-cover shadow-lg hover:shadow-xl transition-shadow duration-300"
+                        />
                     ) : (
-                        <div className="hidden w-40 shrink-0 lg:flex items-center justify-center rounded-2xl bg-gray-200">
-                            <span className="text-xs text-gray-400 text-center px-2">Add image</span>
+                        <div className="flex aspect-[4/5] w-full h-full items-center justify-center rounded-3xl bg-gray-200">
+                            <span className="text-sm text-gray-400">Add image</span>
                         </div>
                     )}
                 </div>

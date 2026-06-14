@@ -18,7 +18,7 @@ type Props = {
 
 const REGIONS = ['header', 'body', 'footer'] as const;
 
-export default function EditPage({ page, sections }: Props) {
+export default function EditPage({ page, sections, pages }: Props & { pages: Page[] }) {
     const { auth } = usePage().props;
     const builder = useBuilder({ page, sections });
     const [processing, setProcessing] = useState(false);
@@ -59,6 +59,11 @@ export default function EditPage({ page, sections }: Props) {
             ? 'Using global header — enable Custom header in Page Settings to override.'
             : 'Using global footer — enable Custom footer in Page Settings to override.';
 
+    const parentPage = pages?.find((p) => p.id === builder.parentId);
+    const currentPath = parentPage
+        ? `${parentPage.path}/${builder.slug}`
+        : builder.slug;
+
     return (
         <>
             <Head title={`Edit — ${page.title}`} />
@@ -66,7 +71,7 @@ export default function EditPage({ page, sections }: Props) {
             <div className="flex h-screen flex-col overflow-hidden bg-muted/20">
                 <BuilderTopBar
                     title={builder.title}
-                    slug={builder.slug}
+                    slug={currentPath}
                     status={page.status}
                     onTitleChange={builder.handleTitleChange}
                     onOpenSettings={() => builder.setSettingsOpen(true)}
@@ -158,6 +163,8 @@ export default function EditPage({ page, sections }: Props) {
                 open={builder.settingsOpen}
                 onClose={() => builder.setSettingsOpen(false)}
                 slug={builder.slug}
+                parentId={builder.parentId}
+                pages={pages}
                 metaTitle={builder.metaTitle}
                 metaDescription={builder.metaDescription}
                 metaKeywords={builder.metaKeywords}
@@ -175,6 +182,7 @@ export default function EditPage({ page, sections }: Props) {
                         builder.setMetaKeywords(value);
                     }
                 }}
+                onParentIdChange={builder.setParentId}
                 onCustomHeaderChange={builder.setCustomHeader}
                 onCustomFooterChange={builder.setCustomFooter}
             />

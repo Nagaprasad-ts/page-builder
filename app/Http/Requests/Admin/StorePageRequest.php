@@ -24,7 +24,21 @@ class StorePageRequest extends FormRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'unique:pages,slug', 'regex:/^(\/|[a-z0-9][a-z0-9\-]*)$/'],
+            'parent_id' => ['nullable', 'integer', 'exists:pages,id'],
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^(\/|[a-z0-9][a-z0-9\-]*)$/',
+                function ($attribute, $value, $fail) {
+                    $parentId = $this->input('parent_id');
+                    $parent = $parentId ? \App\Models\Page::find($parentId) : null;
+                    $path = $parent ? $parent->path . '/' . $value : $value;
+                    if (\App\Models\Page::where('path', $path)->exists()) {
+                        $fail('The slug has already been taken.');
+                    }
+                }
+            ],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string', 'max:500'],
             'meta_keywords' => ['nullable', 'string', 'max:255'],

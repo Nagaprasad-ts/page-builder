@@ -44,8 +44,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'menus' => Inertia::always(
-                fn () => Menu::with(['items.page:id,title,slug', 'items.children.page:id,title,slug'])->get()->keyBy('location')
+             'menus' => Inertia::always(
+                fn () => Menu::with(['items.page:id,title,slug,path', 'items.children.page:id,title,slug,path'])->get()->keyBy('location')
             ),
         ];
     }

@@ -1,5 +1,5 @@
-import { ArrowRight } from 'lucide-react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'featured-work',
@@ -29,6 +29,7 @@ export const schema: SectionSchema = {
         ],
         itemSchema: {
             image: { type: 'image', label: 'Image' },
+            imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
             title: { type: 'text', label: 'Title', default: 'Project title' },
             category: { type: 'text', label: 'Category', default: 'Photography' },
         },
@@ -37,6 +38,7 @@ export const schema: SectionSchema = {
 
 type WorkItem = {
     image?: string | null;
+    imageAlt?: string;
     title?: string;
     category?: string;
 };
@@ -57,18 +59,24 @@ function HeadingWithCircle({ line }: { line: string }) {
     const rest = words.join(' ');
 
     return (
-        <>
+        <span className="relative z-10 inline-block">
             {rest && <>{rest} </>}
             {last && (
                 <span className="relative inline-block">
+                    {last}
                     <span
-                        className="absolute rounded-full bg-accent-brand"
-                        style={{ top: '-10px', bottom: '-10px', left: '-8px', right: '-8px', zIndex: 0 }}
+                        className="absolute rounded-full bg-accent-brand -z-10"
+                        style={{
+                            width: '1.5em',
+                            height: '1.5em',
+                            left: '-0.75em',
+                            top: '50%',
+                            transform: 'translateY(-35%)',
+                        }}
                     />
-                    <span className="relative" style={{ zIndex: 1 }}>{last}</span>
                 </span>
             )}
-        </>
+        </span>
     );
 }
 
@@ -82,16 +90,16 @@ export default function FeaturedWorkSection({
     items = [],
 }: Props) {
     return (
-        <section className="bg-gray-50 py-16">
+        <section className="bg-white py-16">
             <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 lg:flex-row lg:items-center">
 
                 {/* ── Left ── */}
-                <div className="w-full lg:w-[30%] lg:shrink-0">
+                <div className="w-full lg:w-[36%] lg:shrink-0">
                     {label && (
                         <p className="mb-3 text-sm font-bold text-accent-brand">{label}</p>
                     )}
 
-                    <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900 lg:text-5xl">
+                    <h2 className="mb-4 text-3xl font-extrabold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">
                         {headingLine1 && <span className="block">{headingLine1}</span>}
                         {headingLine2 && (
                             <span className="block">
@@ -105,27 +113,21 @@ export default function FeaturedWorkSection({
                     )}
 
                     {ctaLabel && ctaUrl && (
-                        <a
-                            href={ctaUrl}
-                            className="inline-flex items-center gap-3 text-sm font-bold text-gray-900 transition hover:text-accent-brand"
-                        >
+                        <BrandButton variant="link" href={ctaUrl}>
                             {ctaLabel}
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-brand text-white">
-                                <ArrowRight className="h-4 w-4" />
-                            </span>
-                        </a>
+                        </BrandButton>
                     )}
                 </div>
 
                 {/* ── Right: 3 cards ── */}
-                <div className="grid w-full grid-cols-3 gap-4">
+                <div className="grid w-full grid-cols-1 sm:grid-cols-3 gap-6 flex-1">
                     {items.map((item, i) => (
                         <div key={i} className="flex flex-col">
                             <div className="mb-3 overflow-hidden rounded-2xl bg-gray-200" style={{ aspectRatio: '3/4' }}>
                                 {item.image ? (
                                     <img
                                         src={item.image}
-                                        alt={item.title ?? ''}
+                                        alt={item.imageAlt || item.title || ''}
                                         className="h-full w-full object-cover"
                                     />
                                 ) : (
@@ -135,10 +137,10 @@ export default function FeaturedWorkSection({
                                 )}
                             </div>
                             {item.title && (
-                                <p className="text-sm font-bold text-gray-900">{item.title}</p>
+                                <p className="text-base font-bold text-gray-900">{item.title}</p>
                             )}
                             {item.category && (
-                                <p className="text-xs text-gray-400">{item.category}</p>
+                                <p className="text-sm text-gray-400">{item.category}</p>
                             )}
                         </div>
                     ))}

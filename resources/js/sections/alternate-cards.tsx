@@ -1,7 +1,7 @@
-﻿import { useRef, useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'alternate-cards',
@@ -11,10 +11,10 @@ export const meta: SectionMeta = {
 };
 
 const DEFAULT_IMAGES = [
-    { image: null },
-    { image: null },
-    { image: null },
-    { image: null },
+    { image: null, alt: '' },
+    { image: null, alt: '' },
+    { image: null, alt: '' },
+    { image: null, alt: '' },
 ];
 
 const DEFAULT_ITEMS = [
@@ -61,6 +61,7 @@ export const schema: SectionSchema = {
         default: DEFAULT_IMAGES,
         itemSchema: {
             image: { type: 'image', label: 'Image' },
+            alt: { type: 'text', label: 'Alt text', default: '' },
         },
     },
     items: {
@@ -76,7 +77,7 @@ export const schema: SectionSchema = {
     },
 };
 
-type ImageSlot = { image?: string | null };
+type ImageSlot = { image?: string | null; alt?: string };
 type ContentCard = {
     title?: string;
     description?: string;
@@ -148,7 +149,7 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                     {data.image ? (
                         <img
                             src={data.image}
-                            alt=""
+                            alt={data.alt ?? ''}
                             className="h-full w-full object-cover transition duration-500"
                         />
                     ) : (
@@ -186,18 +187,12 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                 </div>
                 {data.linkLabel && data.linkUrl && (
                     <div className="flex items-center justify-between">
-                        <p className={cn('text-md font-semibold', isBlueCard ? 'text-white' : 'text-gray-900')}>{data.linkLabel}</p>
-                        <a
+                        <BrandButton 
+                            variant={isBlueCard ? "white" : "secondary"} 
                             href={data.linkUrl}
-                            className={cn(
-                                'flex w-fit items-center rounded-full border p-3 transition',
-                                isBlueCard
-                                    ? 'border-white bg-white text-accent-brand hover:bg-accent-brand/10 hover:text-white'
-                                    : 'border-gray-800 bg-gray-900 text-white hover:bg-white hover:text-gray-900 hover:border-gray-800',
-                            )}
                         >
-                            <ArrowRight className="h-5 w-5 transition-all duration-300" />
-                        </a>
+                            {data.linkLabel}
+                        </BrandButton>
                     </div>
                 )}
             </div>
@@ -239,7 +234,7 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                                         {imgData.image ? (
                                             <img
                                                 src={imgData.image}
-                                                alt=""
+                                                alt={imgData.alt ?? ''}
                                                 className="h-full w-full object-cover"
                                             />
                                         ) : (
@@ -269,18 +264,12 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                                             </div>
                                             {cardData.linkLabel && cardData.linkUrl && (
                                                 <div className="flex items-center justify-between">
-                                                    <p className={cn('text-md font-semibold', isBlueCard ? 'text-white' : 'text-gray-900')}>{cardData.linkLabel}</p>
-                                                    <a
+                                                    <BrandButton 
+                                                        variant={isBlueCard ? "white" : "secondary"} 
                                                         href={cardData.linkUrl}
-                                                        className={cn(
-                                                            'flex w-fit items-center rounded-full border p-3 transition',
-                                                            isBlueCard
-                                                                ? 'border-brand bg-brand text-white hover:bg-brand/10 hover:text-brand'
-                                                                : 'border-gray-800 bg-gray-900 text-white hover:bg-white hover:text-gray-900',
-                                                        )}
                                                     >
-                                                        <ArrowRight className="h-5 w-5" />
-                                                    </a>
+                                                        {cardData.linkLabel}
+                                                    </BrandButton>
                                                 </div>
                                             )}
                                         </div>

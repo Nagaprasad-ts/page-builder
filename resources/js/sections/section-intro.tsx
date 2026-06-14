@@ -12,10 +12,10 @@ export const schema: SectionSchema = {
     headingLine1: { type: 'text', label: 'Heading line 1', default: 'What Is' },
     headingLine2: { type: 'text', label: 'Heading line 2', default: 'Content Creation?' },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
         default:
-            'Content creation is the art of turning ideas into valuable, relevant, and engaging content that speaks to your audience and supports your brand goals.',
+            '<p>Content creation is the art of turning ideas into valuable, relevant, and engaging content that speaks to your audience and supports your brand goals.</p>',
     },
     items: {
         type: 'array',
@@ -36,7 +36,10 @@ export const schema: SectionSchema = {
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
     if (!name) return null;
-    const Icon = (LucideIcons as Record<string, unknown>)[name] as React.ComponentType<{ className?: string }> | undefined;
+    const pascalName = name
+        .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
+        .replace(/^(.)/, (c) => c.toUpperCase());
+    const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
     if (!Icon) return <span className={className}>{name}</span>;
     return <Icon className={className} />;
 }
@@ -64,37 +67,44 @@ export default function SectionIntro({
 }: Props) {
     return (
         <section className="bg-gray-50 py-16">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-6 flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
 
-                {/* Heading */}
-                <h2 className="mb-5 text-4xl font-extrabold leading-tight text-gray-900 lg:text-5xl">
-                    {headingLine1 && <span className="block">{headingLine1}</span>}
-                    {headingLine2 && <span className="block">{headingLine2}</span>}
-                </h2>
+                {/* ── Left Column: Heading & Description ── */}
+                <div className="w-full lg:w-[45%] space-y-6">
+                    <h2 className="text-4xl font-extrabold leading-tight text-gray-900 lg:text-5xl">
+                        {headingLine1 && <span className="block">{headingLine1}</span>}
+                        {headingLine2 && <span className="block text-accent-brand">{headingLine2}</span>}
+                    </h2>
 
-                {/* Description */}
-                {description && (
-                    <p className="mb-12 max-w-lg text-sm font-semibold leading-relaxed text-gray-500">{description}</p>
-                )}
+                    {description && (
+                        <div
+                            className="text-sm font-semibold leading-relaxed text-gray-500 max-w-md prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
+                    )}
+                </div>
 
-                {/* Feature columns */}
+                {/* ── Right Column: Vertical List of Features ── */}
                 {items.length > 0 && (
-                    <div className="grid gap-8 sm:grid-cols-4">
+                    <div className="w-full lg:w-[50%] space-y-4">
                         {items.map((item, i) => (
-                            <div key={i}>
-                                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border-2 border-accent-brand text-accent-brand">
+                            <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-gray-100/80 transition-shadow duration-300 hover:shadow-md">
+                                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-brand/10 text-accent-brand">
                                     <DynamicIcon name={item.icon} className="h-5 w-5" />
                                 </div>
-                                {item.title && (
-                                    <h3 className="mb-1 text-sm font-bold text-gray-900">{item.title}</h3>
-                                )}
-                                {item.body && (
-                                    <p className="text-sm leading-relaxed text-gray-500">{item.body}</p>
-                                )}
+                                <div className="space-y-1">
+                                    {item.title && (
+                                        <h3 className="text-base font-bold text-gray-900">{item.title}</h3>
+                                    )}
+                                    {item.body && (
+                                        <p className="text-sm leading-relaxed text-gray-500">{item.body}</p>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
                 )}
+
             </div>
         </section>
     );

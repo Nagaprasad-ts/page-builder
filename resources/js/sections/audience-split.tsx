@@ -11,12 +11,13 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     heading: { type: 'text', label: 'Heading', default: "Who It's For" },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
         default:
-            'Our Content Creation Package is perfect for brands and businesses looking to grow their presence and connect with their audience.',
+            '<p>Our Content Creation Package is perfect for brands and businesses looking to grow their presence and connect with their audience.</p>',
     },
     image: { type: 'image', label: 'Image' },
+    imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
     items: {
         type: 'array',
         label: 'Audience columns',
@@ -36,7 +37,10 @@ export const schema: SectionSchema = {
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
     if (!name) return null;
-    const Icon = (LucideIcons as Record<string, unknown>)[name] as React.ComponentType<{ className?: string }> | undefined;
+    const pascalName = name
+        .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
+        .replace(/^(.)/, (c) => c.toUpperCase());
+    const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
     if (!Icon) return <span className={className}>{name}</span>;
     return <Icon className={className} />;
 }
@@ -52,6 +56,7 @@ type Props = {
     heading?: string;
     description?: string;
     image?: string | null;
+    imageAlt?: string;
     items?: AudienceItem[];
 };
 
@@ -60,42 +65,64 @@ export default function AudienceSplitSection({
     heading,
     description,
     image,
+    imageAlt,
     items = [],
 }: Props) {
+    // Split heading to highlight the last word with a decorative solid circle
+    const words = heading ? heading.split(' ') : [];
+    const lastWord = words.pop() || '';
+    const mainHeading = words.join(' ');
+
     return (
-        <section className="bg-gray-50 py-16">
-            <div className="mx-auto flex max-w-7xl flex-col items-start gap-12 px-6 lg:flex-row">
+        <section className="bg-gray-50/50 py-16 lg:py-24">
+            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 lg:flex-row lg:items-stretch lg:gap-16">
 
                 {/* ── Left ── */}
-                <div className="w-full lg:w-3/5">
+                <div className="w-full lg:w-[68%] space-y-10">
+                    <div>
+                        {/* Heading + decorative circle */}
+                        {heading && (
+                            <h2 className="font-heading mb-4 text-3xl font-extrabold leading-tight text-brand sm:text-4xl">
+                                {mainHeading}{' '}
+                                <span className="relative inline-block z-10">
+                                    {lastWord}
+                                    <span className="absolute bottom-1 -right-3 -z-10 h-7 w-7 rounded-full bg-accent-brand sm:h-8 sm:w-8" />
+                                </span>
+                            </h2>
+                        )}
 
-                    {/* Heading + decorative circle */}
-                    {heading && (
-                        <h2 className="mb-4 flex items-center gap-3 text-3xl font-extrabold leading-tight text-gray-900 lg:text-4xl">
-                            {heading}
-                            <span className="inline-block shrink-0 rounded-full bg-accent-brand" style={{ width: '4.5rem', height: '4.5rem' }} />
-                        </h2>
-                    )}
+                        {/* Description */}
+                        {description && (
+                            <div
+                                className="font-sans text-sm leading-relaxed text-gray-500 max-w-xl prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            />
+                        )}
+                    </div>
 
-                    {/* Description */}
-                    {description && (
-                        <p className="mb-10 max-w-sm text-sm leading-relaxed text-gray-500">{description}</p>
-                    )}
-
-                    {/* 4-column icon grid */}
+                    {/* 4-column icon grid with vertical separators */}
                     {items.length > 0 && (
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
                             {items.map((item, i) => (
-                                <div key={i}>
-                                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg border border-accent-brand/30 text-accent-brand">
+                                <div
+                                    key={i}
+                                    className={`flex flex-col items-start ${
+                                        i < items.length - 1
+                                            ? 'lg:border-r lg:border-gray-200/80 lg:pr-5'
+                                            : ''
+                                    }`}
+                                >
+                                    <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-brand/10 text-accent-brand">
                                         <DynamicIcon name={item.icon} className="h-5 w-5" />
                                     </div>
-                                    {item.title && (
-                                        <h3 className="mb-1 text-sm font-bold text-gray-900">{item.title}</h3>
-                                    )}
-                                    {item.body && (
-                                        <p className="text-xs leading-relaxed text-gray-500">{item.body}</p>
-                                    )}
+                                    <div className="space-y-1.5">
+                                        {item.title && (
+                                            <h3 className="text-sm font-bold text-brand">{item.title}</h3>
+                                        )}
+                                        {item.body && (
+                                            <p className="text-xs leading-relaxed text-gray-500">{item.body}</p>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -103,16 +130,15 @@ export default function AudienceSplitSection({
                 </div>
 
                 {/* ── Right: image ── */}
-                <div className="w-full lg:w-2/5 lg:shrink-0">
+                <div className="w-full lg:w-[32%] lg:shrink-0 flex">
                     {image ? (
                         <img
                             src={image}
-                            alt=""
-                            className="w-full rounded-3xl object-cover"
-                            style={{ maxHeight: '420px' }}
+                            alt={imageAlt ?? ''}
+                            className="w-full h-full min-h-[350px] lg:min-h-full rounded-3xl object-cover shadow-lg hover:shadow-xl transition-shadow duration-300"
                         />
                     ) : (
-                        <div className="flex aspect-[4/5] w-full items-center justify-center rounded-3xl bg-gray-200">
+                        <div className="flex aspect-[4/5] w-full h-full items-center justify-center rounded-3xl bg-gray-200">
                             <span className="text-sm text-gray-400">Add image</span>
                         </div>
                     )}

@@ -1,5 +1,6 @@
-import { ArrowRight, Download } from 'lucide-react';
+import { Download } from 'lucide-react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'service-package',
@@ -13,15 +14,16 @@ export const schema: SectionSchema = {
     headingLine1: { type: 'text', label: 'Heading line 1', default: 'Content Creation' },
     headingLine2: { type: 'text', label: 'Heading line 2 (gets circle)', default: 'Package' },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: 'A complete content solution designed to build your brand, engage your audience, and drive real results.',
+        default: '<p>A complete content solution designed to build your brand, engage your audience, and drive real results.</p>',
     },
     primaryLabel: { type: 'text', label: 'Primary button label', default: 'Get started' },
     primaryUrl: { type: 'url', label: 'Primary button URL', default: '#' },
     secondaryLabel: { type: 'text', label: 'Secondary link label', default: 'Download brochure' },
     secondaryUrl: { type: 'url', label: 'Secondary link URL', default: '#' },
     image: { type: 'image', label: 'Image' },
+    imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
 };
 
 type Props = {
@@ -35,6 +37,7 @@ type Props = {
     secondaryLabel?: string;
     secondaryUrl?: string;
     image?: string | null;
+    imageAlt?: string;
 };
 
 export default function ServicePackageSection({
@@ -48,6 +51,7 @@ export default function ServicePackageSection({
     secondaryLabel,
     secondaryUrl,
     image,
+    imageAlt,
 }: Props) {
     return (
         <section className="bg-white py-8 px-4 md:px-0 mx-auto flex max-w-7xl flex-col items-center justify-between gap-12 md:flex-row">
@@ -65,30 +69,24 @@ export default function ServicePackageSection({
 
                 {/* Description */}
                 {description && (
-                    <p className="mb-8 max-w-sm text-base font-semibold leading-relaxed text-gray-500">{description}</p>
+                    <div
+                        className="mb-8 max-w-sm text-base font-semibold leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                        dangerouslySetInnerHTML={{ __html: description }}
+                    />
                 )}
 
                 {/* CTAs */}
                 <div className="flex flex-wrap items-center gap-6">
                     {primaryLabel && primaryUrl && (
-                        <a
-                            href={primaryUrl}
-                            className="flex items-center gap-3 rounded-full bg-brand py-3 px-5 text-sm font-semibold text-white transition hover:bg-brand/90"
-                        >
+                        <BrandButton variant="secondary" href={primaryUrl}>
                             {primaryLabel}
-                            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-accent-brand">
-                                <ArrowRight className="h-4 w-4 text-white" />
-                            </span>
-                        </a>
+                        </BrandButton>
                     )}
                     {secondaryLabel && secondaryUrl && (
-                        <a
-                            href={secondaryUrl}
-                            className="flex items-center gap-2 rounded-full py-3 px-5 text-sm font-semibold text-gray-700 transition hover:text-brand border-2 border-brand hover:bg-accent-brand/10"
-                        >
+                        <BrandButton variant="outline" href={secondaryUrl} showArrow={false} className="gap-2">
                             {secondaryLabel}
                             <Download className="h-4 w-4" />
-                        </a>
+                        </BrandButton>
                     )}
                 </div>
             </div>
@@ -98,7 +96,7 @@ export default function ServicePackageSection({
                 {image ? (
                     <img
                         src={image}
-                        alt=""
+                        alt={imageAlt ?? ''}
                         className="w-full h-87.5 rounded-3xl object-cover"
                     />
                 ) : (

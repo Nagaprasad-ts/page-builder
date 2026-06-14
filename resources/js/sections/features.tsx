@@ -1,3 +1,4 @@
+import * as LucideIcons from 'lucide-react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
@@ -44,6 +45,16 @@ type Props = {
     items?: FeatureItem[];
 };
 
+function DynamicIcon({ name, className }: { name?: string; className?: string }) {
+    if (!name) return null;
+    const pascalName = name
+        .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
+        .replace(/^(.)/, (c) => c.toUpperCase());
+    const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
+    if (!Icon) return <span className={className}>{name}</span>;
+    return <Icon className={className} />;
+}
+
 export default function FeaturesSection({ heading, items = [] }: Props) {
     return (
         <section className="bg-white py-20">
@@ -59,8 +70,8 @@ export default function FeaturesSection({ heading, items = [] }: Props) {
                             key={index}
                             className="rounded-xl border border-gray-200 p-6"
                         >
-                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-sm font-bold text-indigo-600">
-                                {item.icon ?? '★'}
+                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                                <DynamicIcon name={item.icon} className="h-6 w-6" />
                             </div>
                             {item.title && (
                                 <h3 className="mb-2 text-lg font-semibold text-gray-900">

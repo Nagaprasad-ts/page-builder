@@ -71,29 +71,25 @@ export default function PageHeroSection({
                 <div className="relative hidden shrink-0 lg:flex lg:w-36 lg:items-center lg:justify-center">
                     {/* Accent semicircle — top right */}
                     <div
-                        className="pointer-events-none absolute"
+                        className="pointer-events-none absolute bg-accent-brand opacity-90"
                         style={{
                             width: 80,
                             height: 40,
                             top: -10,
                             right: -20,
                             borderRadius: '80px 80px 0 0',
-                            backgroundColor: 'var(--color-accent-brand, #547ed1)',
-                            opacity: 0.9,
                         }}
                     />
 
                     {/* Accent large semicircle — bottom left of image */}
                     <div
-                        className="pointer-events-none absolute"
+                        className="pointer-events-none absolute bg-accent-brand opacity-85"
                         style={{
                             width: 180,
                             height: 90,
                             bottom: -30,
                             left: -80,
                             borderRadius: '0 0 180px 180px',
-                            backgroundColor: 'var(--color-accent-brand, #547ed1)',
-                            opacity: 0.85,
                         }}
                     />
 

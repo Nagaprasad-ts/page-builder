@@ -1,4 +1,5 @@
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'cta',
@@ -75,20 +76,14 @@ export default function CtaSection({
                 )}
                 <div className="flex flex-wrap justify-center gap-4">
                     {primaryLabel && primaryUrl && (
-                        <a
-                            href={primaryUrl}
-                            className="rounded-lg bg-indigo-600 px-6 py-3 font-semibold text-white transition hover:bg-indigo-700"
-                        >
+                        <BrandButton variant="brand" href={primaryUrl}>
                             {primaryLabel}
-                        </a>
+                        </BrandButton>
                     )}
                     {secondaryLabel && secondaryUrl && (
-                        <a
-                            href={secondaryUrl}
-                            className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-50"
-                        >
+                        <BrandButton variant="outline" href={secondaryUrl}>
                             {secondaryLabel}
-                        </a>
+                        </BrandButton>
                     )}
                 </div>
             </div>

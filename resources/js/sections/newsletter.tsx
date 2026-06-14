@@ -1,4 +1,5 @@
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'newsletter',
@@ -46,12 +47,9 @@ export default function NewsletterSection({
                     />
                 )}
                 {buttonLabel && buttonUrl && (
-                    <a
-                        href={buttonUrl}
-                        className="inline-block rounded-lg bg-white px-8 py-3 font-semibold text-indigo-600 transition hover:bg-indigo-50"
-                    >
+                    <BrandButton variant="white" href={buttonUrl}>
                         {buttonLabel}
-                    </a>
+                    </BrandButton>
                 )}
             </div>
         </section>

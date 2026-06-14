@@ -32,7 +32,9 @@ class PageController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('admin/pages/create');
+        return Inertia::render('admin/pages/create', [
+            'pages' => Page::select(['id', 'title', 'path', 'parent_id'])->get(),
+        ]);
     }
 
     /**
@@ -63,9 +65,16 @@ class PageController extends Controller
      */
     public function edit(Page $page): Response
     {
+        $pages = Page::where('id', '!=', $page->id)
+            ->select(['id', 'title', 'path', 'parent_id'])
+            ->get()
+            ->filter(fn ($p) => !$p->isDescendantOf($page))
+            ->values();
+
         return Inertia::render('admin/pages/edit', [
             'page' => $page,
             'sections' => $page->sections,
+            'pages' => $pages,
         ]);
     }
 
@@ -107,7 +116,19 @@ class PageController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'slug'  => ['required', 'string', 'max:255', 'unique:pages,slug'],
+            'slug'  => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($page) {
+                    $parentId = $page->parent_id;
+                    $parent = $parentId ? Page::find($parentId) : null;
+                    $newPath = $parent ? $parent->path . '/' . $value : $value;
+                    if (Page::where('path', $newPath)->exists()) {
+                        $fail('The slug is already taken under this parent.');
+                    }
+                }
+            ],
         ]);
 
         $newPage = DB::transaction(function () use ($request, $page): Page {

@@ -104,7 +104,7 @@ export default function PagesIndex({ pages }: Props) {
                                     <tr key={page.id} className="group bg-background hover:bg-muted/30">
                                         <td className="px-4 py-3 font-medium">{page.title}</td>
                                         <td className="px-4 py-3 text-muted-foreground">
-                                            {page.slug.startsWith('/') ? page.slug : `/${page.slug}`}
+                                            {page.path.startsWith('/') ? page.path : `/${page.path}`}
                                         </td>
                                         <td className="px-4 py-3">
                                             {page.status === 'published' ? (

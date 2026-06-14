@@ -12,6 +12,7 @@ type BuilderInitial = {
 type BuilderPayload = {
     title: string;
     slug: string;
+    parent_id: number | null;
     meta_title: string;
     meta_description: string;
     meta_keywords: string;
@@ -42,6 +43,9 @@ export function useBuilder(initial: BuilderInitial = {}) {
 
     const [title, setTitle] = useState(initial.page?.title ?? '');
     const [slug, setSlug] = useState(initial.page?.slug ?? '');
+    const [parentId, setParentId] = useState<number | null>(
+        initial.page?.parent_id ?? null,
+    );
     const [metaTitle, setMetaTitle] = useState(initial.page?.meta_title ?? '');
     const [metaDescription, setMetaDescription] = useState(
         initial.page?.meta_description ?? '',
@@ -151,6 +155,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
     const buildPayload = (): BuilderPayload => ({
         title,
         slug,
+        parent_id: parentId,
         meta_title: metaTitle,
         meta_description: metaDescription,
         meta_keywords: metaKeywords,
@@ -174,6 +179,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         // Page meta
         title,
         slug,
+        parentId,
         metaTitle,
         metaDescription,
         metaKeywords,
@@ -200,6 +206,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         // Handlers
         handleTitleChange,
         setSlug,
+        setParentId,
         setMetaTitle,
         setMetaDescription,
         setMetaKeywords,

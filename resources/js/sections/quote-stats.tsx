@@ -17,6 +17,7 @@ export const schema: SectionSchema = {
     authorTitle: { type: 'text', label: 'Author title', default: 'Chief Executive Officer, EVP HQ' },
     authorImage: { type: 'image', label: 'Author photo' },
     mainImage: { type: 'image', label: 'Main image' },
+    mainImageAlt: { type: 'text', label: 'Main Image Alt Text', default: '' },
     achievementHeading: { type: 'text', label: 'Achievement heading', default: 'We want you to stand out' },
     achievementText: {
         type: 'textarea',
@@ -37,6 +38,7 @@ type Props = {
     authorTitle?: string;
     authorImage?: string | null;
     mainImage?: string | null;
+    mainImageAlt?: string;
     achievementHeading?: string;
     achievementText?: string;
     stat1Value?: string;
@@ -53,6 +55,7 @@ export default function QuoteStatsSection({
     authorTitle,
     authorImage,
     mainImage,
+    mainImageAlt,
     achievementHeading,
     achievementText,
     stat1Value,
@@ -111,7 +114,7 @@ export default function QuoteStatsSection({
                             {mainImage ? (
                                 <img
                                     src={mainImage}
-                                    alt=""
+                                    alt={mainImageAlt ?? ''}
                                     className="absolute inset-0 h-full w-full rounded-2xl object-cover shadow-lg"
                                 />
                             ) : (

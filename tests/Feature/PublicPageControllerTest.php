@@ -38,3 +38,20 @@ test('draft page returns 404', function (): void {
 test('unknown slug returns 404', function (): void {
     $this->get('/this-page-does-not-exist')->assertNotFound();
 });
+
+test('unknown slug returns custom 404 page if seeded and published', function (): void {
+    $user = User::factory()->create();
+    $page = Page::factory()->published()->create([
+        'slug' => '404',
+        'title' => 'error.tsx',
+        'created_by' => $user->id,
+        'updated_by' => $user->id,
+    ]);
+
+    $this->get('/this-page-does-not-exist')
+        ->assertStatus(404)
+        ->assertInertia(fn (Assert $assert) => $assert
+            ->component('site/page')
+            ->where('page.id', $page->id)
+        );
+});

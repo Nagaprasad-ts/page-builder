@@ -1,6 +1,6 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'get-in-touch',
@@ -48,10 +48,8 @@ export default function GetInTouchSection({
                     based on the viewport width, ensuring seamless responsiveness across any screen size.
                 */}
                 <div 
-                    className="relative overflow-hidden px-8 py-16 sm:px-12 sm:py-20 md:px-16 lg:py-24 rounded-3xl"
+                    className="relative overflow-hidden bg-brand text-white px-8 py-16 sm:px-12 sm:py-20 md:px-16 lg:py-24 rounded-3xl"
                     style={{ 
-                        backgroundColor: 'var(--color-brand, #142345)',
-                        color: '#ffffff',
                         '--ring-base': 'clamp(500px, 85vw, 1400px)'
                     } as React.CSSProperties}
                 >
@@ -103,30 +101,16 @@ export default function GetInTouchSection({
                             
                             {/* Primary Pill Button */}
                             {primaryLabel && (
-                                <a
-                                    href={primaryUrl}
-                                    className="group inline-flex items-center justify-between gap-6 rounded-full bg-black py-3 pl-6 px-3 text-sm font-bold text-white transition-all duration-300 hover:bg-slate-950 hover:scale-[1.02] active:scale-[0.98] shadow-lg"
-                                >
-                                    <span>{primaryLabel}</span>
-                                    {/* Glassmorphic/Metallic gloss sphere containing arrow icon */}
-                                    <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-b from-white via-slate-100 to-slate-400 shadow-[inset_0_2px_3px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(0,0,0,0.3),0_2px_5px_rgba(0,0,0,0.4)] ring-1 ring-white/20">
-                                        <ArrowRight className="h-5 w-5 text-slate-800 transition-transform duration-300 group-hover:translate-x-0.5" />
-                                    </span>
-                                </a>
+                                <BrandButton variant="black-pill" href={primaryUrl}>
+                                    {primaryLabel}
+                                </BrandButton>
                             )}
 
                             {/* Secondary Pill Button */}
                             {secondaryLabel && (
-                                <a
-                                    href={secondaryUrl}
-                                    className="group inline-flex items-center justify-between gap-6 rounded-full bg-black py-3 pl-6 px-3 text-sm font-bold text-white transition-all duration-300 hover:bg-slate-950 hover:scale-[1.02] active:scale-[0.98] shadow-lg"
-                                >
-                                    <span>{secondaryLabel}</span>
-                                    {/* Glassmorphic/Metallic gloss sphere containing arrow icon */}
-                                    <span className="relative flex h-9 w-9 items-center justify-center rounded-full bg-linear-to-b from-white via-slate-100 to-slate-400 shadow-[inset_0_2px_3px_rgba(255,255,255,0.8),inset_0_-2px_4px_rgba(0,0,0,0.3),0_2px_5px_rgba(0,0,0,0.4)] ring-1 ring-white/20">
-                                        <ArrowRight className="h-5 w-5 text-slate-800 transition-transform duration-300 group-hover:translate-x-0.5" />
-                                    </span>
-                                </a>
+                                <BrandButton variant="black-pill" href={secondaryUrl}>
+                                    {secondaryLabel}
+                                </BrandButton>
                             )}
 
                         </div>

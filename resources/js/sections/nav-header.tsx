@@ -1,4 +1,4 @@
-import { usePage } from '@inertiajs/react';
+import { usePage, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import {
     NavigationMenu,
@@ -11,6 +11,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 import type { MenuItem } from '@/types/menu';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'nav-header',
@@ -35,9 +36,9 @@ type Props = {
 
 function itemHref(item: MenuItem): string {
     if (item.type === 'page' && item.page) {
-        const slug = item.page.slug;
-        
-        return slug.startsWith('/') ? slug : `/${slug}`;
+        const path = item.page.path ?? item.page.slug;
+
+        return path.startsWith('/') ? path : `/${path}`;
     }
 
     return item.url ?? '#';
@@ -113,16 +114,16 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
 
     useEffect(() => {
         document.body.style.overflow = mobileOpen ? 'hidden' : '';
-        
-        return () => { 
-            document.body.style.overflow = ''; 
+
+        return () => {
+            document.body.style.overflow = '';
         };
     }, [mobileOpen]);
 
     return (
         <>
             <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
-                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
+                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
 
                     {/* Logo / site name */}
                     <a href="/" className="flex shrink-0 items-center gap-2">
@@ -145,7 +146,22 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                             {hasChildren ? (
                                                 <>
                                                     <NavigationMenuTrigger
-                                                        className="h-auto bg-transparent px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 data-[state=open]:bg-gray-100 data-[state=open]:text-gray-900"
+                                                        className="h-auto bg-transparent px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 data-[state=open]:bg-gray-100 data-[state=open]:text-gray-900 cursor-pointer"
+                                                        onClick={(e) => {
+                                                            const href = itemHref(item);
+                                                            if (href && href !== '#') {
+                                                                const isTouch = window.matchMedia('(pointer: coarse)').matches;
+                                                                if (isTouch) {
+                                                                    const isOpen = e.currentTarget.getAttribute('data-state') === 'open';
+                                                                    if (!isOpen) return;
+                                                                }
+                                                                if (e.metaKey || e.ctrlKey) {
+                                                                    window.open(href, '_blank');
+                                                                    return;
+                                                                }
+                                                                router.visit(href);
+                                                            }
+                                                        }}
                                                     >
                                                         {item.label}
                                                     </NavigationMenuTrigger>
@@ -188,12 +204,13 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                     <div className="flex items-center gap-2">
                         {/* Desktop CTA */}
                         {ctaLabel && ctaUrl && (
-                            <a
+                            <BrandButton
                                 href={ctaUrl}
-                                className="hidden shrink-0 rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 md:inline-flex"
+                                variant="brand"
+                                className="hidden md:inline-flex shrink-0 py-2.5 px-6 text-sm"
                             >
                                 {ctaLabel}
-                            </a>
+                            </BrandButton>
                         )}
 
                         {/* Hamburger — mobile only */}
@@ -231,12 +248,7 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                 )}
             >
                 {/* Drawer header */}
-                <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
-                    {logoUrl ? (
-                        <img src={logoUrl} alt={siteName ?? 'Logo'} className="h-7 w-auto" />
-                    ) : (
-                        <span className="text-base font-bold text-gray-900">{siteName ?? 'My Site'}</span>
-                    )}
+                <div className="flex items-center justify-end border-b border-gray-100 px-5 py-4">
                     <button
                         type="button"
                         aria-label="Close menu"
@@ -264,12 +276,13 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                 {/* CTA pinned at bottom */}
                 {ctaLabel && ctaUrl && (
                     <div className="border-t border-gray-100 px-5 py-5">
-                        <a
+                        <BrandButton
                             href={ctaUrl}
-                            className="block w-full rounded-lg bg-gray-900 px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-gray-700"
+                            variant="brand"
+                            className="w-full py-3 px-6 text-sm"
                         >
                             {ctaLabel}
-                        </a>
+                        </BrandButton>
                     </div>
                 )}
             </div>

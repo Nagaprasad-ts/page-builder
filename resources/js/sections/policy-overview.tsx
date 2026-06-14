@@ -11,14 +11,14 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     heading: { type: 'text', label: 'Heading', default: 'Introduction' },
     description1: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'First Paragraph',
-        default: 'At EP Presentations, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.',
+        default: '<p>At EP Presentations, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.</p>',
     },
     description2: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Second Paragraph',
-        default: 'By using our website, you agree to the practices described in this policy.',
+        default: '<p>By using our website, you agree to the practices described in this policy.</p>',
     },
     image: { type: 'image', label: 'Right Image', default: '' },
     imageAlt: { type: 'text', label: 'Image Alt Text', default: 'Privacy policy illustration' },
@@ -41,7 +41,11 @@ export const schema: SectionSchema = {
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    const Icon = (LucideIcons as Record<string, unknown>)[name ?? ''] as React.ComponentType<{ className?: string }> | undefined;
+    if (!name) return null;
+    const pascalName = name
+        .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
+        .replace(/^(.)/, (c) => c.toUpperCase());
+    const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
     if (!Icon) return <span className={className}>{name}</span>;
     return <Icon className={className} />;
 }
@@ -96,10 +100,16 @@ export default function PolicyOverviewSection({
                         </h2>
 
                         {description1 && (
-                            <p className="mb-4 text-sm leading-relaxed text-gray-600">{description1}</p>
+                            <div
+                                className="mb-4 text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: description1 }}
+                            />
                         )}
                         {description2 && (
-                            <p className="text-sm leading-relaxed text-gray-600">{description2}</p>
+                            <div
+                                className="text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: description2 }}
+                            />
                         )}
                     </div>
 

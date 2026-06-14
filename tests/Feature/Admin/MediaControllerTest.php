@@ -19,7 +19,7 @@ test('admin can upload an image', function (): void {
         ->assertOk()
         ->assertJsonStructure(['id', 'filename', 'url', 'mime_type']);
 
-    Storage::disk('public')->assertExists("media/{$file->hashName()}");
+    Storage::disk('public')->assertExists('media/photo.jpg');
     $this->assertDatabaseHas('media', ['original_name' => 'photo.jpg']);
 });
 

@@ -67,7 +67,7 @@ composer run ci:check
 **Brand theme**:
 - `--color-brand: #142345` — primary dark navy; use `text-brand`, `bg-brand`, `border-brand`
 - `--color-accent-brand: #547ed1` — accent blue; use `text-accent-brand`, `bg-accent-brand`
-- Fonts: `Fraunces` (variable, headings via `h1–h6` base style), `Nexa` (body, weight 300=ExtraLight / 700=Heavy). Body base `font-weight: 700` so Nexa Heavy is default
+- Fonts: `Libre Baskerville` (variable, headings via `h1–h6` base style), `DM Sans` (variable, body). Body base `font-weight: 400`
 - Font files live in `resources/fonts/` and are referenced via `@font-face` in `resources/css/app.css`
 
 **Section anatomy notes**:

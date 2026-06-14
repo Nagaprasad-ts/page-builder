@@ -13,6 +13,7 @@ createInertiaApp({
         switch (true) {
             case name === 'welcome':
             case name === 'site/page':
+            case name === 'site/error':
             case name === 'admin/pages/create':
             case name === 'admin/pages/edit':
             case name === 'admin/layout/edit':

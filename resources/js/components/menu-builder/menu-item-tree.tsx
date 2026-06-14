@@ -70,7 +70,10 @@ function SortableItemRow({ item, onEdit, onDelete, onAddChild }: RowProps) {
                     <p className="truncate text-sm font-medium">{item.label}</p>
                     <p className="truncate text-xs text-muted-foreground">
                         {item.type === 'page' && item.page
-                            ? (item.page.slug.startsWith('/') ? item.page.slug : `/${item.page.slug}`)
+                            ? (() => {
+                                const path = item.page.path ?? item.page.slug;
+                                return path.startsWith('/') ? path : `/${path}`;
+                              })()
                             : (item.url ?? '—')}
                     </p>
                 </div>
@@ -120,7 +123,10 @@ function SortableItemRow({ item, onEdit, onDelete, onAddChild }: RowProps) {
                                 <p className="truncate text-sm font-medium">{child.label}</p>
                                 <p className="truncate text-xs text-muted-foreground">
                                     {child.type === 'page' && child.page
-                                        ? `/${child.page.slug}`
+                                        ? (() => {
+                                            const path = child.page.path ?? child.page.slug;
+                                            return path.startsWith('/') ? path : `/${path}`;
+                                          })()
                                         : (child.url ?? '—')}
                                 </p>
                             </div>

@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'featured-cards',
@@ -74,6 +75,7 @@ export const schema: SectionSchema = {
             title: { type: 'text', label: 'Title', default: 'Card Title' },
             description: { type: 'textarea', label: 'Description', default: 'Card description.' },
             image: { type: 'image', label: 'Image' },
+            imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
             linkLabel: { type: 'text', label: 'Link label', default: 'Learn more' },
             linkUrl: { type: 'url', label: 'Link URL', default: '#' },
         },
@@ -84,6 +86,7 @@ type Card = {
     title?: string;
     description?: string;
     image?: string | null;
+    imageAlt?: string;
     linkLabel?: string;
     linkUrl?: string;
 };
@@ -191,7 +194,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                     <div className="h-48 w-full overflow-hidden">
                                         <img
                                             src={card.image}
-                                            alt={card.title ?? ''}
+                                            alt={card.imageAlt || card.title || ''}
                                             className="h-full w-full object-cover transition hover:scale-105"
                                         />
                                     </div>
@@ -220,13 +223,15 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                     </p>
 
                                     {card.linkLabel && card.linkUrl && (
-                                        <a
+                                        <BrandButton
+                                            variant="link"
                                             href={card.linkUrl}
-                                            className="group inline-flex items-center gap-2 text-sm font-semibold text-brand transition hover:text-brand/80"
+                                            showArrow={false}
+                                            className="p-0 text-brand hover:text-brand/80 gap-2"
                                         >
                                             {card.linkLabel}
                                             <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                                        </a>
+                                        </BrandButton>
                                     )}
                                 </div>
                             </div>

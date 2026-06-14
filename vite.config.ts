@@ -28,4 +28,12 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    optimizeDeps: {
+        include: [
+            '@tiptap/react',
+            '@tiptap/react/menus',
+            '@tiptap/starter-kit',
+            '@tiptap/extension-link',
+        ],
+    },
 });

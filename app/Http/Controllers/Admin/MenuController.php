@@ -48,8 +48,8 @@ class MenuController extends Controller
     public function edit(Menu $menu): Response
     {
         return Inertia::render('admin/menus/edit', [
-            'menu' => $menu->load('items.children.page:id,title,slug'),
-            'pages' => Page::published()->select('id', 'title', 'slug')->orderBy('title')->get(),
+            'menu' => $menu->load('items.page:id,title,slug,path', 'items.children.page:id,title,slug,path'),
+            'pages' => Page::published()->select('id', 'title', 'slug', 'path')->orderBy('title')->get(),
         ]);
     }
 

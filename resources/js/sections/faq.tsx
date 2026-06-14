@@ -21,11 +21,11 @@ export const schema: SectionSchema = {
         type: 'array',
         label: 'FAQ items',
         default: [
-            { question: 'How can I contact customer support?', answer: '' },
+            { question: 'How can I contact customer support?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
             { question: 'What services do you offer?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
-            { question: 'How secure are your digital banking solutions?', answer: '' },
-            { question: 'What types of payment methods do you support?', answer: '' },
-            { question: 'Can your software integrate with existing systems?', answer: '' },
+            { question: 'How secure are your digital banking solutions?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
+            { question: 'What types of payment methods do you support?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
+            { question: 'Can your software integrate with existing systems?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
         ],
         itemSchema: {
             question: { type: 'text', label: 'Question', default: 'Your question here?' },
@@ -47,7 +47,7 @@ type Props = {
 };
 
 export default function FaqSection({ label, heading, description, items = [] }: Props) {
-    const [openIndex, setOpenIndex] = useState<number | null>(1);
+    const [openIndex, setOpenIndex] = useState<number | null>(0);
 
     return (
         <section className="bg-white py-16">

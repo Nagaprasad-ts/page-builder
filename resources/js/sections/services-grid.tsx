@@ -1,4 +1,5 @@
-﻿import type { SectionMeta, SectionSchema } from '@/types/builder';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'services-grid',
@@ -28,8 +29,11 @@ export const schema: SectionSchema = {
     featuredButtonLabel: { type: 'text', label: 'Featured - Button label', default: 'Book a Call' },
     featuredButtonUrl: { type: 'url', label: 'Featured - Button URL', default: '#' },
     featuredImage1: { type: 'image', label: 'Featured - Image 1' },
+    featuredImage1Alt: { type: 'text', label: 'Featured - Image 1 Alt Text', default: '' },
     featuredImage2: { type: 'image', label: 'Featured - Image 2' },
+    featuredImage2Alt: { type: 'text', label: 'Featured - Image 2 Alt Text', default: '' },
     featuredImage3: { type: 'image', label: 'Featured - Image 3' },
+    featuredImage3Alt: { type: 'text', label: 'Featured - Image 3 Alt Text', default: '' },
 
     // Card 2
     card2Title: { type: 'text', label: 'Card 2 - Title', default: 'Create Future-Ready Tech Identity' },
@@ -41,6 +45,7 @@ export const schema: SectionSchema = {
     card2ButtonLabel: { type: 'text', label: 'Card 2 - Button label', default: 'Request a Proposal' },
     card2ButtonUrl: { type: 'url', label: 'Card 2 - Button URL', default: '#' },
     card2Image: { type: 'image', label: 'Card 2 - Image' },
+    card2ImageAlt: { type: 'text', label: 'Card 2 - Image Alt Text', default: '' },
 
     // Card 3
     card3Title: { type: 'text', label: 'Card 3 - Title', default: 'Startup Growth Begins With Culture' },
@@ -52,6 +57,7 @@ export const schema: SectionSchema = {
     card3ButtonLabel: { type: 'text', label: 'Card 3 - Button label', default: 'Contact Us' },
     card3ButtonUrl: { type: 'url', label: 'Card 3 - Button URL', default: '#' },
     card3Image: { type: 'image', label: 'Card 3 - Image' },
+    card3ImageAlt: { type: 'text', label: 'Card 3 - Image Alt Text', default: '' },
 };
 
 type Props = {
@@ -61,18 +67,23 @@ type Props = {
     featuredButtonLabel?: string;
     featuredButtonUrl?: string;
     featuredImage1?: string | null;
+    featuredImage1Alt?: string;
     featuredImage2?: string | null;
+    featuredImage2Alt?: string;
     featuredImage3?: string | null;
+    featuredImage3Alt?: string;
     card2Title?: string;
     card2Description?: string;
     card2ButtonLabel?: string;
     card2ButtonUrl?: string;
     card2Image?: string | null;
+    card2ImageAlt?: string;
     card3Title?: string;
     card3Description?: string;
     card3ButtonLabel?: string;
     card3ButtonUrl?: string;
     card3Image?: string | null;
+    card3ImageAlt?: string;
 };
 
 function PlaceholderImage() {
@@ -90,18 +101,23 @@ export default function ServicesGridSection({
     featuredButtonLabel,
     featuredButtonUrl,
     featuredImage1,
+    featuredImage1Alt,
     featuredImage2,
+    featuredImage2Alt,
     featuredImage3,
+    featuredImage3Alt,
     card2Title,
     card2Description,
     card2ButtonLabel,
     card2ButtonUrl,
     card2Image,
+    card2ImageAlt,
     card3Title,
     card3Description,
     card3ButtonLabel,
     card3ButtonUrl,
     card3Image,
+    card3ImageAlt,
 }: Props) {
     return (
         <section className="bg-white py-20">
@@ -136,25 +152,26 @@ export default function ServicesGridSection({
                                 </p>
                             )}
                             {featuredButtonLabel && (
-                                <a
-                                    href={featuredButtonUrl ?? '#'}
-                                    className="inline-block rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand/90"
-                                >
+                                <BrandButton variant="brand" href={featuredButtonUrl ?? '#'}>
                                     {featuredButtonLabel}
-                                </a>
+                                </BrandButton>
                             )}
                         </div>
 
                         {/* Images - stacked */}
                         <div className="relative flex shrink-0 items-end justify-center gap-3 md:w-80">
-                            {[featuredImage1, featuredImage2, featuredImage3].map((img, i) => (
+                            {[
+                                { url: featuredImage1, alt: featuredImage1Alt },
+                                { url: featuredImage2, alt: featuredImage2Alt },
+                                { url: featuredImage3, alt: featuredImage3Alt },
+                            ].map((img, i) => (
                                 <div
                                     key={i}
                                     className="h-32 w-24 overflow-hidden rounded-xl md:h-40 md:w-28"
                                     style={{ marginBottom: i === 1 ? '2rem' : '0' }}
                                 >
-                                    {img ? (
-                                        <img src={img} alt="" className="h-full w-full object-cover" />
+                                    {img.url ? (
+                                        <img src={img.url} alt={img.alt ?? ''} className="h-full w-full object-cover" />
                                     ) : (
                                         <PlaceholderImage />
                                     )}
@@ -168,8 +185,8 @@ export default function ServicesGridSection({
                 {/* Two smaller cards */}
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {[
-                        { title: card2Title, description: card2Description, btnLabel: card2ButtonLabel, btnUrl: card2ButtonUrl, image: card2Image },
-                        { title: card3Title, description: card3Description, btnLabel: card3ButtonLabel, btnUrl: card3ButtonUrl, image: card3Image },
+                        { title: card2Title, description: card2Description, btnLabel: card2ButtonLabel, btnUrl: card2ButtonUrl, image: card2Image, imageAlt: card2ImageAlt },
+                        { title: card3Title, description: card3Description, btnLabel: card3ButtonLabel, btnUrl: card3ButtonUrl, image: card3Image, imageAlt: card3ImageAlt },
                     ].map((card, i) => (
                         <div key={i} className="flex flex-row items-center gap-4 rounded-2xl bg-black p-6">
 
@@ -186,19 +203,16 @@ export default function ServicesGridSection({
                                     </p>
                                 )}
                                 {card.btnLabel && (
-                                    <a
-                                        href={card.btnUrl ?? '#'}
-                                        className="inline-block rounded-lg bg-brand px-4 py-2 text-xs font-semibold text-white transition hover:bg-brand/90"
-                                    >
+                                    <BrandButton variant="brand" href={card.btnUrl ?? '#'} className="px-6 py-2 text-xs">
                                         {card.btnLabel}
-                                    </a>
+                                    </BrandButton>
                                 )}
                             </div>
 
                             {/* Image */}
                             <div className="h-36 w-32 shrink-0 overflow-hidden rounded-xl">
                                 {card.image ? (
-                                    <img src={card.image} alt="" className="h-full w-full object-cover" />
+                                    <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" />
                                 ) : (
                                     <PlaceholderImage />
                                 )}

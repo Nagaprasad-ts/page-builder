@@ -1,4 +1,5 @@
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'hero',
@@ -14,14 +15,15 @@ export const schema: SectionSchema = {
         default: 'Stand Out.\nAs an Employer.\nFor All the Right Reasons.',
     },
     subtext: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Subtext',
         default:
-            'Great companies lose talent when perception fails to reflect reality. EVP Headquarters builds employer brands people notice, trust, and choose.',
+            '<p>Great companies lose talent when perception fails to reflect reality. EVP Headquarters builds employer brands people notice, trust, and choose.</p>',
     },
     ctaLabel: { type: 'text', label: 'Button Label', default: 'Talk to Us' },
     ctaUrl: { type: 'url', label: 'Button URL', default: '/' },
     image: { type: 'image', label: 'Hero Image (right side)' },
+    imageAlt: { type: 'text', label: 'Hero Image Alt Text', default: '' },
     textBgImage: { type: 'image', label: 'Text Background Image (decorative)' },
 };
 
@@ -31,11 +33,12 @@ type Props = {
     ctaLabel?: string;
     ctaUrl?: string;
     image?: string | null;
+    imageAlt?: string;
     backgroundImage?: string | null; // legacy compat
     textBgImage?: string | null;
 };
 
-export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image, backgroundImage, textBgImage }: Props) {
+export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image, imageAlt, backgroundImage, textBgImage }: Props) {
     const heroImage = image ?? backgroundImage ?? null;
 
     return (
@@ -52,7 +55,7 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                                 src={textBgImage}
                                 alt=""
                                 className="pointer-events-none absolute inset-0 -top-18 md:-top-10 h-full w-full object-contain opacity-70 select-none"
-                                style={{ zIndex: 0 }}
+                                style={{ zIndex: -1 }}
                             />
                         )}
 
@@ -65,7 +68,7 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                         </div>
 
                         {heading && (
-                            <h1 className="relative mb-6 text-3xl md:text-5xl font-extrabold leading-tight tracking-tight text-gray-900">
+                            <h1 className="relative z-10 mb-6 text-3xl md:text-5xl font-extrabold leading-tight tracking-tight text-gray-900">
                                 {heading.split('\n').map((line, i) => (
                                     <span key={i} className="block">{line}</span>
                                 ))}
@@ -73,19 +76,17 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                         )}
 
                         {subtext && (
-                            <p className="mb-8 max-w-lg text-lg leading-relaxed text-gray-500">
-                                {subtext}
-                            </p>
+                            <div
+                                className="relative z-10 mb-8 max-w-lg text-lg leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: subtext }}
+                            />
                         )}
 
                         {ctaLabel && ctaUrl && (
-                            <div>
-                                <a
-                                    href={ctaUrl}
-                                    className="inline-flex items-center gap-2 rounded-full bg-brand px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-brand/20 transition hover:bg-brand/90 hover:shadow-brand/30"
-                                >
+                            <div className="relative z-10">
+                                <BrandButton variant="secondary" href={ctaUrl}>
                                     {ctaLabel}
-                                </a>
+                                </BrandButton>
                             </div>
                         )}
                     </div>
@@ -101,7 +102,7 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                             {heroImage ? (
                                 <img
                                     src={heroImage}
-                                    alt=""
+                                    alt={imageAlt ?? ''}
                                     className="w-130 rounded-3xl object-cover"
                                 />
                             ) : (

@@ -17,7 +17,7 @@ class PublicPageController extends Controller
     {
         $page = Page::where('status', 'published')
             ->with('sections')
-            ->orderByRaw("CASE WHEN slug = '/' THEN 0 WHEN slug = 'home' THEN 1 ELSE 2 END")
+            ->orderByRaw("CASE WHEN path = '/' THEN 0 WHEN path = 'home' THEN 1 ELSE 2 END")
             ->orderBy('created_at')
             ->firstOrFail();
 
@@ -29,7 +29,7 @@ class PublicPageController extends Controller
      */
     public function show(string $slug): Response
     {
-        $page = Page::where('slug', $slug)
+        $page = Page::where('path', $slug)
             ->where('status', 'published')
             ->with('sections')
             ->firstOrFail();
@@ -42,7 +42,7 @@ class PublicPageController extends Controller
      */
     public function preview(string $slug): Response
     {
-        $page = Page::where('slug', $slug)
+        $page = Page::where('path', $slug)
             ->with('sections')
             ->firstOrFail();
 
@@ -64,6 +64,7 @@ class PublicPageController extends Controller
 
         return Inertia::render('site/page', [
             'page' => $page,
+            'breadcrumbs' => $page->getBreadcrumbs(),
             'headerSections' => $headerSections,
             'bodySections' => $bodySections,
             'footerSections' => $footerSections,

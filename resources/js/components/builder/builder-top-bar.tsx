@@ -29,7 +29,9 @@ export function BuilderTopBar({
     isSaving,
 }: Props) {
     const previewUrl = slug
-        ? (status === 'published' ? `/${slug}` : `/draft/${slug}`)
+        ? (status === 'published'
+            ? (slug === '/' ? '/' : `/${slug.replace(/^\//, '')}`)
+            : `/draft/${slug.replace(/^\//, '')}`)
         : null;
     return (
         <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-background px-4">

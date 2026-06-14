@@ -9,10 +9,11 @@ import { SectionBrowser } from '@/components/builder/section-browser';
 import { MediaPickerModal } from '@/components/media/media-picker-modal';
 import { useBuilder } from '@/hooks/use-builder';
 import { cn } from '@/lib/utils';
+import type { Page } from '@/types/builder';
 
 const REGIONS = ['header', 'body', 'footer'] as const;
 
-export default function CreatePage() {
+export default function CreatePage({ pages }: { pages: Page[] }) {
     const builder = useBuilder();
     const [processing, setProcessing] = useState(false);
     const [panelOpen, setPanelOpen] = useState(true);
@@ -42,6 +43,11 @@ export default function CreatePage() {
             ? 'Using global header — enable Custom header in Page Settings to override.'
             : 'Using global footer — enable Custom footer in Page Settings to override.';
 
+    const parentPage = pages?.find((p) => p.id === builder.parentId);
+    const currentPath = parentPage
+        ? `${parentPage.path}/${builder.slug}`
+        : builder.slug;
+
     return (
         <>
             <Head title="New page" />
@@ -49,7 +55,7 @@ export default function CreatePage() {
             <div className="flex h-screen flex-col overflow-hidden bg-muted/20">
                 <BuilderTopBar
                     title={builder.title}
-                    slug={builder.slug}
+                    slug={currentPath}
                     status="draft"
                     onTitleChange={builder.handleTitleChange}
                     onOpenSettings={() => builder.setSettingsOpen(true)}
@@ -141,6 +147,8 @@ export default function CreatePage() {
                 open={builder.settingsOpen}
                 onClose={() => builder.setSettingsOpen(false)}
                 slug={builder.slug}
+                parentId={builder.parentId}
+                pages={pages}
                 metaTitle={builder.metaTitle}
                 metaDescription={builder.metaDescription}
                 metaKeywords={builder.metaKeywords}
@@ -158,6 +166,7 @@ export default function CreatePage() {
                         builder.setMetaKeywords(value);
                     }
                 }}
+                onParentIdChange={builder.setParentId}
                 onCustomHeaderChange={builder.setCustomHeader}
                 onCustomFooterChange={builder.setCustomFooter}
             />

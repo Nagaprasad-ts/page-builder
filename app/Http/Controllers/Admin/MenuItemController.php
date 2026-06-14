@@ -17,7 +17,7 @@ class MenuItemController extends Controller
     public function index(Menu $menu): JsonResponse
     {
         return response()->json([
-            'items' => $menu->items()->with('children.page:id,title,slug', 'page:id,title,slug')->get(),
+            'items' => $menu->items()->with('children.page:id,title,slug,path', 'page:id,title,slug,path')->get(),
         ]);
     }
 
@@ -31,7 +31,7 @@ class MenuItemController extends Controller
             'sort_order' => $request->integer('sort_order', $menu->allItems()->count()),
         ]);
 
-        return response()->json($item->load('page:id,title,slug'));
+        return response()->json($item->load('page:id,title,slug,path'));
     }
 
     /**
@@ -41,7 +41,7 @@ class MenuItemController extends Controller
     {
         $item->update($request->validated());
 
-        return response()->json($item->fresh()->load('page:id,title,slug'));
+        return response()->json($item->fresh()->load('page:id,title,slug,path'));
     }
 
     /**
