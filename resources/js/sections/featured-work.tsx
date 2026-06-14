@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'featured-work',
@@ -13,9 +13,9 @@ export const schema: SectionSchema = {
     headingLine1: { type: 'text', label: 'Heading line 1', default: 'Work That' },
     headingLine2: { type: 'text', label: 'Heading line 2 (circle on last word)', default: 'Speaks for Itself' },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: 'See how we help brands bring their stories to life.',
+        default: '<p>See how we help brands bring their stories to life.</p>',
     },
     ctaLabel: { type: 'text', label: 'CTA label', default: 'View all projects' },
     ctaUrl: { type: 'url', label: 'CTA URL', default: '#' },
@@ -109,7 +109,10 @@ export default function FeaturedWorkSection({
                     </h2>
 
                     {description && (
-                        <p className="mb-8 text-sm leading-relaxed text-gray-500">{description}</p>
+                        <div 
+                            className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
                     )}
 
                     {ctaLabel && ctaUrl && (

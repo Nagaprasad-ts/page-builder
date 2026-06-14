@@ -137,6 +137,9 @@ export function PageSettingsSheet({
                                 <p className="text-xs text-muted-foreground">
                                     Use <code className="rounded bg-muted px-1">/</code> to set this page as the homepage.
                                 </p>
+                                {slugError && (
+                                    <p className="text-xs font-medium text-destructive">{slugError}</p>
+                                )}
                                 {isExistingPage && slug !== '/' && (
                                     <p className="flex items-center gap-1.5 text-xs text-amber-600">
                                         <AlertCircle className="h-3.5 w-3.5 shrink-0" />

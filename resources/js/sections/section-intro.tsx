@@ -21,26 +21,33 @@ export const schema: SectionSchema = {
         type: 'array',
         label: 'Feature columns',
         default: [
-            { icon: 'Headphones', title: 'Strategy-Driven', body: 'Every piece is planned with purpose.' },
-            { icon: 'PlusSquare', title: 'Audience-Focused', body: 'We create for people, not just platforms.' },
-            { icon: 'Share2', title: 'Results-Oriented', body: 'Content that drives engagement and growth.' },
-            { icon: 'Share2', title: 'Results-Oriented', body: 'Content that drives engagement and growth.' },
+            { icon: 'Headphones', title: 'Strategy-Driven', body: '<p>Every piece is planned with purpose.</p>' },
+            { icon: 'PlusSquare', title: 'Audience-Focused', body: '<p>We create for people, not just platforms.</p>' },
+            { icon: 'Share2', title: 'Results-Oriented', body: '<p>Content that drives engagement and growth.</p>' },
+            { icon: 'Share2', title: 'Results-Oriented', body: '<p>Content that drives engagement and growth.</p>' },
         ],
         itemSchema: {
             icon: { type: 'text', label: 'Icon (Lucide name e.g. Headphones)', default: 'Headphones' },
             title: { type: 'text', label: 'Title', default: 'Strategy-Driven' },
-            body: { type: 'textarea', label: 'Description', default: 'Every piece is planned with purpose.' },
+            body: { type: 'richtext', label: 'Description', default: '<p>Every piece is planned with purpose.</p>' },
         },
     },
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -59,7 +66,7 @@ type Props = {
 };
 
 export default function SectionIntro({
-    number,
+    number: _number,
     headingLine1,
     headingLine2,
     description,
@@ -97,7 +104,10 @@ export default function SectionIntro({
                                         <h3 className="text-base font-bold text-gray-900">{item.title}</h3>
                                     )}
                                     {item.body && (
-                                        <p className="text-sm leading-relaxed text-gray-500">{item.body}</p>
+                                        <div 
+                                            className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            dangerouslySetInnerHTML={{ __html: item.body }}
+                                        />
                                     )}
                                 </div>
                             </div>

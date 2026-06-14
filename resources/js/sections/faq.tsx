@@ -13,23 +13,23 @@ export const schema: SectionSchema = {
     label: { type: 'text', label: 'Label', default: 'FAQ' },
     heading: { type: 'text', label: 'Heading', default: 'Frequently Asked Questions' },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: 'We compiled a list of answers to address your most pressing questions regarding our Services.',
+        default: '<p>We compiled a list of answers to address your most pressing questions regarding our Services.</p>',
     },
     items: {
         type: 'array',
         label: 'FAQ items',
         default: [
-            { question: 'How can I contact customer support?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
-            { question: 'What services do you offer?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
-            { question: 'How secure are your digital banking solutions?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
-            { question: 'What types of payment methods do you support?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
-            { question: 'Can your software integrate with existing systems?', answer: 'We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.' },
+            { question: 'How can I contact customer support?', answer: '<p>We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.</p>' },
+            { question: 'What services do you offer?', answer: '<p>We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.</p>' },
+            { question: 'How secure are your digital banking solutions?', answer: '<p>We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.</p>' },
+            { question: 'What types of payment methods do you support?', answer: '<p>We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.</p>' },
+            { question: 'Can your software integrate with existing systems?', answer: '<p>We provide a range of services, including digital banking solutions, payment processing, risk management, and compliance tools.</p>' },
         ],
         itemSchema: {
             question: { type: 'text', label: 'Question', default: 'Your question here?' },
-            answer: { type: 'textarea', label: 'Answer', default: 'Your answer here.' },
+            answer: { type: 'richtext', label: 'Answer', default: '<p>Your answer here.</p>' },
         },
     },
 };
@@ -64,7 +64,10 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                         </h2>
                     )}
                     {description && (
-                        <p className="text-sm leading-relaxed text-gray-500">{description}</p>
+                        <div 
+                            className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
                     )}
                 </div>
 
@@ -72,6 +75,7 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                 <div className="w-full divide-y divide-border lg:w-3/5">
                     {items.map((item, i) => {
                         const isOpen = openIndex === i;
+
                         return (
                             <div key={i}>
                                 <button
@@ -86,7 +90,10 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                                     }
                                 </button>
                                 {isOpen && item.answer && (
-                                    <p className="pb-4 text-sm leading-relaxed text-gray-500">{item.answer}</p>
+                                    <div 
+                                        className="pb-4 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                        dangerouslySetInnerHTML={{ __html: item.answer }}
+                                    />
                                 )}
                             </div>
                         );

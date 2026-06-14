@@ -41,14 +41,20 @@ export default function PagesIndex({ pages }: Props) {
     }, [duplicatingPage]);
 
     const handleDelete = () => {
-        if (!deletingPage) return;
+        if (!deletingPage) {
+return;
+}
+
         destroy(`/admin/pages/${deletingPage.id}`, {
             onSuccess: () => setDeletingPage(null),
         });
     };
 
     const handleDuplicate = () => {
-        if (!duplicatingPage) return;
+        if (!duplicatingPage) {
+return;
+}
+
         duplicateForm.post(`/admin/pages/${duplicatingPage.id}/duplicate`, {
             onSuccess: () => {
                 setDuplicatingPage(null);

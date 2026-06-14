@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
+import BrandButton from '@/components/ui/brand-button';
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
-import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'alternate-cards',
@@ -20,25 +20,25 @@ const DEFAULT_IMAGES = [
 const DEFAULT_ITEMS = [
     {
         title: 'Branded Workspaces',
-        description: 'Turn everyday office spaces into immersive brand experiences that reflect your culture, vision, and identity.',
+        description: '<p>Turn everyday office spaces into immersive brand experiences that reflect your culture, vision, and identity.</p>',
         linkLabel: 'Workspace Branding',
         linkUrl: '#',
     },
     {
         title: 'Hiring Experiences',
-        description: 'Create meaningful candidate journeys that leave lasting impressions from first interaction to final onboarding.',
+        description: '<p>Create meaningful candidate journeys that leave lasting impressions from first interaction to final onboarding.</p>',
         linkLabel: 'Candidate Experience',
         linkUrl: '#',
     },
     {
         title: 'Skill Development',
-        description: 'Interactive learning programs designed to upskill teams, enhance performance, and encourage continuous growth.',
+        description: '<p>Interactive learning programs designed to upskill teams, enhance performance, and encourage continuous growth.</p>',
         linkLabel: 'Training and Workshops',
         linkUrl: '#',
     },
     {
         title: 'Team Messaging',
-        description: 'Strengthen internal culture with communication strategies that keep teams aligned, informed, and engaged.',
+        description: '<p>Strengthen internal culture with communication strategies that keep teams aligned, informed, and engaged.</p>',
         linkLabel: 'Internal Communication',
         linkUrl: '#',
     },
@@ -70,7 +70,7 @@ export const schema: SectionSchema = {
         default: DEFAULT_ITEMS,
         itemSchema: {
             title: { type: 'text', label: 'Title', default: 'Card Title' },
-            description: { type: 'textarea', label: 'Description', default: 'Card description.' },
+            description: { type: 'richtext', label: 'Description', default: '<p>Card description.</p>' },
             linkLabel: { type: 'text', label: 'Link label', default: 'Learn more' },
             linkUrl: { type: 'url', label: 'Link URL', default: '#' },
         },
@@ -128,19 +128,27 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
 
     const handleScroll = () => {
         const el = scrollRef.current;
-        if (!el) return;
+
+        if (!el) {
+return;
+}
+
         const index = Math.round(el.scrollLeft / el.offsetWidth);
         setActiveIndex(index);
     };
 
     const scrollTo = (index: number) => {
         const el = scrollRef.current;
-        if (!el) return;
+
+        if (!el) {
+return;
+}
+
         el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
         setActiveIndex(index);
     };
 
-    const renderCard = (slot: typeof slots[number], i: number) => {
+    const renderCard = (slot: typeof slots[number]) => {
         if (slot.type === 'image') {
             const { data } = slot as { type: 'image'; data: ImageSlot };
 
@@ -180,9 +188,10 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                         </h3>
                     )}
                     {data.description && (
-                        <p className={cn('text-base leading-relaxed line-clamp-4', isBlueCard ? 'text-white/80' : 'text-gray-900')}>
-                            {data.description}
-                        </p>
+                        <div 
+                            className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? 'text-white/80 prose-invert [&_p]:text-white/80' : 'text-gray-900')}
+                            dangerouslySetInnerHTML={{ __html: data.description }}
+                        />
                     )}
                 </div>
                 {data.linkLabel && data.linkUrl && (
@@ -257,9 +266,10 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                                                     </h3>
                                                 )}
                                                 {cardData.description && (
-                                                    <p className={cn('text-base leading-relaxed line-clamp-4', isBlueCard ? 'text-white/80' : 'text-gray-900')}>
-                                                        {cardData.description}
-                                                    </p>
+                                                    <div 
+                                                        className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? 'text-white/80 prose-invert [&_p]:text-white/80' : 'text-gray-900')}
+                                                        dangerouslySetInnerHTML={{ __html: cardData.description }}
+                                                    />
                                                 )}
                                             </div>
                                             {cardData.linkLabel && cardData.linkUrl && (
@@ -297,7 +307,7 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                 {/* Desktop: 4-column checkerboard grid */}
                 <div className="hidden md:grid md:grid-cols-4 gap-4">
                     {slots.map((slot, i) => (
-                        <div key={i}>{renderCard(slot, i)}</div>
+                        <div key={i}>{renderCard(slot)}</div>
                     ))}
                 </div>
 

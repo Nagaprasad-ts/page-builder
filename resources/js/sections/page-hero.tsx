@@ -12,9 +12,9 @@ export const schema: SectionSchema = {
     headingLine1: { type: 'text', label: 'Heading Line 1', default: 'Your Privacy' },
     headingLine2: { type: 'text', label: 'Heading Line 2', default: 'Matters to Us' },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: 'We are committed to protecting your personal information and being transparent about how we use it.',
+        default: '<p>We are committed to protecting your personal information and being transparent about how we use it.</p>',
     },
     image: { type: 'image', label: 'Right Image', default: '' },
     imageAlt: { type: 'text', label: 'Image Alt Text', default: 'Privacy shield illustration' },
@@ -33,7 +33,7 @@ export default function PageHeroSection({
     label = 'Privacy Policy',
     headingLine1 = 'Your Privacy',
     headingLine2 = 'Matters to Us',
-    description = 'We are committed to protecting your personal information and being transparent about how we use it.',
+    description = '<p>We are committed to protecting your personal information and being transparent about how we use it.</p>',
     image = '',
     imageAlt = 'Privacy shield illustration',
 }: Props) {
@@ -61,9 +61,10 @@ export default function PageHeroSection({
 
                     {/* Description */}
                     {description && (
-                        <p className="mt-6 max-w-sm text-sm leading-relaxed text-white">
-                            {description}
-                        </p>
+                        <div 
+                            className="mt-6 max-w-sm text-sm leading-relaxed text-white prose prose-invert prose-sm [&_p]:mb-2"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
                     )}
                 </div>
 

@@ -1,7 +1,7 @@
 import * as LucideIcons from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'explore-services',
@@ -13,7 +13,7 @@ export const meta: SectionMeta = {
 const DEFAULT_SERVICES = [
     {
         title: 'Create engaging content',
-        description: 'From idea to final cut, we create videos that inform, inspire, and leave a lasting impact.',
+        description: '<p>From idea to final cut, we create videos that inform, inspire, and leave a lasting impact.</p>',
         icon: 'Video',
         image: null,
         imageAlt: '',
@@ -21,7 +21,7 @@ const DEFAULT_SERVICES = [
     },
     {
         title: 'Self serve products',
-        description: 'Premium templates and tools to help you create stunning presentations on your own.',
+        description: '<p>Premium templates and tools to help you create stunning presentations on your own.</p>',
         icon: 'Cpu',
         image: null,
         imageAlt: '',
@@ -29,7 +29,7 @@ const DEFAULT_SERVICES = [
     },
     {
         title: 'Skills training for every subscriber',
-        description: 'Learn from industry experts and build skills that take you forward.',
+        description: '<p>Learn from industry experts and build skills that take you forward.</p>',
         icon: 'GraduationCap',
         image: null,
         imageAlt: '',
@@ -37,7 +37,7 @@ const DEFAULT_SERVICES = [
     },
     {
         title: 'Face-to-face presentations and workshops',
-        description: 'Interactive sessions designed to engage your team and drive real results.',
+        description: '<p>Interactive sessions designed to engage your team and drive real results.</p>',
         icon: 'Users',
         image: null,
         imageAlt: '',
@@ -45,7 +45,7 @@ const DEFAULT_SERVICES = [
     },
     {
         title: 'Broadcast quality live webinars',
-        description: 'High-quality, seamless webinars that connect and convert.',
+        description: '<p>High-quality, seamless webinars that connect and convert.</p>',
         icon: 'Radio',
         image: null,
         imageAlt: '',
@@ -53,7 +53,7 @@ const DEFAULT_SERVICES = [
     },
     {
         title: 'Online video courses for education',
-        description: 'Engaging courses that educate, inspire, and deliver results.',
+        description: '<p>Engaging courses that educate, inspire, and deliver results.</p>',
         icon: 'ShoppingBag',
         image: null,
         imageAlt: '',
@@ -73,19 +73,26 @@ export const schema: SectionSchema = {
             imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
             icon: { type: 'text', label: 'Icon (Lucide name e.g. Video, Cpu)', default: 'Video' },
             title: { type: 'text', label: 'Title', default: 'Service Title' },
-            description: { type: 'textarea', label: 'Description', default: 'Short service description.' },
+            description: { type: 'richtext', label: 'Description', default: '<p>Short service description.</p>' },
             linkUrl: { type: 'url', label: 'Link URL', default: '#' },
         },
     },
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -111,6 +118,7 @@ export default function ExploreServicesSection({
 }: Props) {
     const rawServices = services ? Object.values(services) : [];
     const items: ServiceCard[] = rawServices.length > 0 ? rawServices : DEFAULT_SERVICES;
+
     return (
         <section className="mx-auto max-w-7xl bg-white py-16 sm:py-24">
             <div>
@@ -169,9 +177,10 @@ export default function ExploreServicesSection({
                                         </h3>
                                     )}
                                     {service.description && (
-                                        <p className="font-sans text-sm leading-relaxed text-gray-500">
-                                            {service.description}
-                                        </p>
+                                        <div 
+                                            className="font-sans text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            dangerouslySetInnerHTML={{ __html: service.description }}
+                                        />
                                     )}
                                 </div>
 

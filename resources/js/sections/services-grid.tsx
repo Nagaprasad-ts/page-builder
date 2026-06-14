@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'services-grid',
@@ -22,9 +22,9 @@ export const schema: SectionSchema = {
         default: 'Education Is Evolving Beyond Academics Towards Culture, Experiences, Future Opportunities, and Industry Connections',
     },
     featuredDescription: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Featured - Description',
-        default: 'In today\'s rapidly evolving education landscape, attracting and retaining the right talent has become just as important as academic excellence. Institutions that build strong cultures, meaningful experiences, and credible identities are better positioned to stay competitive, strengthen industry relevance, and create lasting impact among students, educators, and future professionals.',
+        default: '<p>In today\'s rapidly evolving education landscape, attracting and retaining the right talent has become just as important as academic excellence. Institutions that build strong cultures, meaningful experiences, and credible identities are better positioned to stay competitive, strengthen industry relevance, and create lasting impact among students, educators, and future professionals.</p>',
     },
     featuredButtonLabel: { type: 'text', label: 'Featured - Button label', default: 'Book a Call' },
     featuredButtonUrl: { type: 'url', label: 'Featured - Button URL', default: '#' },
@@ -38,9 +38,9 @@ export const schema: SectionSchema = {
     // Card 2
     card2Title: { type: 'text', label: 'Card 2 - Title', default: 'Create Future-Ready Tech Identity' },
     card2Description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Card 2 - Description',
-        default: 'Digital footprints today define how tech companies attract exceptional talent, build credibility, strengthen culture, and stay competitive in an evolving industry landscape.',
+        default: '<p>Digital footprints today define how tech companies attract exceptional talent, build credibility, strengthen culture, and stay competitive in an evolving industry landscape.</p>',
     },
     card2ButtonLabel: { type: 'text', label: 'Card 2 - Button label', default: 'Request a Proposal' },
     card2ButtonUrl: { type: 'url', label: 'Card 2 - Button URL', default: '#' },
@@ -50,9 +50,9 @@ export const schema: SectionSchema = {
     // Card 3
     card3Title: { type: 'text', label: 'Card 3 - Title', default: 'Startup Growth Begins With Culture' },
     card3Description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Card 3 - Description',
-        default: 'Strong workplace cultures help startups attract passionate talent, build trust, improve retention, and scale sustainably in competitive business environments.',
+        default: '<p>Strong workplace cultures help startups attract passionate talent, build trust, improve retention, and scale sustainably in competitive business environments.</p>',
     },
     card3ButtonLabel: { type: 'text', label: 'Card 3 - Button label', default: 'Contact Us' },
     card3ButtonUrl: { type: 'url', label: 'Card 3 - Button URL', default: '#' },
@@ -147,9 +147,10 @@ export default function ServicesGridSection({
                                 </h3>
                             )}
                             {featuredDescription && (
-                                <p className="text-sm leading-relaxed text-gray-400">
-                                    {featuredDescription}
-                                </p>
+                                <div 
+                                    className="text-sm leading-relaxed text-gray-400 prose prose-invert prose-sm [&_p]:mb-2"
+                                    dangerouslySetInnerHTML={{ __html: featuredDescription }}
+                                />
                             )}
                             {featuredButtonLabel && (
                                 <BrandButton variant="brand" href={featuredButtonUrl ?? '#'}>
@@ -198,9 +199,10 @@ export default function ServicesGridSection({
                                     </h3>
                                 )}
                                 {card.description && (
-                                    <p className="text-xs leading-relaxed text-gray-400 line-clamp-4">
-                                        {card.description}
-                                    </p>
+                                    <div 
+                                        className="text-xs leading-relaxed text-gray-400 line-clamp-4 prose prose-invert prose-sm [&_p]:mb-2"
+                                        dangerouslySetInnerHTML={{ __html: card.description }}
+                                    />
                                 )}
                                 {card.btnLabel && (
                                     <BrandButton variant="brand" href={card.btnUrl ?? '#'} className="px-6 py-2 text-xs">

@@ -62,6 +62,7 @@ export function SectionBrowser({ onAdd }: Props) {
                 reg.meta.name.toLowerCase().includes(searchQuery.toLowerCase());
             const descMatch = reg.meta.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
             const catMatch = reg.meta.category.toLowerCase().includes(searchQuery.toLowerCase());
+
             return nameMatch || descMatch || catMatch;
         });
 

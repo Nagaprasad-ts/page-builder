@@ -50,8 +50,10 @@ export type SectionInstance = {
 
 export type Page = {
     id: number;
+    parent_id: number | null;
     title: string;
     slug: string;
+    path: string;
     meta_title: string | null;
     meta_description: string | null;
     meta_keywords: string | null;

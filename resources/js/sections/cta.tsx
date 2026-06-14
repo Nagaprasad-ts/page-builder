@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'cta',

@@ -37,6 +37,7 @@ export default function MediaIndex({ media }: Props) {
     // Filtered list based on search
     const filtered = list.filter((item) => {
         const q = search.toLowerCase();
+
         return (
             item.original_name?.toLowerCase().includes(q) ||
             item.alt?.toLowerCase().includes(q) ||
@@ -50,7 +51,13 @@ export default function MediaIndex({ media }: Props) {
     const toggleSelect = (id: number) => {
         setSelected((prev) => {
             const next = new Set(prev);
-            next.has(id) ? next.delete(id) : next.add(id);
+
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+
             return next;
         });
     };
@@ -60,12 +67,14 @@ export default function MediaIndex({ media }: Props) {
             setSelected((prev) => {
                 const next = new Set(prev);
                 filtered.forEach((i) => next.delete(i.id));
+
                 return next;
             });
         } else {
             setSelected((prev) => {
                 const next = new Set(prev);
                 filtered.forEach((i) => next.add(i.id));
+
                 return next;
             });
         }
@@ -76,7 +85,10 @@ export default function MediaIndex({ media }: Props) {
     // Upload
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files ?? []);
-        if (files.length === 0) return;
+
+        if (files.length === 0) {
+return;
+}
 
         setUploading(true);
 
@@ -89,17 +101,22 @@ export default function MediaIndex({ media }: Props) {
                     headers: { 'X-CSRF-TOKEN': csrfToken(), 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
                     body: formData,
                 });
+
                 return res.ok ? ((await res.json()) as MediaItem) : null;
             }),
         );
 
         const successful = uploaded.filter((item): item is MediaItem => item !== null);
+
         if (successful.length > 0) {
             setList((prev) => [...successful.reverse(), ...prev]);
         }
 
         setUploading(false);
-        if (fileInputRef.current) fileInputRef.current.value = '';
+
+        if (fileInputRef.current) {
+fileInputRef.current.value = '';
+}
     };
 
     // Single delete
@@ -109,12 +126,19 @@ export default function MediaIndex({ media }: Props) {
             headers: { 'X-CSRF-TOKEN': csrfToken(), 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' },
         });
         setList((prev) => prev.filter((m) => m.id !== item.id));
-        setSelected((prev) => { const n = new Set(prev); n.delete(item.id); return n; });
+        setSelected((prev) => {
+ const n = new Set(prev); n.delete(item.id);
+
+ return n; 
+});
     };
 
     // Bulk delete
     const handleBulkDelete = async () => {
-        if (!window.confirm(`Delete ${selected.size} selected file${selected.size !== 1 ? 's' : ''}?`)) return;
+        if (!window.confirm(`Delete ${selected.size} selected file${selected.size !== 1 ? 's' : ''}?`)) {
+return;
+}
+
         setBulkDeleting(true);
         await Promise.all(
             [...selected].map((id) =>
@@ -136,7 +160,9 @@ export default function MediaIndex({ media }: Props) {
         setEditName(item.original_name ?? '');
     };
 
-    const cancelEdit = () => { setEditingId(null); setEditAlt(''); setEditName(''); };
+    const cancelEdit = () => {
+ setEditingId(null); setEditAlt(''); setEditName(''); 
+};
 
     const saveEdit = async (item: MediaItem) => {
         setSavingId(item.id);
@@ -283,7 +309,9 @@ export default function MediaIndex({ media }: Props) {
                                         <div className="absolute bottom-2 right-2 z-20 flex gap-1.5 opacity-0 transition-opacity group-hover:opacity-100">
                                             <button
                                                 type="button"
-                                                onClick={(e) => { e.stopPropagation(); startEdit(item); }}
+                                                onClick={(e) => {
+ e.stopPropagation(); startEdit(item); 
+}}
                                                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-800 shadow transition hover:bg-gray-100"
                                                 title="Edit"
                                             >
@@ -291,7 +319,9 @@ export default function MediaIndex({ media }: Props) {
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={(e) => { e.stopPropagation(); handleDelete(item); }}
+                                                onClick={(e) => {
+ e.stopPropagation(); handleDelete(item); 
+}}
                                                 className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-red-600 shadow transition hover:bg-red-50"
                                                 title="Delete"
                                             >

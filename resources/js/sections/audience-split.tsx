@@ -22,26 +22,33 @@ export const schema: SectionSchema = {
         type: 'array',
         label: 'Audience columns',
         default: [
-            { icon: 'CalendarDays', title: 'Startups', body: 'Build your brand from the ground up.' },
-            { icon: 'BarChart2', title: 'Growing Businesses', body: 'Scale your content and reach new audiences.' },
-            { icon: 'Users', title: 'Established Brands', body: 'Strengthen your presence and stay top-of-mind.' },
-            { icon: 'Megaphone', title: 'Agencies', body: 'White-label content support for your clients.' },
+            { icon: 'CalendarDays', title: 'Startups', body: '<p>Build your brand from the ground up.</p>' },
+            { icon: 'BarChart2', title: 'Growing Businesses', body: '<p>Scale your content and reach new audiences.</p>' },
+            { icon: 'Users', title: 'Established Brands', body: '<p>Strengthen your presence and stay top-of-mind.</p>' },
+            { icon: 'Megaphone', title: 'Agencies', body: '<p>White-label content support for your clients.</p>' },
         ],
         itemSchema: {
             icon: { type: 'text', label: 'Icon (Lucide name e.g. CalendarDays)', default: 'CalendarDays' },
             title: { type: 'text', label: 'Title', default: 'Audience' },
-            body: { type: 'textarea', label: 'Description', default: 'Short description.' },
+            body: { type: 'richtext', label: 'Description', default: '<p>Short description.</p>' },
         },
     },
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -61,7 +68,6 @@ type Props = {
 };
 
 export default function AudienceSplitSection({
-    number,
     heading,
     description,
     image,
@@ -120,7 +126,10 @@ export default function AudienceSplitSection({
                                             <h3 className="text-sm font-bold text-brand">{item.title}</h3>
                                         )}
                                         {item.body && (
-                                            <p className="text-xs leading-relaxed text-gray-500">{item.body}</p>
+                                            <div 
+                                                className="text-xs leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:m-0"
+                                                dangerouslySetInnerHTML={{ __html: item.body }}
+                                            />
                                         )}
                                     </div>
                                 </div>

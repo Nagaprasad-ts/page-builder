@@ -11,7 +11,7 @@ type Props = {
     footerSections: PageSection[];
 };
 
-export default function ErrorPage({ status, headerSections = [], footerSections = [] }: Props) {
+export default function ErrorPage({ headerSections = [], footerSections = [] }: Props) {
     return (
         <>
             <Head title="Page Not Found | EVP HQ" />

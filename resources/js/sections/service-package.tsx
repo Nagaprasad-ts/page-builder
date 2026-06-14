@@ -1,6 +1,6 @@
 import { Download } from 'lucide-react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'service-package',
@@ -41,8 +41,8 @@ type Props = {
 };
 
 export default function ServicePackageSection({
-    number,
-    label,
+    number: _number,
+    label: _label,
     headingLine1,
     headingLine2,
     description,

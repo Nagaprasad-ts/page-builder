@@ -44,6 +44,7 @@ export default function BreadcrumbsSection({ showHomeIcon = true }: Props) {
                     <BreadcrumbList className="flex flex-wrap items-center gap-1.5 text-sm">
                         {breadcrumbs.map((item, index) => {
                             const isLast = index === breadcrumbs.length - 1;
+
                             return (
                                 <div key={index} className="inline-flex items-center gap-1.5">
                                     <BreadcrumbItem>

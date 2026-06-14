@@ -9,9 +9,9 @@ export const meta: SectionMeta = {
 
 export const schema: SectionSchema = {
     quote: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Quote',
-        default: 'Great talent doesn\'t just join companies, they join cultures. And branding problems, they hide in plain sight. At EVP HQ, we help organizations identify them and build organic, long-term solutions that strengthen perception, trust, and lasting business growth.',
+        default: '<p>Great talent doesn\'t just join companies, they join cultures. And branding problems, they hide in plain sight. At EVP HQ, we help organizations identify them and build organic, long-term solutions that strengthen perception, trust, and lasting business growth.</p>',
     },
     authorName: { type: 'text', label: 'Author name', default: 'Pradeep Gowda' },
     authorTitle: { type: 'text', label: 'Author title', default: 'Chief Executive Officer, EVP HQ' },
@@ -20,9 +20,9 @@ export const schema: SectionSchema = {
     mainImageAlt: { type: 'text', label: 'Main Image Alt Text', default: '' },
     achievementHeading: { type: 'text', label: 'Achievement heading', default: 'We want you to stand out' },
     achievementText: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Achievement text',
-        default: 'We know how to make an employer feel authentic. So you can attract the right talent, strengthen culture, and build a workplace people genuinely connect with.',
+        default: '<p>We know how to make an employer feel authentic. So you can attract the right talent, strengthen culture, and build a workplace people genuinely connect with.</p>',
     },
     stat1Value: { type: 'text', label: 'Stat 1 value', default: '158+' },
     stat1Label: { type: 'text', label: 'Stat 1 label', default: 'number of videos produced' },
@@ -82,9 +82,11 @@ export default function QuoteStatsSection({
                     <div className="relative">
                         <span className="pointer-events-none absolute -left-20 -top-20 select-none text-[18rem] font-black leading-none text-accent-brand/40" style={{ zIndex: 0 }}>&ldquo;</span>
                         {quote && (
-                            <p className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl" style={{ zIndex: 1 }}>
-                                {quote}
-                            </p>
+                            <div 
+                                className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl prose prose-sm max-w-none [&_p]:mb-2" 
+                                style={{ zIndex: 1 }}
+                                dangerouslySetInnerHTML={{ __html: quote }}
+                            />
                         )}
                         <div className="flex items-center gap-3">
                             {authorImage ? (
@@ -140,9 +142,10 @@ export default function QuoteStatsSection({
                             </p>
                         )}
                         {achievementText && (
-                            <p className="text-sm leading-relaxed text-gray-500">
-                                {achievementText}
-                            </p>
+                            <div 
+                                className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                dangerouslySetInnerHTML={{ __html: achievementText }}
+                            />
                         )}
                     </div>
 

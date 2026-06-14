@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'contact-cta',
@@ -12,9 +12,9 @@ export const schema: SectionSchema = {
     badgeText: { type: 'text', label: 'Badge Label', default: 'Get In Touch' },
     heading: { type: 'text', label: 'Heading', default: "Let's Create Something Great Together" },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: "Have a project in mind or just want to say hello? We'd love to hear from you.",
+        default: "<p>Have a project in mind or just want to say hello? We'd love to hear from you.</p>",
     },
     buttonLabel: { type: 'text', label: 'Button Label', default: "Let's Talk" },
     buttonUrl: { type: 'url', label: 'Button URL', default: '#' },
@@ -31,7 +31,7 @@ type Props = {
 export default function ContactCtaSection({
     badgeText = 'Get In Touch',
     heading = "Let's Create Something Great Together",
-    description = "Have a project in mind or just want to say hello? We'd love to hear from you.",
+    description = "<p>Have a project in mind or just want to say hello? We'd love to hear from you.</p>",
     buttonLabel = "Let's Talk",
     buttonUrl = '#',
 }: Props) {
@@ -57,9 +57,10 @@ export default function ContactCtaSection({
                         </h2>
 
                         {description && (
-                            <p className="font-sans text-sm text-gray-300 sm:text-base leading-relaxed max-w-md">
-                                {description}
-                            </p>
+                            <div 
+                                className="font-sans text-sm text-gray-300 sm:text-base leading-relaxed max-w-md prose prose-invert prose-sm [&_p]:mb-2"
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            />
                         )}
 
                         {buttonLabel && buttonUrl && (

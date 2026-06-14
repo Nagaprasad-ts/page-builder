@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'featured-cards',
@@ -14,42 +14,42 @@ const DEFAULT_CARDS = [
     {
         title: 'EVP Strategy',
         description:
-            'Define a compelling Employer Value Proposition (EVP) that aligns perception, culture, and hiring goals across every talent touchpoint.',
+            '<p>Define a compelling Employer Value Proposition (EVP) that aligns perception, culture, and hiring goals across every talent touchpoint.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
     {
         title: 'Employer Branding',
         description:
-            'Build a recognizable employer brand that helps your company attract better talent and stand out in competitive hiring.',
+            '<p>Build a recognizable employer brand that helps your company attract better talent and stand out in competitive hiring.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
     {
         title: 'Recruitment Branding',
         description:
-            'Enable consistent recruitment and hiring communication that increase candidate interest, applications, and engagement across recruitment drives.',
+            '<p>Enable consistent recruitment and hiring communication that increase candidate interest, applications, and engagement across recruitment drives.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
     {
         title: 'LinkedIn Branding',
         description:
-            'Strengthen company and leadership presence through consistent storytelling, thought leadership, and employer-focused content.',
+            '<p>Strengthen company and leadership presence through consistent storytelling, thought leadership, and employer-focused content.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
     {
         title: 'Employee Experience',
         description:
-            'Design meaningful employee journeys that improve engagement, retention, workplace culture, and overall employer perception.',
+            '<p>Design meaningful employee journeys that improve engagement, retention, workplace culture, and overall employer perception.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
     {
         title: 'HR Tech & Automation',
         description:
-            'Streamline hiring and people operations with integrated HR systems, automation workflows, and recruitment analytics.',
+            '<p>Streamline hiring and people operations with integrated HR systems, automation workflows, and recruitment analytics.</p>',
         linkLabel: 'Learn more',
         linkUrl: '#',
     },
@@ -62,10 +62,10 @@ export const schema: SectionSchema = {
         default: 'Brand Solutions Across Every Touchpoint',
     },
     subtext: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Subtext',
         default:
-            'From strategy to experience, EVP Headquarters helps companies shape perception, attract better talent, and build stronger workplaces.',
+            '<p>From strategy to experience, EVP Headquarters helps companies shape perception, attract better talent, and build stronger workplaces.</p>',
     },
     cards: {
         type: 'array',
@@ -73,7 +73,7 @@ export const schema: SectionSchema = {
         default: DEFAULT_CARDS,
         itemSchema: {
             title: { type: 'text', label: 'Title', default: 'Card Title' },
-            description: { type: 'textarea', label: 'Description', default: 'Card description.' },
+            description: { type: 'richtext', label: 'Description', default: '<p>Card description.</p>' },
             image: { type: 'image', label: 'Image' },
             imageAlt: { type: 'text', label: 'Image Alt Text', default: '' },
             linkLabel: { type: 'text', label: 'Link label', default: 'Learn more' },
@@ -136,9 +136,10 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                         )}
 
                         {subtext && (
-                            <p className="md:mb-10 text-base leading-relaxed text-gray-500">
-                                {subtext}
-                            </p>
+                            <div 
+                                className="md:mb-10 text-base leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                dangerouslySetInnerHTML={{ __html: subtext }}
+                            />
                         )}
 
                         {/* Arrow controls */}
@@ -218,9 +219,12 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                         {card.title}
                                     </h3>
 
-                                    <p className="mb-6 flex-1 text-sm leading-relaxed text-gray-500">
-                                        {card.description}
-                                    </p>
+                                    {card.description && (
+                                        <div 
+                                            className="mb-6 flex-1 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            dangerouslySetInnerHTML={{ __html: card.description }}
+                                        />
+                                    )}
 
                                     {card.linkLabel && card.linkUrl && (
                                         <BrandButton

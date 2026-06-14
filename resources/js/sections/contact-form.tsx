@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Clock, Mail, MapPin, Phone, Shield, CheckCircle } from 'lucide-react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
+import { useState } from 'react';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'contact-form',
@@ -18,14 +18,14 @@ export const schema: SectionSchema = {
     phoneNumber: { type: 'text', label: 'Phone Number', default: '+91 98440 38489' },
     phoneNote: { type: 'text', label: 'Phone Note', default: 'Mon - Fri, 10:00 AM - 6:00 PM IST' },
     addressText: { 
-        type: 'textarea', 
+        type: 'richtext', 
         label: 'Address', 
-        default: "EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056" 
+        default: "<p>EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056</p>" 
     },
     workingHours: { 
-        type: 'textarea', 
+        type: 'richtext', 
         label: 'Working Hours', 
-        default: "Monday - Friday\n10:00 AM - 6:00 PM IST\nSaturday - Sunday\nClosed" 
+        default: "<p>Monday - Friday<br>10:00 AM - 6:00 PM IST<br>Saturday - Sunday<br>Closed</p>" 
     },
     formHeading: { type: 'text', label: 'Form Heading', default: 'Send Us a Message' },
     formSubheading: { type: 'text', label: 'Form Subheading', default: "Fill out the form below and we'll get back to you soon." },
@@ -53,8 +53,8 @@ export default function ContactFormSection({
     emailNote = 'We typically reply within 24 hours.',
     phoneNumber = '+91 98440 38489',
     phoneNote = 'Mon - Fri, 10:00 AM - 6:00 PM IST',
-    addressText = "EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056",
-    workingHours = "Monday - Friday\n10:00 AM - 6:00 PM IST\nSaturday - Sunday\nClosed",
+    addressText = "<p>EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056</p>",
+    workingHours = "<p>Monday - Friday<br>10:00 AM - 6:00 PM IST<br>Saturday - Sunday<br>Closed</p>",
     formHeading = 'Send Us a Message',
     formSubheading = "Fill out the form below and we'll get back to you soon.",
     buttonLabel = 'Send Message',
@@ -65,7 +65,10 @@ export default function ContactFormSection({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.name || !formData.email || !formData.message) return;
+
+        if (!formData.name || !formData.email || !formData.message) {
+return;
+}
 
         setIsSubmitting(true);
         setTimeout(() => {
@@ -133,9 +136,10 @@ export default function ContactFormSection({
                                 </div>
                                 <div className="space-y-1">
                                     <h3 className="font-heading text-sm font-bold text-brand">Address</h3>
-                                    <p className="font-sans text-sm font-medium leading-relaxed text-gray-700 whitespace-pre-line">
-                                        {addressText}
-                                    </p>
+                                    <div 
+                                        className="font-sans text-sm font-medium leading-relaxed text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
+                                        dangerouslySetInnerHTML={{ __html: addressText }}
+                                    />
                                 </div>
                             </div>
                         )}
@@ -148,9 +152,10 @@ export default function ContactFormSection({
                                 </div>
                                 <div className="space-y-1">
                                     <h3 className="font-heading text-sm font-bold text-brand">Working Hours</h3>
-                                    <p className="font-sans text-sm font-medium leading-relaxed text-gray-700 whitespace-pre-line">
-                                        {workingHours}
-                                    </p>
+                                    <div 
+                                        className="font-sans text-sm font-medium leading-relaxed text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
+                                        dangerouslySetInnerHTML={{ __html: workingHours }}
+                                    />
                                 </div>
                             </div>
                         )}

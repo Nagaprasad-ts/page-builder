@@ -1,5 +1,6 @@
 import { usePage, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import BrandButton from '@/components/ui/brand-button';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -11,7 +12,6 @@ import {
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 import type { MenuItem } from '@/types/menu';
-import BrandButton from '@/components/ui/brand-button';
 
 export const meta: SectionMeta = {
     name: 'nav-header',
@@ -149,16 +149,24 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                                         className="h-auto bg-transparent px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 data-[state=open]:bg-gray-100 data-[state=open]:text-gray-900 cursor-pointer"
                                                         onClick={(e) => {
                                                             const href = itemHref(item);
+
                                                             if (href && href !== '#') {
                                                                 const isTouch = window.matchMedia('(pointer: coarse)').matches;
+
                                                                 if (isTouch) {
                                                                     const isOpen = e.currentTarget.getAttribute('data-state') === 'open';
-                                                                    if (!isOpen) return;
+
+                                                                    if (!isOpen) {
+return;
+}
                                                                 }
+
                                                                 if (e.metaKey || e.ctrlKey) {
                                                                     window.open(href, '_blank');
+
                                                                     return;
                                                                 }
+
                                                                 router.visit(href);
                                                             }
                                                         }}

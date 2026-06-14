@@ -1,6 +1,6 @@
+import Link from '@tiptap/extension-link';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
 import {
     Bold,
     Italic,
@@ -13,8 +13,8 @@ import {
     Code,
     Eraser,
 } from 'lucide-react';
-import { Toggle } from '@/components/ui/toggle';
 import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
 import { cn } from '@/lib/utils';
 
 type Props = {

@@ -26,9 +26,9 @@ export const schema: SectionSchema = {
             },
             title: { type: 'text', label: 'Title', default: 'Feature title' },
             body: {
-                type: 'textarea',
+                type: 'richtext',
                 label: 'Description',
-                default: 'Short description of this feature.',
+                default: '<p>Short description of this feature.</p>',
             },
         },
     },
@@ -46,12 +46,19 @@ type Props = {
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -79,7 +86,10 @@ export default function FeaturesSection({ heading, items = [] }: Props) {
                                 </h3>
                             )}
                             {item.body && (
-                                <p className="text-gray-600">{item.body}</p>
+                                <div 
+                                    className="text-gray-600 prose prose-sm max-w-none [&_p]:mb-2"
+                                    dangerouslySetInnerHTML={{ __html: item.body }}
+                                />
                             )}
                         </div>
                     ))}

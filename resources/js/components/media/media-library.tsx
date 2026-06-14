@@ -34,6 +34,7 @@ export function MediaLibrary({
 
     const filtered = media.filter((item) => {
         const q = search.toLowerCase();
+
         return (
             item.original_name?.toLowerCase().includes(q) ||
             item.alt?.toLowerCase().includes(q) ||
@@ -43,7 +44,10 @@ export function MediaLibrary({
 
     const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files ?? []);
-        if (files.length === 0) return;
+
+        if (files.length === 0) {
+return;
+}
 
         const uploaded = await Promise.all(
             files.map(async (file) => {
@@ -58,16 +62,20 @@ export function MediaLibrary({
                     },
                     body: formData,
                 });
+
                 return res.ok ? ((await res.json()) as MediaItem) : null;
             }),
         );
 
         const successful = uploaded.filter((item): item is MediaItem => item !== null);
+
         if (successful.length > 0) {
             onMediaChange([...successful.reverse(), ...media]);
         }
 
-        if (fileInputRef.current) fileInputRef.current.value = '';
+        if (fileInputRef.current) {
+fileInputRef.current.value = '';
+}
     };
 
     const handleDelete = async (item: MediaItem) => {
@@ -166,7 +174,9 @@ export function MediaLibrary({
                                     {!selectable && (
                                         <button
                                             type="button"
-                                            onClick={(e) => { e.stopPropagation(); handleDelete(item); }}
+                                            onClick={(e) => {
+ e.stopPropagation(); handleDelete(item); 
+}}
                                             className="absolute top-1 right-1 hidden rounded-full bg-white p-1 text-red-600 shadow group-hover:flex hover:bg-red-50"
                                         >
                                             <Trash2 className="h-3 w-3" />

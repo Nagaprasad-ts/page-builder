@@ -1,6 +1,6 @@
 import React from 'react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'get-in-touch',
@@ -12,9 +12,9 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     title: { type: 'text', label: 'Title', default: "Let's Get In Touch." },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: 'Your laboratory instruments should serve you, not the other way around. We\'re happy to help you.',
+        default: '<p>Your laboratory instruments should serve you, not the other way around. We\'re happy to help you.</p>',
     },
     primaryLabel: { type: 'text', label: 'Primary Button Label', default: 'Book a discovery call' },
     primaryUrl: { type: 'url', label: 'Primary Button URL', default: '#' },
@@ -33,7 +33,7 @@ type Props = {
 
 export default function GetInTouchSection({
     title = "Let's Get In Touch.",
-    description = "Your laboratory instruments should serve you, not the other way around. We're happy to help you.",
+    description = "<p>Your laboratory instruments should serve you, not the other way around. We're happy to help you.</p>",
     primaryLabel = "Book a discovery call",
     primaryUrl = "#",
     secondaryLabel = "Test Your Samples",
@@ -88,12 +88,11 @@ export default function GetInTouchSection({
 
                         {/* Subtitle / Description */}
                         {description && (
-                            <p 
-                                className="mt-8 text-pretty text-base font-normal leading-relaxed antialiased sm:text-lg max-w-xl"
+                            <div 
+                                className="mt-8 text-pretty text-base font-normal leading-relaxed antialiased sm:text-lg max-w-xl prose prose-invert prose-sm [&_p]:mb-2"
                                 style={{ color: 'rgba(255, 255, 255, 0.85)' }}
-                            >
-                                {description}
-                            </p>
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            />
                         )}
 
                         {/* Action buttons matching the sleek black pills with metallic sphere accents */}

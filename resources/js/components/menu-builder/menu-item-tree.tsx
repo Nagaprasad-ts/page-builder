@@ -1,6 +1,7 @@
+import type {
+    DragEndEvent} from '@dnd-kit/core';
 import {
     DndContext,
-    DragEndEvent,
     KeyboardSensor,
     PointerSensor,
     closestCenter,
@@ -72,6 +73,7 @@ function SortableItemRow({ item, onEdit, onDelete, onAddChild }: RowProps) {
                         {item.type === 'page' && item.page
                             ? (() => {
                                 const path = item.page.path ?? item.page.slug;
+
                                 return path.startsWith('/') ? path : `/${path}`;
                               })()
                             : (item.url ?? '—')}
@@ -125,6 +127,7 @@ function SortableItemRow({ item, onEdit, onDelete, onAddChild }: RowProps) {
                                     {child.type === 'page' && child.page
                                         ? (() => {
                                             const path = child.page.path ?? child.page.slug;
+
                                             return path.startsWith('/') ? path : `/${path}`;
                                           })()
                                         : (child.url ?? '—')}
@@ -167,11 +170,17 @@ export function MenuItemTree({ items, onEdit, onDelete, onAddChild, onReorder }:
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
-        if (!over || active.id === over.id) return;
+
+        if (!over || active.id === over.id) {
+return;
+}
 
         const oldIndex = items.findIndex((i) => i.id === active.id);
         const newIndex = items.findIndex((i) => i.id === over.id);
-        if (oldIndex === -1 || newIndex === -1) return;
+
+        if (oldIndex === -1 || newIndex === -1) {
+return;
+}
 
         const reordered = arrayMove(items, oldIndex, newIndex);
         onReorder(reordered);

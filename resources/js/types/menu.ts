@@ -9,7 +9,7 @@ export type MenuItem = {
     target: '_self' | '_blank';
     sort_order: number;
     children: MenuItem[];
-    page?: { id: number; title: string; slug: string } | null;
+    page?: { id: number; title: string; slug: string; path?: string } | null;
 };
 
 export type Menu = {

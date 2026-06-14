@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import * as LucideIcons from 'lucide-react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
+import React, { useState } from 'react';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'site-footer',
@@ -74,7 +74,11 @@ export const schema: SectionSchema = {
         },
     },
     newsletterHeading: { type: 'text', label: 'Newsletter Heading', default: "Let's Stay in Touch" },
-    newsletterText: { type: 'text', label: 'Newsletter Text', default: 'Get insights, tips, and updates on visual storytelling straight to your inbox.' },
+    newsletterText: {
+        type: 'richtext',
+        label: 'Newsletter Text',
+        default: '<p>Get insights, tips, and updates on visual storytelling straight to your inbox.</p>',
+    },
     newsletterPlaceholder: { type: 'text', label: 'Newsletter Placeholder', default: 'Enter your email address' },
     newsletterButtonLabel: { type: 'text', label: 'Newsletter Button Label', default: 'Subscribe' },
     newsletterIcon: { type: 'text', label: 'Newsletter Icon', default: 'Send' },
@@ -146,12 +150,19 @@ type Props = {
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -169,7 +180,7 @@ export default function SiteFooterSection({
     companyLinks = [],
     resourcesLinks = [],
     newsletterHeading = "Let's Stay in Touch",
-    newsletterText = "Get insights, tips, and updates on visual storytelling straight to your inbox.",
+    newsletterText = "<p>Get insights, tips, and updates on visual storytelling straight to your inbox.</p>",
     newsletterPlaceholder = "Enter your email address",
     newsletterButtonLabel = "Subscribe",
     newsletterIcon = 'Send',
@@ -248,9 +259,12 @@ export default function SiteFooterSection({
                                 <h3 className="font-heading text-2xl font-bold tracking-tight text-white md:text-3xl">
                                     {newsletterHeading}
                                 </h3>
-                                <p className="max-w-md text-sm text-gray-400">
-                                    {newsletterText}
-                                </p>
+                                {newsletterText && (
+                                    <div
+                                        className="max-w-md text-sm text-gray-400 prose prose-invert prose-sm [&_p]:mb-0 [&_a]:underline"
+                                        dangerouslySetInnerHTML={{ __html: newsletterText }}
+                                    />
+                                )}
                             </div>
                         </div>
 

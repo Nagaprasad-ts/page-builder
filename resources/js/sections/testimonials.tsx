@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
@@ -11,19 +11,19 @@ export const meta: SectionMeta = {
 
 const DEFAULT_TESTIMONIALS = [
     {
-        quote: 'Working with EVP HQ transformed how we present ourselves to potential talent. Our employer brand finally feels authentic and compelling.',
+        quote: '<p>Working with EVP HQ transformed how we present ourselves to potential talent. Our employer brand finally feels authentic and compelling.</p>',
         authorName: 'Sarah Mitchell',
         authorTitle: 'Head of People, TechCorp',
         authorImage: null,
     },
     {
-        quote: 'The team at EVP HQ truly understands the intersection of culture and branding. They helped us build something our employees are proud of.',
+        quote: '<p>The team at EVP HQ truly understands the intersection of culture and branding. They helped us build something our employees are proud of.</p>',
         authorName: 'Rahul Sharma',
         authorTitle: 'HR Director, Innovate Labs',
         authorImage: null,
     },
     {
-        quote: 'From strategy to execution, every step felt intentional. We saw a measurable improvement in candidate quality within months.',
+        quote: '<p>From strategy to execution, every step felt intentional. We saw a measurable improvement in candidate quality within months.</p>',
         authorName: 'Priya Nair',
         authorTitle: 'Talent Acquisition Lead, FinEdge',
         authorImage: null,
@@ -37,16 +37,16 @@ export const schema: SectionSchema = {
         default: 'What Our Customers Say',
     },
     subtext: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Subtext',
-        default: 'We have stood out with people-first solutions crafted to strengthen employer brands, workplace culture, and talent experiences.',
+        default: '<p>We have stood out with people-first solutions crafted to strengthen employer brands, workplace culture, and talent experiences.</p>',
     },
     testimonials: {
         type: 'array',
         label: 'Testimonials',
         default: DEFAULT_TESTIMONIALS,
         itemSchema: {
-            quote: { type: 'textarea', label: 'Quote', default: 'Your testimonial here.' },
+            quote: { type: 'richtext', label: 'Quote', default: '<p>Your testimonial here.</p>' },
             authorName: { type: 'text', label: 'Author name', default: 'Jane Brooklyn' },
             authorTitle: { type: 'text', label: 'Author title', default: 'New company director' },
             authorImage: { type: 'image', label: 'Author photo' },
@@ -79,6 +79,7 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
         const update = () => setVisibleCount(window.innerWidth < 768 ? 1 : 2);
         update();
         window.addEventListener('resize', update);
+
         return () => window.removeEventListener('resize', update);
     }, []);
 
@@ -115,9 +116,10 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
                         )}
 
                         {subtext && (
-                            <p className="mb-8 text-sm leading-relaxed text-gray-500">
-                                {subtext}
-                            </p>
+                            <div
+                                className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: subtext }}
+                            />
                         )}
 
                         {/* Arrows + dots */}
@@ -169,9 +171,10 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
                                         &ldquo;
                                     </span>
                                     {item.quote && (
-                                        <p className="mb-8 text-sm leading-relaxed text-gray-700">
-                                            {item.quote}
-                                        </p>
+                                        <div
+                                            className="mb-8 text-sm leading-relaxed text-gray-700 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                            dangerouslySetInnerHTML={{ __html: item.quote }}
+                                        />
                                     )}
                                 </div>
 

@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'testimonial-cta',
@@ -18,14 +18,14 @@ export const schema: SectionSchema = {
         label: 'Testimonials',
         default: [
             {
-                quote: 'Studioit completely transformed our content strategy. The quality, consistency, and creativity of their work have helped us grow our audience and drive results.',
+                quote: '<p>Studioit completely transformed our content strategy. The quality, consistency, and creativity of their work have helped us grow our audience and drive results.</p>',
                 authorName: 'Emily Carter',
                 authorTitle: 'Marketing Director, BrightCo',
                 authorImage: null,
             },
         ],
         itemSchema: {
-            quote: { type: 'textarea', label: 'Quote', default: 'Your testimonial here.' },
+            quote: { type: 'richtext', label: 'Quote', default: '<p>Your testimonial here.</p>' },
             authorName: { type: 'text', label: 'Author name', default: 'John Doe' },
             authorTitle: { type: 'text', label: 'Author title', default: 'CEO, Company' },
             authorImage: { type: 'image', label: 'Author photo' },
@@ -36,9 +36,9 @@ export const schema: SectionSchema = {
     ctaHeadingLine1: { type: 'text', label: 'CTA heading line 1', default: 'Ready to Elevate' },
     ctaHeadingLine2: { type: 'text', label: 'CTA heading line 2', default: 'Your Content?' },
     ctaDescription: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'CTA description',
-        default: "Let's create content that connects, converts, and grows your brand.",
+        default: "<p>Let's create content that connects, converts, and grows your brand.</p>",
     },
     primaryLabel: { type: 'text', label: 'Primary button label', default: 'Book a consultation' },
     primaryUrl: { type: 'url', label: 'Primary button URL', default: '#' },
@@ -72,10 +72,10 @@ type Props = {
 };
 
 export default function TestimonialCtaSection({
-    testimonialNumber,
+    testimonialNumber: _testimonialNumber,
     testimonialHeading,
     testimonials = [],
-    ctaNumber,
+    ctaNumber: _ctaNumber,
     ctaHeadingLine1,
     ctaHeadingLine2,
     ctaDescription,
@@ -111,7 +111,10 @@ export default function TestimonialCtaSection({
                     <div className="relative mb-8">
                         <span className="block text-4xl font-serif font-black text-accent-brand leading-none mb-4 select-none">&ldquo;</span>
                         {current.quote && (
-                            <p className="text-sm leading-relaxed text-gray-600">{current.quote}</p>
+                            <div
+                                className="text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: current.quote }}
+                            />
                         )}
                     </div>
 
@@ -184,7 +187,10 @@ export default function TestimonialCtaSection({
                         </h2>
 
                         {ctaDescription && (
-                            <p className="mb-8 text-sm leading-relaxed text-gray-500">{ctaDescription}</p>
+                            <div
+                                className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                dangerouslySetInnerHTML={{ __html: ctaDescription }}
+                            />
                         )}
                     </div>
 

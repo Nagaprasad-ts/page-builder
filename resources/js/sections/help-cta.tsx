@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'help-cta',
@@ -11,9 +11,9 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     heading: { type: 'text', label: 'Heading', default: "Still can't find what you're looking for?" },
     subtext: {
-        type: 'text',
+        type: 'richtext',
         label: 'Subtext',
-        default: "Let's connect and we'll point you in the right direction.",
+        default: "<p>Let's connect and we'll point you in the right direction.</p>",
     },
     buttonLabel: { type: 'text', label: 'Button Label', default: "Let's Talk" },
     buttonUrl: { type: 'url', label: 'Button URL', default: '#' },
@@ -28,7 +28,7 @@ type Props = {
 
 export default function HelpCtaSection({
     heading = "Still can't find what you're looking for?",
-    subtext = "Let's connect and we'll point you in the right direction.",
+    subtext = "<p>Let's connect and we'll point you in the right direction.</p>",
     buttonLabel = "Let's Talk",
     buttonUrl = '#',
 }: Props) {
@@ -72,9 +72,10 @@ export default function HelpCtaSection({
                                 </h2>
                             )}
                             {subtext && (
-                                <p className="font-sans text-sm text-gray-500 sm:text-base leading-relaxed">
-                                    {subtext}
-                                </p>
+                                <div 
+                                    className="font-sans text-sm text-gray-500 sm:text-base leading-relaxed prose prose-sm max-w-none [&_p]:mb-2"
+                                    dangerouslySetInnerHTML={{ __html: subtext }}
+                                />
                             )}
                         </div>
 

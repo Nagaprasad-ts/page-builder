@@ -26,27 +26,34 @@ export const schema: SectionSchema = {
         type: 'array',
         label: 'Feature Items',
         default: [
-            { icon: 'User', title: 'Information We Collect', description: 'We collect personal and non-personal information that you provide to us voluntarily.' },
-            { icon: 'HardDrive', title: 'How We Use Your Information', description: 'We use your information to provide, improve, and personalize our services.' },
-            { icon: 'Share2', title: 'Sharing of Information', description: 'We do not sell your personal information. We may share it with trusted partners only when necessary.' },
-            { icon: 'Shield', title: 'Data Security', description: 'We implement appropriate security measures to protect your information from unauthorized access.' },
-            { icon: 'UserCheck', title: 'Your Choices', description: 'You can access, update, or request deletion of your personal information anytime.' },
+            { icon: 'User', title: 'Information We Collect', description: '<p>We collect personal and non-personal information that you provide to us voluntarily.</p>' },
+            { icon: 'HardDrive', title: 'How We Use Your Information', description: '<p>We use your information to provide, improve, and personalize our services.</p>' },
+            { icon: 'Share2', title: 'Sharing of Information', description: '<p>We do not sell your personal information. We may share it with trusted partners only when necessary.</p>' },
+            { icon: 'Shield', title: 'Data Security', description: '<p>We implement appropriate security measures to protect your information from unauthorized access.</p>' },
+            { icon: 'UserCheck', title: 'Your Choices', description: '<p>You can access, update, or request deletion of your personal information anytime.</p>' },
         ],
         itemSchema: {
             icon: { type: 'text', label: 'Icon (Lucide name e.g. Shield)', default: 'Shield' },
             title: { type: 'text', label: 'Title', default: 'Feature Title' },
-            description: { type: 'textarea', label: 'Description', default: 'Feature description.' },
+            description: { type: 'richtext', label: 'Description', default: '<p>Feature description.</p>' },
         },
     },
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) return null;
+    if (!name) {
+return null;
+}
+
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
         .replace(/^(.)/, (c) => c.toUpperCase());
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-    if (!Icon) return <span className={className}>{name}</span>;
+
+    if (!Icon) {
+return <span className={className}>{name}</span>;
+}
+
     return <Icon className={className} />;
 }
 
@@ -146,7 +153,12 @@ export default function PolicyOverviewSection({
                                         <DynamicIcon name={f.icon} className="h-8 w-8 text-accent-brand" />
                                     </div>
                                     <h3 className="mb-2 text-sm font-extrabold leading-snug text-gray-900">{f.title}</h3>
-                                    <p className="text-xs leading-relaxed text-gray-500">{f.description}</p>
+                                    {f.description && (
+                                        <div 
+                                            className="text-xs leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            dangerouslySetInnerHTML={{ __html: f.description }}
+                                        />
+                                    )}
                                 </div>
                             ))}
                         </div>

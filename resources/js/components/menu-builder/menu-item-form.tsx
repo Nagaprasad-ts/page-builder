@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
 import { Check, ChevronsUpDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,6 +45,7 @@ function PageCombobox({
             }
         };
         document.addEventListener('mousedown', handler);
+
         return () => document.removeEventListener('mousedown', handler);
     }, []);
 

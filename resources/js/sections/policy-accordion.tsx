@@ -15,26 +15,26 @@ export const schema: SectionSchema = {
     imageAlt: { type: 'text', label: 'Image Alt Text', default: 'Policy illustration' },
     sideHeading: { type: 'text', label: 'Side Heading', default: 'Transparency You Can Count On' },
     sideDescription: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Side Description',
-        default: 'We may update this Privacy Policy from time to time. We encourage you to review this page periodically to stay informed.',
+        default: '<p>We may update this Privacy Policy from time to time. We encourage you to review this page periodically to stay informed.</p>',
     },
     items: {
         type: 'array',
         label: 'Accordion Items',
         default: [
-            { title: 'Information We Collect', content: 'We collect personal and non-personal information that you provide to us voluntarily when using our services.' },
-            { title: 'How We Use Your Information', content: 'We use your information to provide, improve, and personalize our services, and to communicate with you.' },
-            { title: 'Cookies & Tracking Technologies', content: 'We use cookies and similar tracking technologies to enhance your experience and analyze site traffic.' },
-            { title: 'Sharing of Information', content: 'We do not sell your personal information. We may share it with trusted partners only when necessary.' },
-            { title: 'Data Security', content: 'We implement appropriate security measures to protect your information from unauthorized access.' },
-            { title: 'Your Rights & Choices', content: 'You can access, update, or request deletion of your personal information at any time.' },
-            { title: 'Third-Party Links', content: 'Our website may contain links to third-party websites. We are not responsible for their privacy practices.' },
-            { title: 'Changes to This Policy', content: 'We may update this Privacy Policy from time to time. We will notify you of any significant changes.' },
+            { title: 'Information We Collect', content: '<p>We collect personal and non-personal information that you provide to us voluntarily when using our services.</p>' },
+            { title: 'How We Use Your Information', content: '<p>We use your information to provide, improve, and personalize our services, and to communicate with you.</p>' },
+            { title: 'Cookies & Tracking Technologies', content: '<p>We use cookies and similar tracking technologies to enhance your experience and analyze site traffic.</p>' },
+            { title: 'Sharing of Information', content: '<p>We do not sell your personal information. We may share it with trusted partners only when necessary.</p>' },
+            { title: 'Data Security', content: '<p>We implement appropriate security measures to protect your information from unauthorized access.</p>' },
+            { title: 'Your Rights & Choices', content: '<p>You can access, update, or request deletion of your personal information at any time.</p>' },
+            { title: 'Third-Party Links', content: '<p>Our website may contain links to third-party websites. We are not responsible for their privacy practices.</p>' },
+            { title: 'Changes to This Policy', content: '<p>We may update this Privacy Policy from time to time. We will notify you of any significant changes.</p>' },
         ],
         itemSchema: {
             title: { type: 'text', label: 'Title', default: 'Policy Item' },
-            content: { type: 'textarea', label: 'Content', default: 'Policy content here.' },
+            content: { type: 'richtext', label: 'Content', default: '<p>Policy content here.</p>' },
         },
     },
 };
@@ -58,7 +58,7 @@ export default function PolicyAccordionSection({
     image = '',
     imageAlt = 'Policy illustration',
     sideHeading = 'Transparency You Can Count On',
-    sideDescription = 'We may update this Privacy Policy from time to time. We encourage you to review this page periodically to stay informed.',
+    sideDescription = '<p>We may update this Privacy Policy from time to time. We encourage you to review this page periodically to stay informed.</p>',
     items = [],
 }: Props) {
     const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -94,6 +94,7 @@ export default function PolicyAccordionSection({
                             {items.map((item, i) => {
                                 const isOpen = openIndex === i;
                                 const num = String(i + 1).padStart(2, '0');
+
                                 return (
                                     <div key={i}>
                                         <button
@@ -114,7 +115,10 @@ export default function PolicyAccordionSection({
                                         </button>
                                         {isOpen && item.content && (
                                             <div className="px-5 pb-4 pl-[3.25rem]">
-                                                <p className="text-sm leading-relaxed text-gray-500">{item.content}</p>
+                                                <div 
+                                                    className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                                    dangerouslySetInnerHTML={{ __html: item.content }}
+                                                />
                                             </div>
                                         )}
                                     </div>
@@ -144,7 +148,10 @@ export default function PolicyAccordionSection({
                             </h3>
                         )}
                         {sideDescription && (
-                            <p className="text-sm leading-relaxed text-gray-500">{sideDescription}</p>
+                            <div 
+                                className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                dangerouslySetInnerHTML={{ __html: sideDescription }}
+                            />
                         )}
                     </div>
 

@@ -1,5 +1,5 @@
-import type { SectionMeta, SectionSchema } from '@/types/builder';
 import BrandButton from '@/components/ui/brand-button';
+import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
     name: 'error-404',
@@ -12,9 +12,9 @@ export const schema: SectionSchema = {
     errorCode: { type: 'text', label: 'Error Code', default: '404' },
     heading: { type: 'text', label: 'Heading', default: "Can't Help you with that." },
     description: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Description',
-        default: "Looks like you've taken a wrong turn. The page you're looking for doesn't exist or has been moved.",
+        default: "<p>Looks like you've taken a wrong turn. The page you're looking for doesn't exist or has been moved.</p>",
     },
     buttonLabel: { type: 'text', label: 'Button Label', default: 'Back to Homepage' },
     buttonUrl: { type: 'url', label: 'Button URL', default: '/' },
@@ -35,7 +35,7 @@ type Props = {
 export default function Error404Section({
     errorCode = '404',
     heading = "Can't Help you with that.",
-    description = "Looks like you've taken a wrong turn. The page you're looking for doesn't exist or has been moved.",
+    description = "<p>Looks like you've taken a wrong turn. The page you're looking for doesn't exist or has been moved.</p>",
     buttonLabel = 'Back to Homepage',
     buttonUrl = '/',
     sign1Text = 'This Way?',
@@ -62,9 +62,10 @@ export default function Error404Section({
 
                         {/* Description */}
                         {description && (
-                            <p className="max-w-md font-sans text-base leading-relaxed text-gray-500 sm:text-lg">
-                                {description}
-                            </p>
+                            <div 
+                                className="max-w-md font-sans text-base leading-relaxed text-gray-500 sm:text-lg prose prose-sm [&_p]:mb-2"
+                                dangerouslySetInnerHTML={{ __html: description }}
+                            />
                         )}
 
                         {/* CTA button */}
