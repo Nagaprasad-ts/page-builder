@@ -1,9 +1,7 @@
 <?php
 
-use App\Models\Page;
-use App\Models\PageSection;
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,16 +10,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $admin = User::where('role', 'admin')->first() ?? User::first();
+        $admin = DB::table('users')->where('role', 'admin')->first() ?? DB::table('users')->first();
 
         if (! $admin) {
             return;
         }
 
-        $page = Page::where('slug', '404')->first();
+        $page = DB::table('pages')->where('slug', '404')->first();
 
         if (! $page) {
-            $page = Page::create([
+            $pageId = DB::table('pages')->insertGetId([
                 'title' => 'error.tsx',
                 'slug' => '404',
                 'meta_title' => 'Page Not Found',
@@ -31,12 +29,14 @@ return new class extends Migration
                 'published_at' => now(),
                 'created_by' => $admin->id,
                 'updated_by' => $admin->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             $now = now();
-            PageSection::insert([
+            DB::table('page_sections')->insert([
                 [
-                    'page_id' => $page->id,
+                    'page_id' => $pageId,
                     'region' => 'body',
                     'section_type' => 'error-404',
                     'sort_order' => 0,
@@ -45,7 +45,7 @@ return new class extends Migration
                     'updated_at' => $now,
                 ],
                 [
-                    'page_id' => $page->id,
+                    'page_id' => $pageId,
                     'region' => 'body',
                     'section_type' => 'explore-services',
                     'sort_order' => 1,
@@ -54,7 +54,7 @@ return new class extends Migration
                     'updated_at' => $now,
                 ],
                 [
-                    'page_id' => $page->id,
+                    'page_id' => $pageId,
                     'region' => 'body',
                     'section_type' => 'help-cta',
                     'sort_order' => 2,
@@ -71,6 +71,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Page::where('slug', '404')->delete();
+        DB::table('pages')->where('slug', '404')->delete();
     }
 };
