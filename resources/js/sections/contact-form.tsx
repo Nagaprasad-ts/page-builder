@@ -13,14 +13,14 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     heading: { type: 'text', label: 'Left Heading', default: "We're Here to Help" },
     subheading: { type: 'text', label: 'Left Subheading', default: 'Reach out to us through any of the following channels.' },
-    emailAddress: { type: 'text', label: 'Email Address', default: 'hello@eppresentations.com' },
+    emailAddress: { type: 'text', label: 'Email Address', default: 'hello@evphq.com' },
     emailNote: { type: 'text', label: 'Email Note', default: 'We typically reply within 24 hours.' },
-    phoneNumber: { type: 'text', label: 'Phone Number', default: '+91 98765 43210' },
+    phoneNumber: { type: 'text', label: 'Phone Number', default: '+91 98440 38489' },
     phoneNote: { type: 'text', label: 'Phone Note', default: 'Mon - Fri, 10:00 AM - 6:00 PM IST' },
     addressText: { 
         type: 'textarea', 
         label: 'Address', 
-        default: "EP Presentations Pvt. Ltd.\n123, Creative Hub, Koramangala,\nBengaluru, Karnataka 560034, India" 
+        default: "EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056" 
     },
     workingHours: { 
         type: 'textarea', 
@@ -49,11 +49,11 @@ type Props = {
 export default function ContactFormSection({
     heading = "We're Here to Help",
     subheading = 'Reach out to us through any of the following channels.',
-    emailAddress = 'hello@eppresentations.com',
+    emailAddress = 'hello@evphq.com',
     emailNote = 'We typically reply within 24 hours.',
-    phoneNumber = '+91 98765 43210',
+    phoneNumber = '+91 98440 38489',
     phoneNote = 'Mon - Fri, 10:00 AM - 6:00 PM IST',
-    addressText = "EP Presentations Pvt. Ltd.\n123, Creative Hub, Koramangala,\nBengaluru, Karnataka 560034, India",
+    addressText = "EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056",
     workingHours = "Monday - Friday\n10:00 AM - 6:00 PM IST\nSaturday - Sunday\nClosed",
     formHeading = 'Send Us a Message',
     formSubheading = "Fill out the form below and we'll get back to you soon.",

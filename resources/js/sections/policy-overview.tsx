@@ -13,7 +13,7 @@ export const schema: SectionSchema = {
     description1: {
         type: 'richtext',
         label: 'First Paragraph',
-        default: '<p>At EP Presentations, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.</p>',
+        default: '<p>At EVP Headquarters, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.</p>',
     },
     description2: {
         type: 'richtext',
@@ -67,7 +67,7 @@ type Props = {
 
 export default function PolicyOverviewSection({
     heading = 'Introduction',
-    description1 = 'At EP Presentations, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.',
+    description1 = 'At EVP Headquarters, we value your trust. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.',
     description2 = 'By using our website, you agree to the practices described in this policy.',
     image = '',
     imageAlt = 'Privacy policy illustration',

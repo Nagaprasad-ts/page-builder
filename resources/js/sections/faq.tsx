@@ -59,7 +59,7 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                         <p className="mb-3 text-sm font-bold text-accent-brand">{label}</p>
                     )}
                     {heading && (
-                        <h2 className="mb-4 text-3xl font-extrabold leading-tight text-gray-900 lg:text-4xl">
+                        <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900 ">
                             {heading}
                         </h2>
                     )}

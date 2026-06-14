@@ -17,27 +17,26 @@ export const schema: SectionSchema = {
         label: 'Description text',
         default: '<p>We help businesses communicate better with presentations and visuals that inform, inspire, and make a lasting impact.</p>',
     },
-    email: { type: 'text', label: 'Email Address', default: 'hello@eppresentations.com' },
+    email: { type: 'text', label: 'Email Address', default: 'hello@evphq.com' },
     emailIcon: { type: 'text', label: 'Email Icon', default: 'Mail' },
-    phone: { type: 'text', label: 'Phone Number', default: '+91 98765 43210' },
+    phone: { type: 'text', label: 'Phone Number', default: '+91 98440 38489' },
     phoneIcon: { type: 'text', label: 'Phone Icon', default: 'Phone' },
     address: {
-        type: 'textarea',
+        type: 'richtext',
         label: 'Address',
-        default: 'EP Presentations Pvt. Ltd.\n123, Creative Hub, Koramangala,\nBengaluru, Karnataka 560034, India',
+        default: '<p>EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056</p>',
     },
     addressIcon: { type: 'text', label: 'Address Icon', default: 'MapPin' },
-    copyrightText: { type: 'text', label: 'Copyright text', default: '© 2024 EP Presentations Pvt. Ltd. All rights reserved.' },
+    copyrightText: { type: 'text', label: 'Copyright text', default: 'EVP Headquarters. All rights reserved.' },
     servicesLinks: {
         type: 'array',
         label: 'Services Links',
         default: [
-            { label: 'Presentation Design', url: '#' },
-            { label: 'Training & Workshops', url: '#' },
-            { label: 'Video Presentations', url: '#' },
-            { label: 'Templates & Tools', url: '#' },
-            { label: 'Self Serve Products', url: '#' },
-            { label: 'Broadcast & Webinars', url: '#' },
+            { label: 'Employer Branding', url: '#' },
+            { label: 'Recruitment Branding', url: '#' },
+            { label: 'Personal Branding', url: '#' },
+            { label: 'Workspace Branding', url: '#' },
+            { label: 'Placement Branding', url: '#' },
         ],
         itemSchema: {
             label: { type: 'text', label: 'Label', default: 'Link label' },
@@ -49,10 +48,9 @@ export const schema: SectionSchema = {
         label: 'Company Links',
         default: [
             { label: 'About Us', url: '#' },
-            { label: 'Our Process', url: '#' },
-            { label: 'Work', url: '#' },
             { label: 'Careers', url: '#' },
-            { label: 'Blog', url: '#' },
+            { label: 'Work', url: '#' },
+            { label: 'Case Studies', url: '#' },
             { label: 'Contact Us', url: '#' },
         ],
         itemSchema: {
@@ -64,11 +62,11 @@ export const schema: SectionSchema = {
         type: 'array',
         label: 'Resources Links',
         default: [
-            { label: 'Case Studies', url: '#' },
+            { label: 'Articles', url: '#' },
+            { label: 'Whitepapers', url: '#' },
+            { label: 'Trends', url: '#' },
             { label: 'Templates', url: '#' },
-            { label: 'eBooks & Guides', url: '#' },
-            { label: 'Webinars', url: '#' },
-            { label: 'FAQs', url: '#' },
+            { label: 'Checklists', url: '#' },
         ],
         itemSchema: {
             label: { type: 'text', label: 'Label', default: 'Link label' },
@@ -93,6 +91,24 @@ export const schema: SectionSchema = {
             icon: { type: 'text', label: 'Icon name (e.g. Linkedin, Twitter, Youtube)', default: 'Linkedin' },
             url: { type: 'url', label: 'URL', default: '#' },
         },
+    },
+    policyLinks: {
+        type: 'array',
+        label: 'Policy Links',
+        default: [
+            { label: 'Privacy Policy', url: '#' },
+            { label: 'Terms of Service', url: '#' },
+            { label: 'Refund Policy', url: '#' },
+        ],
+        itemSchema: {
+            label: { type: 'text', label: 'Label', default: 'Link label' },
+            url: { type: 'url', label: 'URL', default: '#' },
+        },
+    },
+    signatureText: {
+        type: 'text',
+        label: 'Signature Text',
+        default: 'Made with 🧡 for impactful stories.',
     },
 };
 
@@ -125,6 +141,8 @@ type Props = {
     newsletterButtonLabel?: string;
     newsletterIcon?: string;
     socialLinks?: SocialLinkItem[];
+    policyLinks?: LinkItem[];
+    signatureText?: string;
 };
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
@@ -140,11 +158,11 @@ function DynamicIcon({ name, className }: { name?: string; className?: string })
 export default function SiteFooterSection({
     logoUrl,
     descriptionText,
-    email,
+    email = 'hello@evphq.com',
     emailIcon = 'Mail',
-    phone,
+    phone = '+91 98440 38489',
     phoneIcon = 'Phone',
-    address,
+    address = '<p>EVP Headquarters Pvt Ltd #15, 2nd Floor, 7th Main Road, Jnanaganga Nagar, Bengaluru, 560 056</p>',
     addressIcon = 'MapPin',
     copyrightText,
     servicesLinks = [],
@@ -156,6 +174,8 @@ export default function SiteFooterSection({
     newsletterButtonLabel = "Subscribe",
     newsletterIcon = 'Send',
     socialLinks = [],
+    policyLinks = [],
+    signatureText = 'Made with 🧡 for impactful stories.',
 }: Props) {
     const [openSections, setOpenSections] = useState<Record<string, boolean>>({
         services: false,
@@ -177,6 +197,40 @@ export default function SiteFooterSection({
         { icon: 'Facebook', url: '#' },
         { icon: 'Youtube', url: '#' },
     ];
+
+    const activePolicyLinks = policyLinks.length > 0 ? policyLinks : [
+        { label: 'Privacy Policy', url: '#' },
+        { label: 'Terms of Service', url: '#' },
+        { label: 'Refund Policy', url: '#' },
+    ];
+
+    const activeServicesLinks = servicesLinks.length > 0 ? servicesLinks : [
+        { label: 'Employer Branding', url: '#' },
+        { label: 'Recruitment Branding', url: '#' },
+        { label: 'Personal Branding', url: '#' },
+        { label: 'Workspace Branding', url: '#' },
+        { label: 'Placement Branding', url: '#' },
+    ];
+
+    const activeCompanyLinks = companyLinks.length > 0 ? companyLinks : [
+        { label: 'About Us', url: '#' },
+        { label: 'Careers', url: '#' },
+        { label: 'Work', url: '#' },
+        { label: 'Case Studies', url: '#' },
+        { label: 'Contact Us', url: '#' },
+    ];
+
+    const activeResourcesLinks = resourcesLinks.length > 0 ? resourcesLinks : [
+        { label: 'Articles', url: '#' },
+        { label: 'Whitepapers', url: '#' },
+        { label: 'Trends', url: '#' },
+        { label: 'Templates', url: '#' },
+        { label: 'Checklists', url: '#' },
+    ];
+
+    const cleanCopyright = copyrightText
+        ? copyrightText.replace(/^\s*©\s*\d{4}\s*/, '').replace(/^\s*©\s*/, '')
+        : (copyrightText === '' ? '' : 'EVP Headquarters. All rights reserved.');
 
     return (
         <footer className="bg-[#0f1115] text-gray-400 py-16">
@@ -238,7 +292,7 @@ export default function SiteFooterSection({
                         )}
                         {descriptionText && (
                             <div
-                                className="text-sm leading-relaxed text-gray-400 max-w-sm prose prose-sm prose-invert [&_p]:mb-2 [&_a]:underline"
+                                className="text-sm leading-relaxed text-gray-300 max-w-sm prose prose-sm prose-invert [&_p]:mb-2 [&_a]:underline"
                                 dangerouslySetInnerHTML={{ __html: descriptionText }}
                             />
                         )}
@@ -273,9 +327,9 @@ export default function SiteFooterSection({
                             </h3>
                             <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.services ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
                                 <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {servicesLinks.map((link, i) => (
+                                    {activeServicesLinks.map((link, i) => (
                                         <li key={i}>
-                                            <a href={link.url ?? '#'} className="hover:text-accent-brand transition">
+                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
                                                 {link.label}
                                             </a>
                                         </li>
@@ -298,9 +352,9 @@ export default function SiteFooterSection({
                             </h3>
                             <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.company ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
                                 <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {companyLinks.map((link, i) => (
+                                    {activeCompanyLinks.map((link, i) => (
                                         <li key={i}>
-                                            <a href={link.url ?? '#'} className="hover:text-accent-brand transition">
+                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
                                                 {link.label}
                                             </a>
                                         </li>
@@ -323,9 +377,9 @@ export default function SiteFooterSection({
                             </h3>
                             <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.resources ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
                                 <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {resourcesLinks.map((link, i) => (
+                                    {activeResourcesLinks.map((link, i) => (
                                         <li key={i}>
-                                            <a href={link.url ?? '#'} className="hover:text-accent-brand transition">
+                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
                                                 {link.label}
                                             </a>
                                         </li>
@@ -349,21 +403,24 @@ export default function SiteFooterSection({
                             <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.contact ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
                                 <ul className="space-y-4 text-sm pt-2 lg:pt-0">
                                     {email && (
-                                        <li className="flex items-center gap-3">
+                                        <li className="flex items-center gap-3 text-gray-300">
                                             <DynamicIcon name={emailIcon} className="h-4 w-4 shrink-0 text-accent-brand" />
-                                            <a href={`mailto:${email}`} className="hover:text-accent-brand transition">{email}</a>
+                                            <a href={`mailto:${email}`} className="hover:text-accent-brand transition text-gray-300">{email}</a>
                                         </li>
                                     )}
                                     {phone && (
-                                        <li className="flex items-center gap-3">
+                                        <li className="flex items-center gap-3 text-gray-300">
                                             <DynamicIcon name={phoneIcon} className="h-4 w-4 shrink-0 text-accent-brand" />
-                                            <a href={`tel:${phone}`} className="hover:text-accent-brand transition">{phone}</a>
+                                            <a href={`tel:${phone}`} className="hover:text-accent-brand transition text-gray-300">{phone}</a>
                                         </li>
                                     )}
                                     {address && (
-                                        <li className="flex items-start gap-3 leading-relaxed">
-                                            <DynamicIcon name={addressIcon} className="h-4 w-4 shrink-0 text-accent-brand mt-0.5" />
-                                            <span>{address}</span>
+                                        <li className="flex items-start gap-3 leading-relaxed text-gray-300">
+                                            <DynamicIcon name={addressIcon} className="h-4 w-4 shrink-0 text-accent-brand mt-1" />
+                                            <div
+                                                className="prose prose-sm prose-invert [&_p]:mb-0 [&_p]:leading-relaxed text-gray-300"
+                                                dangerouslySetInnerHTML={{ __html: address }}
+                                            />
                                         </li>
                                     )}
                                 </ul>
@@ -374,18 +431,30 @@ export default function SiteFooterSection({
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-16 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-5 md:flex-row text-xs text-gray-500">
-                    <p>{copyrightText}</p>
-                    <div className="flex items-center gap-4">
-                        <a href="#" className="hover:underline transition">Privacy Policy</a>
-                        <span className="text-accent-brand/40">•</span>
-                        <a href="#" className="hover:underline transition">Terms of Service</a>
-                        <span className="text-accent-brand/40">•</span>
-                        <a href="#" className="hover:underline transition">Refund Policy</a>
-                    </div>
-                    <p className="flex items-center gap-1.5">
-                        Made with <span className="text-accent-brand select-none">🧡</span> for impactful stories.
+                <div className="mt-16 border-t border-white/5 pt-8 flex flex-col items-center justify-between gap-5 md:flex-row text-xs text-gray-400 w-full">
+                    <p className="text-gray-400">
+                        &copy; {new Date().getFullYear()} {cleanCopyright}
                     </p>
+                    {activePolicyLinks.length > 0 && (
+                        <div className="flex items-center gap-4">
+                            {activePolicyLinks.map((link, i) => (
+                                <React.Fragment key={i}>
+                                    {i > 0 && <span className="text-accent-brand/40">&bull;</span>}
+                                    <a
+                                        href={link.url ?? '#'}
+                                        className="text-gray-400 hover:text-accent-brand transition hover:underline"
+                                    >
+                                        {link.label}
+                                    </a>
+                                </React.Fragment>
+                            ))}
+                        </div>
+                    )}
+                    {signatureText && (
+                        <p className="text-gray-400 flex items-center gap-1.5">
+                            {signatureText}
+                        </p>
+                    )}
                 </div>
             </div>
         </footer>

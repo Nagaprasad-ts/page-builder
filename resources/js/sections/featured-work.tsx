@@ -99,7 +99,7 @@ export default function FeaturedWorkSection({
                         <p className="mb-3 text-sm font-bold text-accent-brand">{label}</p>
                     )}
 
-                    <h2 className="mb-4 text-3xl font-extrabold leading-tight text-gray-900 sm:text-4xl lg:text-5xl">
+                    <h2 className="mb-4 font-extrabold leading-tight text-gray-900 text-4xl">
                         {headingLine1 && <span className="block">{headingLine1}</span>}
                         {headingLine2 && (
                             <span className="block">

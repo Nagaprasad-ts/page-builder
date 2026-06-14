@@ -71,7 +71,7 @@ export default function SectionIntro({
 
                 {/* ── Left Column: Heading & Description ── */}
                 <div className="w-full lg:w-[45%] space-y-6">
-                    <h2 className="text-4xl font-extrabold leading-tight text-gray-900 lg:text-5xl">
+                    <h2 className="text-4xl font-extrabold leading-tight text-gray-900">
                         {headingLine1 && <span className="block">{headingLine1}</span>}
                         {headingLine2 && <span className="block text-accent-brand">{headingLine2}</span>}
                     </h2>
