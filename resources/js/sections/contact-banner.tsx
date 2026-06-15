@@ -42,18 +42,18 @@ export default function GetInTouchSection({
     return (
         <section className="bg-background py-16 font-sans">
             <div className="mx-auto max-w-7xl px-4 md:px-7">
-                
+
                 {/* Main Brand-Themed CTA Card
                     Added an custom `--ring-base` CSS variable that dynamically clamps between 500px and 1400px 
                     based on the viewport width, ensuring seamless responsiveness across any screen size.
                 */}
-                <div 
+                <div
                     className="relative overflow-hidden bg-brand text-white px-8 py-16 sm:px-12 sm:py-20 md:px-16 lg:py-24 rounded-3xl"
-                    style={{ 
+                    style={{
                         '--ring-base': 'clamp(500px, 85vw, 1400px)'
                     } as React.CSSProperties}
                 >
-                    
+
                     {/* ————— Concentric Accent Glow Circles (Right Side) ————— 
                         By tying all ring sizes to the single responsive `--ring-base` variable, 
                         all circles scale perfectly in sync across all device widths.
@@ -79,8 +79,8 @@ export default function GetInTouchSection({
                     {/* ————— Content Block ————— */}
                     <div className="relative z-10 max-w-2xl text-left">
                         {/* Title using font-heading (Fraunces) */}
-                        <h2 
-                            className="font-heading text-pretty text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"
+                        <h2
+                            className="font-heading text-pretty text-4xl font-extrabold tracking-tight"
                             style={{ color: '#ffffff' }}
                         >
                             {title}
@@ -88,7 +88,7 @@ export default function GetInTouchSection({
 
                         {/* Subtitle / Description */}
                         {description && (
-                            <div 
+                            <div
                                 className="mt-8 text-pretty text-base font-normal leading-relaxed antialiased sm:text-lg max-w-xl prose prose-invert prose-sm [&_p]:mb-2"
                                 style={{ color: 'rgba(255, 255, 255, 0.85)' }}
                                 dangerouslySetInnerHTML={{ __html: description }}
@@ -97,7 +97,7 @@ export default function GetInTouchSection({
 
                         {/* Action buttons matching the sleek black pills with metallic sphere accents */}
                         <div className="mt-8 flex flex-wrap gap-4 sm:gap-6">
-                            
+
                             {/* Primary Pill Button */}
                             {primaryLabel && (
                                 <BrandButton variant="black-pill" href={primaryUrl}>
