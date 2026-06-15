@@ -70,7 +70,7 @@ export default function PolicyAccordionSection({
 
     return (
         <section className="bg-white py-16">
-            <div className="mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <div className="flex flex-col gap-12 lg:flex-row lg:items-start">
 
                     {/* ── Left: heading + accordion ── */}

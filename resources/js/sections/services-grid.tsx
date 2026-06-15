@@ -121,7 +121,7 @@ export default function ServicesGridSection({
 }: Props) {
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
 
                 {/* Heading */}
                 {heading && (

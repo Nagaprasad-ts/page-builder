@@ -40,8 +40,8 @@ export default function GetInTouchSection({
     secondaryUrl = "#",
 }: Props) {
     return (
-        <section className="bg-background px-4 py-16 sm:px-6 lg:px-8 font-sans">
-            <div className="mx-auto max-w-7xl">
+        <section className="bg-background py-16 font-sans">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 
                 {/* Main Brand-Themed CTA Card
                     Added an custom `--ring-base` CSS variable that dynamically clamps between 500px and 1400px 

@@ -81,8 +81,8 @@ export const schema: SectionSchema = {
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
     if (!name) {
-return null;
-}
+        return null;
+    }
 
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
@@ -90,8 +90,8 @@ return null;
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
 
     if (!Icon) {
-return <span className={className}>{name}</span>;
-}
+        return <span className={className}>{name}</span>;
+    }
 
     return <Icon className={className} />;
 }
@@ -120,8 +120,8 @@ export default function ExploreServicesSection({
     const items: ServiceCard[] = rawServices.length > 0 ? rawServices : DEFAULT_SERVICES;
 
     return (
-        <section className="mx-auto max-w-7xl bg-white py-16 sm:py-24">
-            <div>
+        <section className="bg-white">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
 
                 {/* ── Heading Block ── */}
                 <div className="mb-16 text-center space-y-3">
@@ -177,7 +177,7 @@ export default function ExploreServicesSection({
                                         </h3>
                                     )}
                                     {service.description && (
-                                        <div 
+                                        <div
                                             className="font-sans text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
                                             dangerouslySetInnerHTML={{ __html: service.description }}
                                         />
@@ -186,16 +186,14 @@ export default function ExploreServicesSection({
 
                                 {/* Arrow Button */}
                                 {service.linkUrl && (
-                                    <div className="flex justify-end pt-4">
-                                        <BrandButton
-                                            variant="secondary"
+                                    <div className="flex justify-end pt-2">
+                                        <a
                                             href={service.linkUrl}
-                                            showArrow={false}
                                             className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-white transition-colors duration-200 hover:bg-accent-brand"
                                             aria-label={service.title ? `Explore ${service.title}` : 'Explore Service'}
                                         >
                                             <ArrowRight className="h-4 w-4" />
-                                        </BrandButton>
+                                        </a>
                                     </div>
                                 )}
                             </div>

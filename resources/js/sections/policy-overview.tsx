@@ -88,7 +88,7 @@ export default function PolicyOverviewSection({
     return (
         <section className="bg-white">
             {/* ── Top: text + image ── */}
-            <div className="mx-auto max-w-7xl px-6 py-16 sm:px-8 lg:px-12">
+            <div className="mx-auto max-w-7xl px-4 md:px-7 py-16">
                 <div className="flex flex-col gap-12 lg:flex-row lg:items-center">
 
                     {/* Left */}
@@ -145,7 +145,7 @@ export default function PolicyOverviewSection({
             {/* ── Bottom: feature grid ── */}
             {features.length > 0 && (
                 <div className="bg-gray-50">
-                    <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8 lg:px-12">
+                    <div className="mx-auto max-w-7xl px-4 md:px-7 py-12">
                         <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
                             {features.map((f, i) => (
                                 <div key={i} className="flex flex-col items-center text-center">

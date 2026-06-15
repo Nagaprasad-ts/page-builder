@@ -46,7 +46,7 @@ export default function TrustedPartners({ heading, logos }: Props) {
 
     return (
         <section className="bg-white py-16">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:gap-0">
 
                     {/* Left 30%: heading */}

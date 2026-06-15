@@ -33,8 +33,9 @@ export default function HelpCtaSection({
     buttonUrl = '#',
 }: Props) {
     return (
-        <section className="mx-auto max-w-7xl bg-white py-12">
-            <div className="rounded-[2.5rem] bg-accent-brand/[0.06] p-8 md:p-12 transition-all duration-300 hover:shadow-xs">
+        <section className="bg-white py-12">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
+                <div className="rounded-[2.5rem] bg-accent-brand/[0.06] p-8 md:p-12 transition-all duration-300 hover:shadow-xs">
                 <div className="flex flex-col items-center gap-8 md:flex-row md:gap-12">
 
                     {/* ── Left side: Beautiful SVG Chat Bubble Illustration ── */}
@@ -90,6 +91,7 @@ export default function HelpCtaSection({
                     </div>
 
                 </div>
+            </div>
             </div>
         </section>
     );

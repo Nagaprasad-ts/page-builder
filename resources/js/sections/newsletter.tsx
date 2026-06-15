@@ -36,7 +36,7 @@ export default function NewsletterSection({
 }: Props) {
     return (
         <section className="bg-indigo-600 py-20 text-white">
-            <div className="mx-auto max-w-2xl px-6 text-center">
+            <div className="mx-auto max-w-7xl px-4 md:px-7 text-center">
                 {heading && (
                     <h2 className="mb-4 text-3xl font-bold">{heading}</h2>
                 )}

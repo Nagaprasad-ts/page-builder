@@ -121,7 +121,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
 
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
 
                     {/* ── Left 40%: heading + subtext + arrows ── */}
@@ -231,7 +231,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                             variant="link"
                                             href={card.linkUrl}
                                             showArrow={false}
-                                            className="p-0 text-brand hover:text-brand/80 gap-2"
+                                            className="p-0 text-brand hover:text-brand/80 gap-2 self-start"
                                         >
                                             {card.linkLabel}
                                             <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

@@ -42,7 +42,7 @@ export default function ContactCtaSection({
             <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] rounded-full bg-accent-brand/10 blur-3xl pointer-events-none" />
             <div className="absolute bottom-[-10%] left-[-10%] w-[250px] h-[250px] rounded-full bg-accent-brand/5 blur-2xl pointer-events-none" />
 
-            <div className="mx-auto max-w-7xl flex flex-col items-center justify-between gap-12 lg:flex-row relative z-10">
+            <div className="mx-auto max-w-7xl px-4 md:px-7 flex flex-col items-center justify-between gap-12 lg:flex-row relative z-10">
                     
                     {/* ── Left side: Text Content ── */}
                     <div className="w-full space-y-6 lg:w-1/2 text-left">

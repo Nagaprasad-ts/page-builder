@@ -42,12 +42,12 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
     const heroImage = image ?? backgroundImage ?? null;
 
     return (
-        <section className="relative overflow-hidden bg-white md:h-screen">
-            <div className="h-full mx-auto max-w-7xl px-6">
-                <div className="flex flex-col md:flex-row md:h-full md:items-center">
+        <section className="relative overflow-hidden bg-white md:h-[80vh] md:min-h-[600px] md:max-h-[800px] flex items-center">
+            <div className="w-full mx-auto max-w-7xl px-4 md:px-7 py-12 md:py-24">
+                <div className="flex flex-col md:flex-row md:items-center w-full gap-10 md:gap-0">
 
                     {/* ── Left 50%: Text ── */}
-                    <div className="relative z-10 flex w-full flex-col justify-center py-10 md:w-1/2 md:py-24 md:pr-12">
+                    <div className="relative z-10 flex w-full flex-col justify-center md:w-1/2 md:pr-12">
 
                         {/* Arrow / decorative background image */}
                         {textBgImage && (
@@ -92,18 +92,18 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                     </div>
 
                     {/* ── Right 50%: Image ── */}
-                    <div className="relative w-full md:w-1/2">
+                    <div className="relative w-full md:w-1/2 flex justify-center md:justify-end">
                         {/* Decorative accent behind image */}
                         <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-accent-brand/10" />
                         <div className="pointer-events-none absolute -bottom-10 right-1/4 h-32 w-32 rounded-full bg-accent-brand/5" />
                         <div className="pointer-events-none absolute right-8 top-1/3 h-16 w-16 overflow-hidden rounded-full border-8 border-accent-brand/20" />
 
-                        <div className="relative h-72 w-full overflow-hidden md:h-full md:aspect-auto">
+                        <div className="relative w-full overflow-hidden flex justify-center">
                             {heroImage ? (
                                 <img
                                     src={heroImage}
                                     alt={imageAlt ?? ''}
-                                    className="w-130 rounded-3xl object-cover"
+                                    className="w-full max-w-md md:max-w-none rounded-3xl object-cover shadow-xl aspect-[4/3]"
                                 />
                             ) : (
                                 <div className="flex h-full min-h-[400px] rounded-3xl w-full items-center justify-center bg-gradient-to-br from-accent-brand/10 to-brand/10">

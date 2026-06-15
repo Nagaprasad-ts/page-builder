@@ -64,27 +64,37 @@ function MobileNavItem({ item, onClose }: { item: MenuItem; onClose: () => void 
 
     return (
         <div>
-            <button
-                type="button"
-                onClick={() => setOpen((v) => !v)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900"
-            >
-                {item.label}
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+            <div className="flex w-full items-center justify-between rounded-lg hover:bg-gray-50/70">
+                <a
+                    href={itemHref(item)}
+                    target={item.target}
+                    onClick={onClose}
+                    className="flex-1 rounded-l-lg px-3 py-3 text-sm font-medium text-gray-700 transition hover:text-gray-900"
                 >
-                    <polyline points="6 9 12 15 18 9" />
-                </svg>
-            </button>
+                    {item.label}
+                </a>
+                <button
+                    type="button"
+                    onClick={() => setOpen((v) => !v)}
+                    className="flex h-11 w-11 items-center justify-center rounded-r-lg text-gray-500 transition hover:text-gray-900 border-l border-gray-100/50"
+                    aria-label={open ? 'Collapse menu' : 'Expand menu'}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                    >
+                        <polyline points="6 9 12 15 18 9" />
+                    </svg>
+                </button>
+            </div>
 
             {open && (
                 <div className="ml-4 border-l border-gray-100 pl-3">
@@ -123,7 +133,7 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
     return (
         <>
             <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
-                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
+                <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4">
 
                     {/* Logo / site name */}
                     <a href="/" className="flex shrink-0 items-center gap-2">
@@ -157,8 +167,8 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                                                     const isOpen = e.currentTarget.getAttribute('data-state') === 'open';
 
                                                                     if (!isOpen) {
-return;
-}
+                                                                        return;
+                                                                    }
                                                                 }
 
                                                                 if (e.metaKey || e.ctrlKey) {
@@ -179,22 +189,20 @@ return;
                                                             {item.label}
                                                         </a>
                                                     </NavigationMenuTrigger>
-                                                    <NavigationMenuContent className="min-w-45 bg-white! text-gray-900! border-gray-200! shadow-md!">
-                                                        <ul className="flex flex-col py-1">
-                                                            {item.children.map((child) => (
-                                                                <li key={child.id}>
-                                                                    <NavigationMenuLink asChild>
-                                                                        <a
-                                                                            href={itemHref(child)}
-                                                                            target={child.target}
-                                                                            className="block select-none rounded-sm px-4 py-2.5 text-sm text-gray-700 no-underline outline-none transition-colors hover:bg-gray-50 hover:text-gray-900 focus:bg-gray-50 focus:text-gray-900"
-                                                                        >
-                                                                            {child.label}
-                                                                        </a>
-                                                                    </NavigationMenuLink>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
+                                                    <NavigationMenuContent className="min-w-[180px] rounded-xl border border-gray-100 bg-white p-1.5 shadow-lg shadow-black/[0.08]">
+                                                        {item.children.map((child, idx) => (
+                                                            <a
+                                                                key={child.id}
+                                                                href={itemHref(child)}
+                                                                target={child.target}
+                                                                className={cn(
+                                                                    'block rounded-lg px-4 py-2.5 text-[13.5px] font-medium text-gray-600 transition-all duration-150 hover:bg-accent-brand/[0.06] hover:text-gray-900',
+                                                                    idx > 0 && 'mt-0.5',
+                                                                )}
+                                                            >
+                                                                {child.label}
+                                                            </a>
+                                                        ))}
                                                     </NavigationMenuContent>
                                                 </>
                                             ) : (

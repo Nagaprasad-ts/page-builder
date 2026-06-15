@@ -73,7 +73,7 @@ export default function QuoteStatsSection({
 
     return (
         <section className="bg-gray-50 py-16">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
 
                 {/* ── Top row: quote left | image right ── */}
                 <div className="relative mb-12 grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
@@ -109,7 +109,7 @@ export default function QuoteStatsSection({
 
                     {/* Image with blue decoration */}
                     <div className="flex justify-center">
-                        <div className="relative aspect-square w-full max-w-md">
+                        <div className="relative aspect-square w-3/4 max-w-[280px] sm:w-full sm:max-w-md">
                             {/* Blue tilted bg */}
                             <div className="absolute inset-0 rotate-6 rounded-2xl bg-accent-brand/70" />
 

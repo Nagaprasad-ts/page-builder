@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React from 'react';
 import BrandButton from '@/components/ui/brand-button';
 import { cn } from '@/lib/utils';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
@@ -96,6 +96,7 @@ type Props = {
 // Row 0: img  txt  img  txt
 // Row 1: txt  img  txt  img
 function isImageSlot(index: number): boolean {
+
     const col = index % 4;
     const row = Math.floor(index / 4);
 
@@ -110,6 +111,29 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
         ? Object.values(items ?? {})
         : DEFAULT_ITEMS;
 
+    const [activeIndex, setActiveIndex] = React.useState(0);
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    const handleScroll = () => {
+        const el = scrollRef.current;
+        if (!el) {
+            return;
+        }
+        const cardWidth = el.scrollWidth / imageList.length;
+        const index = Math.round(el.scrollLeft / cardWidth);
+        setActiveIndex(index);
+    };
+
+    const scrollTo = (index: number) => {
+        const el = scrollRef.current;
+        if (!el) {
+            return;
+        }
+        const cardWidth = el.scrollWidth / imageList.length;
+        el.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
+        setActiveIndex(index);
+    };
+
     // Build an 8-slot grid: 4 image slots + 4 text slots interleaved across 2 rows of 4 columns
     const totalSlots = 8;
     let imgIdx = 0;
@@ -123,37 +147,12 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
         }
     });
 
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    const handleScroll = () => {
-        const el = scrollRef.current;
-
-        if (!el) {
-return;
-}
-
-        const index = Math.round(el.scrollLeft / el.offsetWidth);
-        setActiveIndex(index);
-    };
-
-    const scrollTo = (index: number) => {
-        const el = scrollRef.current;
-
-        if (!el) {
-return;
-}
-
-        el.scrollTo({ left: index * el.offsetWidth, behavior: 'smooth' });
-        setActiveIndex(index);
-    };
-
     const renderCard = (slot: typeof slots[number]) => {
         if (slot.type === 'image') {
             const { data } = slot as { type: 'image'; data: ImageSlot };
 
             return (
-                <div className="group relative aspect-square rounded-2xl overflow-hidden bg-gray-100">
+                <div className="group relative aspect-square md:aspect-auto md:h-full rounded-2xl overflow-hidden bg-gray-100">
                     {data.image ? (
                         <img
                             src={data.image}
@@ -177,7 +176,7 @@ return;
         return (
             <div
                 className={cn(
-                    'flex aspect-square flex-col justify-between p-6 rounded-2xl transition',
+                    'flex flex-col justify-between p-6 rounded-2xl transition h-[320px] md:h-full',
                     isBlueCard ? 'bg-accent-brand' : 'bg-gray-100',
                 )}
             >
@@ -188,17 +187,18 @@ return;
                         </h3>
                     )}
                     {data.description && (
-                        <div 
+                        <div
                             className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? 'text-white/80 prose-invert [&_p]:text-white/80' : 'text-gray-900')}
                             dangerouslySetInnerHTML={{ __html: data.description }}
                         />
                     )}
                 </div>
                 {data.linkLabel && data.linkUrl && (
-                    <div className="flex items-center justify-between">
-                        <BrandButton 
-                            variant={isBlueCard ? "white" : "secondary"} 
+                    <div className="flex items-center justify-between mt-6">
+                        <BrandButton
+                            variant={isBlueCard ? "white" : "secondary"}
                             href={data.linkUrl}
+                            className="shadow-none"
                         >
                             {data.linkLabel}
                         </BrandButton>
@@ -210,7 +210,7 @@ return;
 
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
 
                 {/* Heading */}
                 {(headingLine1 || headingLine2) && (
@@ -223,67 +223,20 @@ return;
                     </div>
                 )}
 
-                {/* Mobile: horizontal scroll carousel â€” each slide is image on top + text card below */}
+                {/* Mobile: horizontal scroll carousel — only one pair visible at a time */}
                 <div className="md:hidden">
                     <div
                         ref={scrollRef}
                         onScroll={handleScroll}
                         className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4"
-                        style={{ scrollbarWidth: 'none' }}
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                     >
                         {imageList.map((imgData, i) => {
                             const cardData = contentList[i];
-                            const num = i + 1;
-                            const isBlueCard = num % 4 === 1 || num % 4 === 0;
-
                             return (
                                 <div key={i} className="shrink-0 w-[80vw] snap-center flex flex-col gap-4">
-                                    {/* Image */}
-                                    <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
-                                        {imgData.image ? (
-                                            <img
-                                                src={imgData.image}
-                                                alt={imgData.alt ?? ''}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-brand/10 to-brand/20">
-                                                <span className="text-5xl font-black text-brand/40 select-none">IMG</span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Text card */}
-                                    {cardData && (
-                                        <div className={cn(
-                                            'flex aspect-square flex-col justify-between p-6 rounded-2xl',
-                                            isBlueCard ? 'bg-accent-brand' : 'bg-gray-100',
-                                        )}>
-                                            <div>
-                                                {cardData.title && (
-                                                    <h3 className={cn('mb-2 text-3xl font-extrabold leading-snug', isBlueCard ? 'text-white' : 'text-gray-900')}>
-                                                        {cardData.title}
-                                                    </h3>
-                                                )}
-                                                {cardData.description && (
-                                                    <div 
-                                                        className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? 'text-white/80 prose-invert [&_p]:text-white/80' : 'text-gray-900')}
-                                                        dangerouslySetInnerHTML={{ __html: cardData.description }}
-                                                    />
-                                                )}
-                                            </div>
-                                            {cardData.linkLabel && cardData.linkUrl && (
-                                                <div className="flex items-center justify-between">
-                                                    <BrandButton 
-                                                        variant={isBlueCard ? "white" : "secondary"} 
-                                                        href={cardData.linkUrl}
-                                                    >
-                                                        {cardData.linkLabel}
-                                                    </BrandButton>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                                    {renderCard({ type: 'image', data: imgData, num: i + 1 })}
+                                    {cardData && renderCard({ type: 'text', data: cardData, num: i + 1 })}
                                 </div>
                             );
                         })}
@@ -305,7 +258,7 @@ return;
                 </div>
 
                 {/* Desktop: 4-column checkerboard grid */}
-                <div className="hidden md:grid md:grid-cols-4 gap-4">
+                <div className="hidden md:grid md:grid-cols-4 md:auto-rows-fr gap-4">
                     {slots.map((slot, i) => (
                         <div key={i}>{renderCard(slot)}</div>
                     ))}
@@ -315,5 +268,3 @@ return;
         </section>
     );
 }
-
-

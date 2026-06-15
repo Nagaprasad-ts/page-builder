@@ -54,58 +54,62 @@ export default function ServicePackageSection({
     imageAlt,
 }: Props) {
     return (
-        <section className="bg-white py-8 px-4 md:px-0 mx-auto flex max-w-7xl flex-col items-center justify-between gap-12 md:flex-row">
+        <section className="bg-white py-6">
+            <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-8 md:gap-12 md:flex-row px-4 md:px-7 w-full">
 
-            {/* ── Left: text ── */}
-            <div>
-                {/* Heading */}
-                <div className='bg-accent-brand absolute z-0 size-16 rounded-full -top-9 -left-12'></div>
-                <h2 className="mb-5 text-5xl text-brand font-extrabold leading-tight z-10 relative">
-                    {headingLine1 && <span className="block">{headingLine1}</span>}
-                    {headingLine2 && (
-                        <span className="relative" style={{ zIndex: 1 }}>{headingLine2}</span>
+                {/* ── Left: text ── */}
+                <div className="relative flex-1">
+                    {/* Heading */}
+                    <h2 className="relative z-10 mb-5 text-5xl text-brand font-extrabold leading-tight">
+                        {headingLine1 && <span className="block z-10">{headingLine1}</span>}
+                        {headingLine2 && (
+                            <span className="relative inline-block">
+                                <span className="absolute -bottom-5 -right-36 -z-10 size-32 rounded-full bg-accent-brand" />
+                                <span className="relative z-10">{headingLine2}</span>
+                            </span>
+                        )}
+                    </h2>
+
+                    {/* Description */}
+                    {description && (
+                        <div
+                            className="mb-8 max-w-sm text-base font-semibold leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                            dangerouslySetInnerHTML={{ __html: description }}
+                        />
                     )}
-                </h2>
 
-                {/* Description */}
-                {description && (
-                    <div
-                        className="mb-8 max-w-sm text-base font-semibold leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
-                        dangerouslySetInnerHTML={{ __html: description }}
-                    />
-                )}
+                    {/* CTAs */}
+                    <div className="flex flex-wrap items-center gap-6">
+                        {primaryLabel && primaryUrl && (
+                            <BrandButton variant="secondary" href={primaryUrl}>
+                                {primaryLabel}
+                            </BrandButton>
+                        )}
+                        {secondaryLabel && secondaryUrl && (
+                            <BrandButton variant="outline" href={secondaryUrl} showArrow={false} className="gap-2">
+                                {secondaryLabel}
+                                <Download className="h-4 w-4" />
+                            </BrandButton>
+                        )}
+                    </div>
+                </div>
 
-                {/* CTAs */}
-                <div className="flex flex-wrap items-center gap-6">
-                    {primaryLabel && primaryUrl && (
-                        <BrandButton variant="secondary" href={primaryUrl}>
-                            {primaryLabel}
-                        </BrandButton>
-                    )}
-                    {secondaryLabel && secondaryUrl && (
-                        <BrandButton variant="outline" href={secondaryUrl} showArrow={false} className="gap-2">
-                            {secondaryLabel}
-                            <Download className="h-4 w-4" />
-                        </BrandButton>
+                {/* ── Right: image ── */}
+                <div className="w-full md:w-1/2 shrink-0">
+                    {image ? (
+                        <img
+                            src={image}
+                            alt={imageAlt ?? ''}
+                            className="w-full aspect-[4/3] rounded-3xl object-cover"
+                        />
+                    ) : (
+                        <div className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl bg-gray-100">
+                            <span className="text-sm text-gray-400">Add image</span>
+                        </div>
                     )}
                 </div>
-            </div>
 
-            {/* ── Right: image ── */}
-            <div className="w-87.5 shrink-0">
-                {image ? (
-                    <img
-                        src={image}
-                        alt={imageAlt ?? ''}
-                        className="w-full h-87.5 rounded-3xl object-cover"
-                    />
-                ) : (
-                    <div className="flex aspect-video w-full items-center justify-center rounded-3xl bg-gray-100">
-                        <span className="text-sm text-gray-400">Add image</span>
-                    </div>
-                )}
             </div>
-
         </section>
     );
 }

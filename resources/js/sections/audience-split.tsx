@@ -37,8 +37,8 @@ export const schema: SectionSchema = {
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
     if (!name) {
-return null;
-}
+        return null;
+    }
 
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
@@ -46,8 +46,8 @@ return null;
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
 
     if (!Icon) {
-return <span className={className}>{name}</span>;
-}
+        return <span className={className}>{name}</span>;
+    }
 
     return <Icon className={className} />;
 }
@@ -81,7 +81,7 @@ export default function AudienceSplitSection({
 
     return (
         <section className="bg-gray-50/50 py-16 lg:py-24">
-            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 lg:flex-row lg:items-stretch lg:gap-16">
+            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 md:px-9 lg:flex-row lg:items-stretch lg:gap-16">
 
                 {/* ── Left ── */}
                 <div className="w-full lg:w-[68%] space-y-10">
@@ -112,11 +112,10 @@ export default function AudienceSplitSection({
                             {items.map((item, i) => (
                                 <div
                                     key={i}
-                                    className={`flex flex-col items-start ${
-                                        i < items.length - 1
-                                            ? 'lg:border-r lg:border-gray-200/80 lg:pr-5'
-                                            : ''
-                                    }`}
+                                    className={`flex flex-col items-start ${i < items.length - 1
+                                        ? 'lg:border-r lg:border-gray-200/80 lg:pr-5'
+                                        : ''
+                                        }`}
                                 >
                                     <div className="mb-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-brand/10 text-accent-brand">
                                         <DynamicIcon name={item.icon} className="h-5 w-5" />
@@ -126,7 +125,7 @@ export default function AudienceSplitSection({
                                             <h3 className="text-sm font-bold text-brand">{item.title}</h3>
                                         )}
                                         {item.body && (
-                                            <div 
+                                            <div
                                                 className="text-xs leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:m-0"
                                                 dangerouslySetInnerHTML={{ __html: item.body }}
                                             />

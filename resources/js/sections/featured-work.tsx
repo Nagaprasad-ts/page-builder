@@ -91,7 +91,7 @@ export default function FeaturedWorkSection({
 }: Props) {
     return (
         <section className="bg-white py-16">
-            <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-6 lg:flex-row lg:items-center">
+            <div className="mx-auto flex max-w-7xl flex-col items-start gap-10 px-4 md:px-7 lg:flex-row lg:items-center">
 
                 {/* ── Left ── */}
                 <div className="w-full lg:w-[36%] lg:shrink-0">

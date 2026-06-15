@@ -65,7 +65,7 @@ return <span className={className}>{name}</span>;
 export default function FeaturesSection({ heading, items = [] }: Props) {
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-6xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 {heading && (
                     <h2 className="mb-12 text-center text-3xl font-bold text-gray-900">
                         {heading}

@@ -74,7 +74,7 @@ export default function SectionIntro({
 }: Props) {
     return (
         <section className="bg-gray-50 py-16">
-            <div className="mx-auto max-w-7xl px-6 flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mx-auto max-w-7xl px-4 md:px-7 flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
 
                 {/* ── Left Column: Heading & Description ── */}
                 <div className="w-full lg:w-[45%] space-y-6">

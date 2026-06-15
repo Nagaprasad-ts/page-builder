@@ -79,8 +79,9 @@ return;
     };
 
     return (
-        <section className="mx-auto max-w-7xl bg-white py-12 md:py-16">
-            <div className="flex flex-col gap-12 lg:flex-row">
+        <section className="bg-white py-12 md:py-16">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
+                <div className="flex flex-col gap-12 lg:flex-row">
                 
                 {/* ── Left Column: Contact Channels ── */}
                 <div className="w-full space-y-8 lg:w-2/5">
@@ -286,6 +287,7 @@ return;
                     </div>
                 </div>
 
+            </div>
             </div>
         </section>
     );

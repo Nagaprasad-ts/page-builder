@@ -95,7 +95,7 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
 
     return (
         <section className="bg-white py-20">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
 
                 {/* Outer: flex row on desktop, stack on mobile */}
                 <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">

@@ -39,7 +39,7 @@ export default function BreadcrumbsSection({ showHomeIcon = true }: Props) {
 
     return (
         <section className="bg-gray-50/50 py-4 border-b border-gray-100/80">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <Breadcrumb>
                     <BreadcrumbList className="flex flex-wrap items-center gap-1.5 text-sm">
                         {breadcrumbs.map((item, index) => {

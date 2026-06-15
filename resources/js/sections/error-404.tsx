@@ -42,8 +42,8 @@ export default function Error404Section({
     sign2Text = 'Not Here!',
 }: Props) {
     return (
-        <section className="mx-auto max-w-7xl relative overflow-hidden bg-white py-16 md:py-24">
-            <div>
+        <section className="relative overflow-hidden bg-white py-8 md:py-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <div className="flex flex-col items-center justify-between gap-12 lg:flex-row">
 
                     {/* ── Left side: Text Content ── */}
@@ -62,7 +62,7 @@ export default function Error404Section({
 
                         {/* Description */}
                         {description && (
-                            <div 
+                            <div
                                 className="max-w-md font-sans text-base leading-relaxed text-gray-500 sm:text-lg prose prose-sm [&_p]:mb-2"
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />

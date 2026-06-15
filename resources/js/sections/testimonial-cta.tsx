@@ -96,7 +96,7 @@ export default function TestimonialCtaSection({
 
     return (
         <section className="bg-gray-50 py-16 lg:py-24">
-            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 lg:flex-row lg:items-stretch lg:gap-0">
+            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 md:px-7 lg:flex-row lg:items-stretch lg:gap-0">
 
                 {/* ── Left: Testimonial ── */}
                 <div className="flex w-full flex-col justify-between border-b border-gray-200/80 py-10 lg:w-[40%] lg:border-b-0 lg:border-r lg:border-gray-200/80 lg:py-0 lg:pr-10">

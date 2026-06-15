@@ -42,7 +42,7 @@ export default function BreadcrumbSection({ items }: Props) {
 
     return (
         <section className="bg-white py-3">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <nav aria-label="Breadcrumb">
                     <ol className="flex flex-wrap items-center gap-1 text-sm">
                         {crumbs.map((crumb, i) => {

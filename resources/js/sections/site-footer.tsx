@@ -245,7 +245,7 @@ export default function SiteFooterSection({
 
     return (
         <footer className="bg-[#0f1115] text-gray-400 py-16">
-            <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-7xl px-4 md:px-7">
                 {/* Newsletter Card */}
                 <div className="relative mb-16 overflow-hidden rounded-3xl border border-white/5 bg-[#181a1f] p-8 lg:p-12">
                     <div className="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between w-full">
@@ -325,96 +325,76 @@ export default function SiteFooterSection({
                         </div>
                     </div>
 
-                    {/* Columns 2-5 Container: Collapsible accordion on mobile, flex row on desktop */}
-                    <div className="w-full lg:w-[68%] flex flex-col gap-4 lg:flex-row lg:justify-between lg:gap-0">
-                        {/* Column 2: Services */}
-                        <div className="w-full lg:w-[22%] border-b border-white/5 pb-4 lg:border-none lg:pb-0">
-                            <h3
-                                onClick={() => toggleSection('services')}
-                                className="text-white font-heading font-bold text-base relative pb-2 flex items-center justify-between cursor-pointer lg:cursor-default lg:pb-2.5 w-full select-none"
-                            >
-                                <span>Services</span>
-                                <LucideIcons.ChevronDown
-                                    className={`h-4 w-4 text-gray-500 transition-transform duration-200 lg:hidden ${openSections.services ? 'rotate-180' : ''}`}
-                                />
-                                <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
-                            </h3>
-                            <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.services ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
-                                <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {activeServicesLinks.map((link, i) => (
-                                        <li key={i}>
-                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
-                                                {link.label}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
+                    {/* Columns 2-5 Container: split to keep Contact Us full-width on mobile */}
+                    <div className="w-full lg:w-[68%] flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-0">
+                        
+                        {/* Columns 2-4: Services, Company, Resources in 2x2 grid on mobile, flex on desktop */}
+                        <div className="w-full lg:w-[62%] grid grid-cols-2 gap-y-10 gap-x-8 lg:flex lg:flex-row lg:justify-between lg:gap-0">
+                            {/* Column 2: Services */}
+                            <div className="col-span-2 lg:col-span-1 lg:w-[30%]">
+                                <h3 className="text-white font-heading font-bold text-base relative pb-2 lg:pb-2.5 w-full select-none">
+                                    <span>Services</span>
+                                    <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
+                                </h3>
+                                <div className="mt-4 lg:mt-5">
+                                    <ul className="grid grid-cols-2 gap-x-4 gap-y-3.5 lg:grid-cols-1 lg:gap-x-0 lg:gap-y-3.5 text-sm pt-2 lg:pt-0">
+                                        {activeServicesLinks.map((link, i) => (
+                                            <li key={i}>
+                                                <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
+                                                    {link.label}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Column 3: Company */}
+                            <div className="w-full lg:w-[30%]">
+                                <h3 className="text-white font-heading font-bold text-base relative pb-2 lg:pb-2.5 w-full select-none">
+                                    <span>Company</span>
+                                    <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
+                                </h3>
+                                <div className="mt-4 lg:mt-5">
+                                    <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
+                                        {activeCompanyLinks.map((link, i) => (
+                                            <li key={i}>
+                                                <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
+                                                    {link.label}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {/* Column 4: Resources */}
+                            <div className="w-full lg:w-[30%] lg:pr-6 lg:border-r lg:border-white/5">
+                                <h3 className="text-white font-heading font-bold text-base relative pb-2 lg:pb-2.5 w-full select-none">
+                                    <span>Resources</span>
+                                    <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
+                                </h3>
+                                <div className="mt-4 lg:mt-5">
+                                    <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
+                                        {activeResourcesLinks.map((link, i) => (
+                                            <li key={i}>
+                                                <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
+                                                    {link.label}
+                                                </a>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Column 3: Company */}
-                        <div className="w-full lg:w-[22%] border-b border-white/5 pb-4 lg:border-none lg:pb-0">
-                            <h3
-                                onClick={() => toggleSection('company')}
-                                className="text-white font-heading font-bold text-base relative pb-2 flex items-center justify-between cursor-pointer lg:cursor-default lg:pb-2.5 w-full select-none"
-                            >
-                                <span>Company</span>
-                                <LucideIcons.ChevronDown
-                                    className={`h-4 w-4 text-gray-500 transition-transform duration-200 lg:hidden ${openSections.company ? 'rotate-180' : ''}`}
-                                />
-                                <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
-                            </h3>
-                            <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.company ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
-                                <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {activeCompanyLinks.map((link, i) => (
-                                        <li key={i}>
-                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
-                                                {link.label}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Column 4: Resources */}
-                        <div className="w-full lg:w-[22%] border-b border-white/5 pb-4 lg:border-none lg:pb-0 lg:pr-6 lg:border-r lg:border-white/5">
-                            <h3
-                                onClick={() => toggleSection('resources')}
-                                className="text-white font-heading font-bold text-base relative pb-2 flex items-center justify-between cursor-pointer lg:cursor-default lg:pb-2.5 w-full select-none"
-                            >
-                                <span>Resources</span>
-                                <LucideIcons.ChevronDown
-                                    className={`h-4 w-4 text-gray-500 transition-transform duration-200 lg:hidden ${openSections.resources ? 'rotate-180' : ''}`}
-                                />
-                                <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
-                            </h3>
-                            <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.resources ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
-                                <ul className="space-y-3.5 text-sm pt-2 lg:pt-0">
-                                    {activeResourcesLinks.map((link, i) => (
-                                        <li key={i}>
-                                            <a href={link.url ?? '#'} className="text-gray-300 hover:text-accent-brand transition">
-                                                {link.label}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-
-                        {/* Column 5: Contact Us */}
-                        <div className="w-full lg:w-[34%] border-b border-white/5 pb-4 lg:border-none lg:pb-0 lg:pl-6">
-                            <h3
-                                onClick={() => toggleSection('contact')}
-                                className="text-white font-heading font-bold text-base relative pb-2 flex items-center justify-between cursor-pointer lg:cursor-default lg:pb-2.5 w-full select-none"
-                            >
+                        {/* Column 5: Contact Us - full width on mobile, 34% on desktop */}
+                        <div className="w-full lg:w-[34%] lg:pl-6">
+                            <h3 className="text-white font-heading font-bold text-base relative pb-2 lg:pb-2.5 w-full select-none">
                                 <span>Contact Us</span>
-                                <LucideIcons.ChevronDown
-                                    className={`h-4 w-4 text-gray-500 transition-transform duration-200 lg:hidden ${openSections.contact ? 'rotate-180' : ''}`}
-                                />
                                 <span className="absolute bottom-0 left-0 w-8 h-[2px] bg-accent-brand hidden lg:block" />
                             </h3>
-                            <div className={`mt-4 lg:mt-5 lg:block transition-all duration-300 overflow-hidden ${openSections.contact ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 lg:max-h-none lg:opacity-100'}`}>
+                            <div className="mt-4 lg:mt-5">
                                 <ul className="space-y-4 text-sm pt-2 lg:pt-0">
                                     {email && (
                                         <li className="flex items-center gap-3 text-gray-300">
@@ -440,8 +420,8 @@ export default function SiteFooterSection({
                                 </ul>
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
 
                 {/* Bottom Bar */}

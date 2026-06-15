@@ -42,7 +42,7 @@ export default function PageHeroSection({
             className="relative overflow-hidden"
             style={{ backgroundColor: '#1a1a1a' }}
         >
-            <div className="relative mx-auto flex max-w-7xl items-center gap-8 px-6 py-16 sm:px-8 lg:px-12 lg:py-20">
+            <div className="relative mx-auto flex max-w-7xl items-center gap-8 px-4 md:px-7 py-16 lg:py-20">
 
                 {/* ── Left content ── */}
                 <div className="relative z-10 flex-1">

@@ -51,7 +51,7 @@ export default function FaqSection({ label, heading, description, items = [] }: 
 
     return (
         <section className="bg-white py-16">
-            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 lg:flex-row lg:items-start">
+            <div className="mx-auto flex max-w-7xl flex-col gap-12 px-4 md:px-7 lg:flex-row lg:items-start">
 
                 {/* ── Left ── */}
                 <div className="w-full lg:w-2/5 lg:shrink-0">
