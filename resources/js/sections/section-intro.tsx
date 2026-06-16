@@ -36,8 +36,8 @@ export const schema: SectionSchema = {
 
 function DynamicIcon({ name, className }: { name?: string; className?: string }) {
     if (!name) {
-return null;
-}
+        return null;
+    }
 
     const pascalName = name
         .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
@@ -45,8 +45,8 @@ return null;
     const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
 
     if (!Icon) {
-return <span className={className}>{name}</span>;
-}
+        return <span className={className}>{name}</span>;
+    }
 
     return <Icon className={className} />;
 }
@@ -66,7 +66,6 @@ type Props = {
 };
 
 export default function SectionIntro({
-    number: _number,
     headingLine1,
     headingLine2,
     description,
@@ -85,7 +84,7 @@ export default function SectionIntro({
 
                     {description && (
                         <div
-                            className="text-sm font-semibold leading-relaxed text-gray-500 max-w-md prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                            className="max-w-md prose prose-sm"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}
@@ -104,8 +103,8 @@ export default function SectionIntro({
                                         <h3 className="text-base font-bold text-gray-900">{item.title}</h3>
                                     )}
                                     {item.body && (
-                                        <div 
-                                            className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                        <div
+                                            className="prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: item.body }}
                                         />
                                     )}

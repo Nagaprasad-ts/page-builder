@@ -100,7 +100,7 @@ export default function AudienceSplitSection({
                         {/* Description */}
                         {description && (
                             <div
-                                className="font-sans text-sm leading-relaxed text-gray-500 max-w-xl prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="max-w-xl prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />
                         )}

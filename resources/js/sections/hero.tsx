@@ -77,7 +77,7 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
 
                         {subtext && (
                             <div
-                                className="relative z-10 mb-8 max-w-lg text-lg leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="relative z-10 mb-8 max-w-lg text-lg prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: subtext }}
                             />
                         )}

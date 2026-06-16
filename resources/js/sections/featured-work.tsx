@@ -110,7 +110,7 @@ export default function FeaturedWorkSection({
 
                     {description && (
                         <div 
-                            className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                            className="mb-8 prose prose-sm max-w-none"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}

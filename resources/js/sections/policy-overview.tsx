@@ -108,13 +108,13 @@ export default function PolicyOverviewSection({
 
                         {description1 && (
                             <div
-                                className="mb-4 text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="mb-4 text-gray-600 prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: description1 }}
                             />
                         )}
                         {description2 && (
                             <div
-                                className="text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="text-gray-600 prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: description2 }}
                             />
                         )}
@@ -155,7 +155,7 @@ export default function PolicyOverviewSection({
                                     <h3 className="mb-2 text-sm font-extrabold leading-snug text-gray-900">{f.title}</h3>
                                     {f.description && (
                                         <div 
-                                            className="text-xs leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            className="text-xs prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: f.description }}
                                         />
                                     )}

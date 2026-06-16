@@ -117,7 +117,7 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
 
                         {subtext && (
                             <div
-                                className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="mb-8 prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: subtext }}
                             />
                         )}
@@ -172,7 +172,7 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
                                     </span>
                                     {item.quote && (
                                         <div
-                                            className="mb-8 text-sm leading-relaxed text-gray-700 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                            className="mb-8 text-gray-700 prose prose-sm"
                                             dangerouslySetInnerHTML={{ __html: item.quote }}
                                         />
                                     )}

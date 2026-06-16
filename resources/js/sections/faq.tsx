@@ -65,7 +65,7 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                     )}
                     {description && (
                         <div 
-                            className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                            className="prose prose-sm max-w-none"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}
@@ -91,7 +91,7 @@ export default function FaqSection({ label, heading, description, items = [] }: 
                                 </button>
                                 {isOpen && item.answer && (
                                     <div 
-                                        className="pb-4 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                        className="pb-4 prose prose-sm max-w-none"
                                         dangerouslySetInnerHTML={{ __html: item.answer }}
                                     />
                                 )}

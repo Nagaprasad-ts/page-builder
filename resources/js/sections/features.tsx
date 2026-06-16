@@ -87,7 +87,7 @@ export default function FeaturesSection({ heading, items = [] }: Props) {
                             )}
                             {item.body && (
                                 <div 
-                                    className="text-gray-600 prose prose-sm max-w-none [&_p]:mb-2"
+                                    className="text-gray-600 prose prose-sm max-w-none"
                                     dangerouslySetInnerHTML={{ __html: item.body }}
                                 />
                             )}

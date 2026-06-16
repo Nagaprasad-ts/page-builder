@@ -188,19 +188,7 @@ export default function SiteFooterSection({
     policyLinks = [],
     signatureText = 'Made with 🧡 for impactful stories.',
 }: Props) {
-    const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-        services: false,
-        company: false,
-        resources: false,
-        contact: false,
-    });
 
-    const toggleSection = (section: string) => {
-        setOpenSections((prev) => ({
-            ...prev,
-            [section]: !prev[section],
-        }));
-    };
 
     const activeSocialLinks = socialLinks.length > 0 ? socialLinks : [
         { icon: 'Linkedin', url: '#' },
@@ -261,7 +249,7 @@ export default function SiteFooterSection({
                                 </h3>
                                 {newsletterText && (
                                     <div
-                                        className="max-w-md text-sm text-gray-400 prose prose-invert prose-sm [&_p]:mb-0 [&_a]:underline"
+                                        className="max-w-md text-gray-400 prose prose-invert prose-sm [&_p]:mb-0"
                                         dangerouslySetInnerHTML={{ __html: newsletterText }}
                                     />
                                 )}
@@ -306,7 +294,7 @@ export default function SiteFooterSection({
                         )}
                         {descriptionText && (
                             <div
-                                className="text-sm leading-relaxed text-gray-300 max-w-sm prose prose-sm prose-invert [&_p]:mb-2 [&_a]:underline"
+                                className="text-gray-300 max-w-sm prose prose-sm prose-invert"
                                 dangerouslySetInnerHTML={{ __html: descriptionText }}
                             />
                         )}

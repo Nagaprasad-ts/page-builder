@@ -137,7 +137,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
 
                         {subtext && (
                             <div 
-                                className="md:mb-10 text-base leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                className="md:mb-10 text-base prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{ __html: subtext }}
                             />
                         )}
@@ -221,7 +221,7 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
 
                                     {card.description && (
                                         <div 
-                                            className="mb-6 flex-1 text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            className="mb-6 flex-1 prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: card.description }}
                                         />
                                     )}

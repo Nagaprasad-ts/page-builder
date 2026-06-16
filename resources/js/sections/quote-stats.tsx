@@ -83,7 +83,7 @@ export default function QuoteStatsSection({
                         <span className="pointer-events-none absolute -left-20 -top-20 select-none text-[18rem] font-black leading-none text-accent-brand/40" style={{ zIndex: 0 }}>&ldquo;</span>
                         {quote && (
                             <div 
-                                className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl prose prose-sm max-w-none [&_p]:mb-2" 
+                                className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl prose prose-sm max-w-none" 
                                 style={{ zIndex: 1 }}
                                 dangerouslySetInnerHTML={{ __html: quote }}
                             />
@@ -143,7 +143,7 @@ export default function QuoteStatsSection({
                         )}
                         {achievementText && (
                             <div 
-                                className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                className="prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{ __html: achievementText }}
                             />
                         )}

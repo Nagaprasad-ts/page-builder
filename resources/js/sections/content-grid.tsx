@@ -92,7 +92,7 @@ export default function ContentGridSection({
 
                     {description && (
                         <div
-                            className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                            className="mb-8 prose prose-sm"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}

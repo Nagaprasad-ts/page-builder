@@ -72,10 +72,8 @@ type Props = {
 };
 
 export default function TestimonialCtaSection({
-    testimonialNumber: _testimonialNumber,
     testimonialHeading,
     testimonials = [],
-    ctaNumber: _ctaNumber,
     ctaHeadingLine1,
     ctaHeadingLine2,
     ctaDescription,
@@ -112,7 +110,7 @@ export default function TestimonialCtaSection({
                         <span className="block text-4xl font-serif font-black text-accent-brand leading-none mb-4 select-none">&ldquo;</span>
                         {current.quote && (
                             <div
-                                className="text-sm leading-relaxed text-gray-600 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="text-gray-600 prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: current.quote }}
                             />
                         )}
@@ -188,7 +186,7 @@ export default function TestimonialCtaSection({
 
                         {ctaDescription && (
                             <div
-                                className="mb-8 text-sm leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                                className="mb-8 prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: ctaDescription }}
                             />
                         )}

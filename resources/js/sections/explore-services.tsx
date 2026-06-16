@@ -1,6 +1,5 @@
 import * as LucideIcons from 'lucide-react';
 import { ArrowRight } from 'lucide-react';
-import BrandButton from '@/components/ui/brand-button';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
@@ -178,7 +177,7 @@ export default function ExploreServicesSection({
                                     )}
                                     {service.description && (
                                         <div
-                                            className="font-sans text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                            className="prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: service.description }}
                                         />
                                     )}

@@ -58,7 +58,7 @@ export default function ContactCtaSection({
 
                         {description && (
                             <div 
-                                className="font-sans text-sm text-gray-300 sm:text-base leading-relaxed max-w-md prose prose-invert prose-sm [&_p]:mb-2"
+                                className="text-gray-300 sm:text-base max-w-md prose prose-invert prose-sm"
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />
                         )}

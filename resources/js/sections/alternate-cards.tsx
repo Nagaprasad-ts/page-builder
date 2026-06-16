@@ -116,9 +116,11 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
 
     const handleScroll = () => {
         const el = scrollRef.current;
+
         if (!el) {
             return;
         }
+
         const cardWidth = el.scrollWidth / imageList.length;
         const index = Math.round(el.scrollLeft / cardWidth);
         setActiveIndex(index);
@@ -126,9 +128,11 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
 
     const scrollTo = (index: number) => {
         const el = scrollRef.current;
+
         if (!el) {
             return;
         }
+
         const cardWidth = el.scrollWidth / imageList.length;
         el.scrollTo({ left: index * cardWidth, behavior: 'smooth' });
         setActiveIndex(index);
@@ -187,10 +191,12 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                         </h3>
                     )}
                     {data.description && (
-                        <div
-                            className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? 'text-white/80 prose-invert [&_p]:text-white/80' : 'text-gray-900')}
-                            dangerouslySetInnerHTML={{ __html: data.description }}
-                        />
+                        <>
+                            <div
+                                className={cn('text-base leading-relaxed line-clamp-4 prose prose-sm max-w-none [&_p]:m-0', isBlueCard ? `text-white prose-invert alternate-cards-blue-desc-${num}` : 'text-gray-900')}
+                                dangerouslySetInnerHTML={{ __html: data.description }}
+                            />
+                        </>
                     )}
                 </div>
                 {data.linkLabel && data.linkUrl && (
@@ -233,6 +239,7 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                     >
                         {imageList.map((imgData, i) => {
                             const cardData = contentList[i];
+
                             return (
                                 <div key={i} className="shrink-0 w-[80vw] snap-center flex flex-col gap-4">
                                     {renderCard({ type: 'image', data: imgData, num: i + 1 })}

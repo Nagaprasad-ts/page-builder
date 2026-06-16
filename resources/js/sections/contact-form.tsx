@@ -138,7 +138,7 @@ return;
                                 <div className="space-y-1">
                                     <h3 className="font-heading text-sm font-bold text-brand">Address</h3>
                                     <div 
-                                        className="font-sans text-sm font-medium leading-relaxed text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
+                                        className="font-medium text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
                                         dangerouslySetInnerHTML={{ __html: addressText }}
                                     />
                                 </div>
@@ -154,7 +154,7 @@ return;
                                 <div className="space-y-1">
                                     <h3 className="font-heading text-sm font-bold text-brand">Working Hours</h3>
                                     <div 
-                                        className="font-sans text-sm font-medium leading-relaxed text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
+                                        className="font-medium text-gray-700 prose prose-sm max-w-none [&_p]:m-0"
                                         dangerouslySetInnerHTML={{ __html: workingHours }}
                                     />
                                 </div>

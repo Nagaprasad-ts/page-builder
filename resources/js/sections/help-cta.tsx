@@ -74,7 +74,7 @@ export default function HelpCtaSection({
                             )}
                             {subtext && (
                                 <div 
-                                    className="font-sans text-sm text-gray-500 sm:text-base leading-relaxed prose prose-sm max-w-none [&_p]:mb-2"
+                                    className="sm:text-base prose prose-sm max-w-none"
                                     dangerouslySetInnerHTML={{ __html: subtext }}
                                 />
                             )}

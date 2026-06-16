@@ -63,7 +63,7 @@ export default function Error404Section({
                         {/* Description */}
                         {description && (
                             <div
-                                className="max-w-md font-sans text-base leading-relaxed text-gray-500 sm:text-lg prose prose-sm [&_p]:mb-2"
+                                className="max-w-md text-base sm:text-lg prose prose-sm"
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />
                         )}

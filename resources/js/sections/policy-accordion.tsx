@@ -116,7 +116,7 @@ export default function PolicyAccordionSection({
                                         {isOpen && item.content && (
                                             <div className="px-5 pb-4 pl-[3.25rem]">
                                                 <div 
-                                                    className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                                    className="prose prose-sm max-w-none"
                                                     dangerouslySetInnerHTML={{ __html: item.content }}
                                                 />
                                             </div>
@@ -149,7 +149,7 @@ export default function PolicyAccordionSection({
                         )}
                         {sideDescription && (
                             <div 
-                                className="text-sm leading-relaxed text-gray-500 prose prose-sm max-w-none [&_p]:mb-2"
+                                className="prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{ __html: sideDescription }}
                             />
                         )}

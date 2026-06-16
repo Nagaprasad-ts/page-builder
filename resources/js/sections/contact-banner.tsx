@@ -89,7 +89,7 @@ export default function GetInTouchSection({
                         {/* Subtitle / Description */}
                         {description && (
                             <div
-                                className="mt-8 text-pretty text-base font-normal leading-relaxed antialiased sm:text-lg max-w-xl prose prose-invert prose-sm [&_p]:mb-2"
+                                className="mt-8 text-pretty text-base font-normal antialiased sm:text-lg max-w-xl prose prose-invert prose-sm"
                                 style={{ color: 'rgba(255, 255, 255, 0.85)' }}
                                 dangerouslySetInnerHTML={{ __html: description }}
                             />

@@ -148,7 +148,7 @@ export default function ServicesGridSection({
                             )}
                             {featuredDescription && (
                                 <div 
-                                    className="text-sm leading-relaxed text-gray-400 prose prose-invert prose-sm [&_p]:mb-2"
+                                    className="text-gray-400 prose prose-invert prose-sm"
                                     dangerouslySetInnerHTML={{ __html: featuredDescription }}
                                 />
                             )}
@@ -200,7 +200,7 @@ export default function ServicesGridSection({
                                 )}
                                 {card.description && (
                                     <div 
-                                        className="text-xs leading-relaxed text-gray-400 line-clamp-4 prose prose-invert prose-sm [&_p]:mb-2"
+                                        className="text-xs text-gray-400 line-clamp-4 prose prose-invert prose-sm"
                                         dangerouslySetInnerHTML={{ __html: card.description }}
                                     />
                                 )}

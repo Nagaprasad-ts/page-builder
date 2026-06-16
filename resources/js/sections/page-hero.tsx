@@ -62,7 +62,7 @@ export default function PageHeroSection({
                     {/* Description */}
                     {description && (
                         <div 
-                            className="mt-6 max-w-sm text-sm leading-relaxed text-white prose prose-invert prose-sm [&_p]:mb-2"
+                            className="mt-6 max-w-sm text-white prose prose-invert prose-sm"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}

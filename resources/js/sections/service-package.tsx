@@ -41,8 +41,6 @@ type Props = {
 };
 
 export default function ServicePackageSection({
-    number: _number,
-    label: _label,
     headingLine1,
     headingLine2,
     description,
@@ -60,11 +58,11 @@ export default function ServicePackageSection({
                 {/* ── Left: text ── */}
                 <div className="relative flex-1">
                     {/* Heading */}
-                    <h2 className="relative z-10 mb-5 text-5xl text-brand font-extrabold leading-tight">
+                    <h2 className="relative z-10 mb-5 text-3xl md:text-5xl text-brand font-extrabold leading-tight">
                         {headingLine1 && <span className="block z-10">{headingLine1}</span>}
                         {headingLine2 && (
                             <span className="relative inline-block">
-                                <span className="absolute -bottom-5 -right-36 -z-10 size-32 rounded-full bg-accent-brand" />
+                                <span className="absolute -bottom-1 md:bottom-2 -right-4 md:-right-10 -z-10 size-12 md:size-32 rounded-full bg-accent-brand" />
                                 <span className="relative z-10">{headingLine2}</span>
                             </span>
                         )}
@@ -73,7 +71,7 @@ export default function ServicePackageSection({
                     {/* Description */}
                     {description && (
                         <div
-                            className="mb-8 max-w-sm text-base font-semibold leading-relaxed text-gray-500 prose prose-sm [&_p]:mb-2 [&_a]:underline"
+                            className="mb-8 max-w-sm prose prose-sm"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
                     )}
@@ -100,10 +98,10 @@ export default function ServicePackageSection({
                         <img
                             src={image}
                             alt={imageAlt ?? ''}
-                            className="w-full aspect-[4/3] rounded-3xl object-cover"
+                            className="w-full aspect-video rounded-3xl object-cover"
                         />
                     ) : (
-                        <div className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl bg-gray-100">
+                        <div className="flex aspect-video w-full items-center justify-center rounded-3xl bg-gray-100">
                             <span className="text-sm text-gray-400">Add image</span>
                         </div>
                     )}
