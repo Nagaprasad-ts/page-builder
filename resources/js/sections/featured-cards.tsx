@@ -107,7 +107,10 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
     const [visibleCount, setVisibleCount] = useState(2);
 
     useEffect(() => {
-        const update = () => setVisibleCount(window.innerWidth < 768 ? 1 : 2);
+        const update = () => {
+            const nextVal = window.innerWidth < 768 ? 1 : 2;
+            setVisibleCount((prev) => (prev !== nextVal ? nextVal : prev));
+        };
         update();
         window.addEventListener('resize', update);
         
