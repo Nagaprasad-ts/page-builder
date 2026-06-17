@@ -1,4 +1,4 @@
-import * as LucideIcons from 'lucide-react';
+import { DynamicIcon } from '@/components/ui/dynamic-icon';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
 export const meta: SectionMeta = {
@@ -45,22 +45,7 @@ type Props = {
     items?: FeatureItem[];
 };
 
-function DynamicIcon({ name, className }: { name?: string; className?: string }) {
-    if (!name) {
-return null;
-}
 
-    const pascalName = name
-        .replace(/[-_ ]+(.)?/g, (_, c) => (c ? c.toUpperCase() : ''))
-        .replace(/^(.)/, (c) => c.toUpperCase());
-    const Icon = (LucideIcons as Record<string, unknown>)[pascalName] as React.ComponentType<{ className?: string }> | undefined;
-
-    if (!Icon) {
-return <span className={className}>{name}</span>;
-}
-
-    return <Icon className={className} />;
-}
 
 export default function FeaturesSection({ heading, items = [] }: Props) {
     return (
