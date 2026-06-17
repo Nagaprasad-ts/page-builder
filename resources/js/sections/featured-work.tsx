@@ -132,6 +132,8 @@ export default function FeaturedWorkSection({
                                         src={item.image}
                                         alt={item.imageAlt || item.title || ''}
                                         className="h-full w-full object-cover"
+                                        loading="lazy"
+                                        decoding="async"
                                     />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center">

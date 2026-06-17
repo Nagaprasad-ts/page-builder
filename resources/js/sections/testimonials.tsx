@@ -185,6 +185,8 @@ export default function TestimonialsSection({ heading, subtext, testimonials }: 
                                             src={item.authorImage}
                                             alt={item.authorName ?? ''}
                                             className="h-10 w-10 shrink-0 rounded-full object-cover"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     ) : (
                                         <div

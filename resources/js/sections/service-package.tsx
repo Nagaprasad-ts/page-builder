@@ -99,6 +99,8 @@ export default function ServicePackageSection({
                             src={image}
                             alt={imageAlt ?? ''}
                             className="w-full aspect-video rounded-3xl object-cover"
+                            loading="lazy"
+                            decoding="async"
                         />
                     ) : (
                         <div className="flex aspect-video w-full items-center justify-center rounded-3xl bg-gray-100">

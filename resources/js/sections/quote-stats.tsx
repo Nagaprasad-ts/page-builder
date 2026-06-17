@@ -89,11 +89,13 @@ export default function QuoteStatsSection({
                             />
                         )}
                         <div className="flex items-center gap-3">
-                            {authorImage ? (
+                             {authorImage ? (
                                 <img
                                     src={authorImage}
                                     alt={authorName ?? ''}
                                     className="h-12 w-12 rounded-full object-cover"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             ) : (
                                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-200 text-sm font-bold text-gray-500">
@@ -118,6 +120,8 @@ export default function QuoteStatsSection({
                                     src={mainImage}
                                     alt={mainImageAlt ?? ''}
                                     className="absolute inset-0 h-full w-full rounded-2xl object-cover shadow-lg"
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             ) : (
                                 <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-gray-200 shadow-inner">

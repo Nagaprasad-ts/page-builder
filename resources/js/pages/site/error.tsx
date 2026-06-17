@@ -1,5 +1,6 @@
+import React, { Suspense } from 'react';
 import { Head } from '@inertiajs/react';
-import { sectionRegistry } from '@/sections';
+import { lazySectionRegistry } from '@/sections/lazy';
 import Error404Section from '@/sections/error-404';
 import ExploreServicesSection from '@/sections/explore-services';
 import HelpCtaSection from '@/sections/help-cta';
@@ -12,21 +13,25 @@ type Props = {
 };
 
 export default function ErrorPage({ headerSections = [], footerSections = [] }: Props) {
+    const fallback = <div className="min-h-16 animate-pulse bg-gray-50/50" />;
+
     return (
         <>
             <Head title="Page Not Found | EVP HQ" />
 
             {/* Header Sections */}
             {headerSections.map((section) => {
-                const registration = sectionRegistry[section.section_type];
+                const Component = lazySectionRegistry[section.section_type];
 
-                if (!registration) {
+                if (!Component) {
                     return null;
                 }
 
-                const Component = registration.default;
-
-                return <Component key={section.id} {...section.props} />;
+                return (
+                    <Suspense key={section.id} fallback={fallback}>
+                        <Component {...section.props} />
+                    </Suspense>
+                );
             })}
 
             {/* 404 Content */}
@@ -36,15 +41,17 @@ export default function ErrorPage({ headerSections = [], footerSections = [] }: 
 
             {/* Footer Sections */}
             {footerSections.map((section) => {
-                const registration = sectionRegistry[section.section_type];
+                const Component = lazySectionRegistry[section.section_type];
 
-                if (!registration) {
+                if (!Component) {
                     return null;
                 }
 
-                const Component = registration.default;
-
-                return <Component key={section.id} {...section.props} />;
+                return (
+                    <Suspense key={section.id} fallback={fallback}>
+                        <Component {...section.props} />
+                    </Suspense>
+                );
             })}
         </>
     );

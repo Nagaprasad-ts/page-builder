@@ -104,6 +104,7 @@ export default function HeroSection({ heading, subtext, ctaLabel, ctaUrl, image,
                                     src={heroImage}
                                     alt={imageAlt ?? ''}
                                     className="w-full max-w-md md:max-w-none rounded-3xl object-cover shadow-xl aspect-[4/3]"
+                                    fetchPriority="high"
                                 />
                             ) : (
                                 <div className="flex h-full min-h-[400px] rounded-3xl w-full items-center justify-center bg-gradient-to-br from-accent-brand/10 to-brand/10">

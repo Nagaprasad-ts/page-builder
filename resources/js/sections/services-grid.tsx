@@ -172,7 +172,7 @@ export default function ServicesGridSection({
                                     style={{ marginBottom: i === 1 ? '2rem' : '0' }}
                                 >
                                     {img.url ? (
-                                        <img src={img.url} alt={img.alt ?? ''} className="h-full w-full object-cover" />
+                                        <img src={img.url} alt={img.alt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                                     ) : (
                                         <PlaceholderImage />
                                     )}
@@ -214,7 +214,7 @@ export default function ServicesGridSection({
                             {/* Image */}
                             <div className="h-36 w-32 shrink-0 overflow-hidden rounded-xl">
                                 {card.image ? (
-                                    <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" />
+                                    <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
                                 ) : (
                                     <PlaceholderImage />
                                 )}

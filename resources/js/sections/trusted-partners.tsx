@@ -71,6 +71,8 @@ export default function TrustedPartners({ heading, logos }: Props) {
                                             src={logo.image}
                                             alt={logo.alt ?? ''}
                                             className="w-26 h-26 object-contain"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     )}
                                 </div>

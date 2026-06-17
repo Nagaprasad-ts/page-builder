@@ -162,6 +162,8 @@ export default function AlternateCardsSection({ headingLine1, headingLine2, imag
                             src={data.image}
                             alt={data.alt ?? ''}
                             className="h-full w-full object-cover transition duration-500"
+                            loading="lazy"
+                            decoding="async"
                         />
                     ) : (
                         <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-brand/10 to-brand/20">

@@ -135,6 +135,8 @@ export default function PolicyAccordionSection({
                                 alt={imageAlt}
                                 className="mb-6 w-full rounded-2xl object-cover"
                                 style={{ aspectRatio: '4/3' }}
+                                loading="lazy"
+                                decoding="async"
                             />
                         ) : (
                             <div className="mb-6 flex w-full items-center justify-center rounded-2xl bg-gray-100 text-gray-400" style={{ aspectRatio: '4/3' }}>

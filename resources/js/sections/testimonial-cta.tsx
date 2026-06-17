@@ -125,6 +125,8 @@ export default function TestimonialCtaSection({
                                     alt={current.authorName ?? ''}
                                     className="rounded-full object-cover"
                                     style={{ width: '2.5rem', height: '2.5rem', minWidth: '2.5rem' }}
+                                    loading="lazy"
+                                    decoding="async"
                                 />
                             ) : (
                                 <div
@@ -213,6 +215,8 @@ export default function TestimonialCtaSection({
                             src={ctaImage}
                             alt={ctaImageAlt ?? ''}
                             className="w-full h-full min-h-[350px] lg:min-h-full rounded-3xl object-cover shadow-lg hover:shadow-xl transition-shadow duration-300"
+                            loading="lazy"
+                            decoding="async"
                         />
                     ) : (
                         <div className="flex aspect-[4/5] w-full h-full items-center justify-center rounded-3xl bg-gray-200">

@@ -1,0 +1,37 @@
+import React from 'react';
+
+export const lazySectionRegistry: Record<
+    string,
+    React.LazyExoticComponent<React.ComponentType<any>>
+> = {
+    'alternate-cards': React.lazy(() => import('./alternate-cards')),
+    'audience-split': React.lazy(() => import('./audience-split')),
+    'breadcrumb': React.lazy(() => import('./breadcrumb')),
+    'breadcrumbs': React.lazy(() => import('./breadcrumbs')),
+    'get-in-touch': React.lazy(() => import('./contact-banner')),
+    'contact-cta': React.lazy(() => import('./contact-cta')),
+    'contact-form': React.lazy(() => import('./contact-form')),
+    'content-grid': React.lazy(() => import('./content-grid')),
+    'cta': React.lazy(() => import('./cta')),
+    'error-404': React.lazy(() => import('./error-404')),
+    'explore-services': React.lazy(() => import('./explore-services')),
+    'faq': React.lazy(() => import('./faq')),
+    'featured-cards': React.lazy(() => import('./featured-cards')),
+    'featured-work': React.lazy(() => import('./featured-work')),
+    'features': React.lazy(() => import('./features')),
+    'help-cta': React.lazy(() => import('./help-cta')),
+    'hero': React.lazy(() => import('./hero')),
+    'nav-header': React.lazy(() => import('./nav-header')),
+    'newsletter': React.lazy(() => import('./newsletter')),
+    'page-hero': React.lazy(() => import('./page-hero')),
+    'policy-accordion': React.lazy(() => import('./policy-accordion')),
+    'policy-overview': React.lazy(() => import('./policy-overview')),
+    'quote-stats': React.lazy(() => import('./quote-stats')),
+    'section-intro': React.lazy(() => import('./section-intro')),
+    'service-package': React.lazy(() => import('./service-package')),
+    'services-grid': React.lazy(() => import('./services-grid')),
+    'site-footer': React.lazy(() => import('./site-footer')),
+    'testimonial-cta': React.lazy(() => import('./testimonial-cta')),
+    'testimonials': React.lazy(() => import('./testimonials')),
+    'trusted-partners': React.lazy(() => import('./trusted-partners')),
+};

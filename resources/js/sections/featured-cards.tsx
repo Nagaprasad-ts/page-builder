@@ -197,6 +197,8 @@ export default function FeaturedCardsSection({ heading, subtext, cards }: Props)
                                             src={card.image}
                                             alt={card.imageAlt || card.title || ''}
                                             className="h-full w-full object-cover transition hover:scale-105"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                     </div>
                                 ) : (
