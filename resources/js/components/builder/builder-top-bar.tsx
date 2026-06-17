@@ -93,7 +93,7 @@ export function BuilderTopBar({
                     {isSaving && (
                         <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
                     )}
-                    {status === 'published' ? 'Republish' : 'Save draft'}
+                    {status === 'published' ? 'Update' : 'Save draft'}
                 </Button>
 
                 {canPublish && (

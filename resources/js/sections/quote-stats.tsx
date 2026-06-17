@@ -82,14 +82,14 @@ export default function QuoteStatsSection({
                     <div className="relative">
                         <span className="pointer-events-none absolute -left-20 -top-20 select-none text-[18rem] font-black leading-none text-accent-brand/40" style={{ zIndex: 0 }}>&ldquo;</span>
                         {quote && (
-                            <div 
-                                className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-3xl prose prose-sm max-w-none" 
+                            <div
+                                className="relative mb-8 text-xl font-bold leading-snug text-gray-900 md:text-2xl prose max-w-none"
                                 style={{ zIndex: 1 }}
                                 dangerouslySetInnerHTML={{ __html: quote }}
                             />
                         )}
                         <div className="flex items-center gap-3">
-                             {authorImage ? (
+                            {authorImage ? (
                                 <img
                                     src={authorImage}
                                     alt={authorName ?? ''}
@@ -141,12 +141,12 @@ export default function QuoteStatsSection({
                     {/* Achievement text */}
                     <div>
                         {achievementHeading && (
-                            <p className="mb-2 text-sm font-semibold text-brand">
+                            <h3 className="mb-2 text-xl font-semibold text-brand">
                                 {achievementHeading}
-                            </p>
+                            </h3>
                         )}
                         {achievementText && (
-                            <div 
+                            <div
                                 className="prose prose-sm max-w-none"
                                 dangerouslySetInnerHTML={{ __html: achievementText }}
                             />
