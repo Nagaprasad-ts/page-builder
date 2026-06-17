@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react';
 import { Head } from '@inertiajs/react';
-import { lazySectionRegistry } from '@/sections/lazy';
+import { sectionRegistry } from '@/sections';
 import Error404Section from '@/sections/error-404';
 import ExploreServicesSection from '@/sections/explore-services';
 import HelpCtaSection from '@/sections/help-cta';
@@ -13,25 +12,21 @@ type Props = {
 };
 
 export default function ErrorPage({ headerSections = [], footerSections = [] }: Props) {
-    const fallback = <div className="min-h-16 animate-pulse bg-gray-50/50" />;
-
     return (
         <>
             <Head title="Page Not Found | EVP HQ" />
 
             {/* Header Sections */}
             {headerSections.map((section) => {
-                const Component = lazySectionRegistry[section.section_type];
+                const registration = sectionRegistry[section.section_type];
 
-                if (!Component) {
+                if (!registration) {
                     return null;
                 }
 
-                return (
-                    <Suspense key={section.id} fallback={fallback}>
-                        <Component {...section.props} />
-                    </Suspense>
-                );
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
             })}
 
             {/* 404 Content */}
@@ -41,17 +36,15 @@ export default function ErrorPage({ headerSections = [], footerSections = [] }: 
 
             {/* Footer Sections */}
             {footerSections.map((section) => {
-                const Component = lazySectionRegistry[section.section_type];
+                const registration = sectionRegistry[section.section_type];
 
-                if (!Component) {
+                if (!registration) {
                     return null;
                 }
 
-                return (
-                    <Suspense key={section.id} fallback={fallback}>
-                        <Component {...section.props} />
-                    </Suspense>
-                );
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
             })}
         </>
     );

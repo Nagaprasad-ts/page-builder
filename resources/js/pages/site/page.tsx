@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react';
 import { Head } from '@inertiajs/react';
-import { lazySectionRegistry } from '@/sections/lazy';
+import { sectionRegistry } from '@/sections';
 import type { Page, PageSection } from '@/types/builder';
 
 type Props = {
@@ -16,8 +15,6 @@ export default function PublicPage({
     bodySections,
     footerSections,
 }: Props) {
-    const fallback = <div className="min-h-16 animate-pulse bg-gray-50/50" />;
-
     return (
         <>
             <Head title={page.meta_title ?? page.title}>
@@ -30,47 +27,41 @@ export default function PublicPage({
             </Head>
 
             {headerSections.map((section) => {
-                const Component = lazySectionRegistry[section.section_type];
+                const registration = sectionRegistry[section.section_type];
 
-                if (!Component) {
+                if (!registration) {
                     return null;
                 }
 
-                return (
-                    <Suspense key={section.id} fallback={fallback}>
-                        <Component {...section.props} />
-                    </Suspense>
-                );
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
             })}
 
             <div>
                 {bodySections.map((section) => {
-                    const Component = lazySectionRegistry[section.section_type];
+                    const registration = sectionRegistry[section.section_type];
 
-                    if (!Component) {
+                    if (!registration) {
                         return null;
                     }
 
-                    return (
-                        <Suspense key={section.id} fallback={fallback}>
-                            <Component {...section.props} />
-                        </Suspense>
-                    );
+                    const Component = registration.default;
+
+                    return <Component key={section.id} {...section.props} />;
                 })}
             </div>
 
             {footerSections.map((section) => {
-                const Component = lazySectionRegistry[section.section_type];
+                const registration = sectionRegistry[section.section_type];
 
-                if (!Component) {
+                if (!registration) {
                     return null;
                 }
 
-                return (
-                    <Suspense key={section.id} fallback={fallback}>
-                        <Component {...section.props} />
-                    </Suspense>
-                );
+                const Component = registration.default;
+
+                return <Component key={section.id} {...section.props} />;
             })}
         </>
     );
