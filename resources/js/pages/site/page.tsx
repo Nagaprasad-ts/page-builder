@@ -15,6 +15,31 @@ export default function PublicPage({
     bodySections,
     footerSections,
 }: Props) {
+    const isHomePage = page.path === '/' || page.path === 'home';
+    const isSolutionsPage = page.path?.startsWith('solutions/');
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://evphq.com';
+
+    const jsonLd = isHomePage ? {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        'name': 'EVP Headquarters',
+        'url': origin,
+        'logo': `${origin}/apple-touch-icon.png`,
+        'favicon': `${origin}/favicon.ico`,
+    } : isSolutionsPage ? {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        'name': page.title,
+        'serviceType': page.title,
+        'description': page.meta_description || `Learn more about our ${page.title} solution.`,
+        'provider': {
+            '@type': 'Organization',
+            'name': 'EVP Headquarters',
+            'url': origin,
+        },
+        'url': `${origin}/${page.path}`,
+    } : null;
+
     return (
         <>
             <Head title={page.meta_title ?? page.title}>
@@ -23,6 +48,14 @@ export default function PublicPage({
                 )}
                 {page.meta_keywords && (
                     <meta name="keywords" content={page.meta_keywords} />
+                )}
+                {page.no_index && (
+                    <meta name="robots" content="noindex, nofollow" />
+                )}
+                {jsonLd && (
+                    <script type="application/ld+json">
+                        {JSON.stringify(jsonLd)}
+                    </script>
                 )}
             </Head>
 

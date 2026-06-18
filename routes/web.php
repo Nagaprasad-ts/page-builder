@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\RobotsController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -16,3 +18,9 @@ require __DIR__.'/settings.php';
 
 // Homepage — serves the published page with slug "home", or the first published page
 Route::get('/', [PublicPageController::class, 'home'])->name('home');
+
+// Dynamic sitemap
+Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// Dynamic robots.txt
+Route::get('robots.txt', [RobotsController::class, 'index'])->name('robots');

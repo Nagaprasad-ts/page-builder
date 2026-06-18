@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 
-#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'status', 'published_at', 'custom_header', 'custom_footer', 'parent_id', 'path', 'created_by', 'updated_by'])]
+#[Fillable(['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'status', 'published_at', 'custom_header', 'custom_footer', 'no_index', 'parent_id', 'path', 'created_by', 'updated_by'])]
 class Page extends Model
 {
     /** @use HasFactory<PageFactory> */
@@ -27,6 +28,7 @@ class Page extends Model
             'published_at' => 'datetime',
             'custom_header' => 'boolean',
             'custom_footer' => 'boolean',
+            'no_index' => 'boolean',
         ];
     }
 
@@ -70,7 +72,8 @@ class Page extends Model
 
         if ($parent) {
             $parentPath = $parent->buildPath();
-            return ($parentPath === '/' ? '' : $parentPath) . '/' . $this->slug;
+
+            return ($parentPath === '/' ? '' : $parentPath).'/'.$this->slug;
         }
 
         return $this->slug;
@@ -87,7 +90,7 @@ class Page extends Model
         while ($current) {
             $breadcrumbs[] = [
                 'title' => $current->title,
-                'url' => $current->path === '/' || $current->path === 'home' ? '/' : '/' . ltrim($current->path, '/'),
+                'url' => $current->path === '/' || $current->path === 'home' ? '/' : '/'.ltrim($current->path, '/'),
             ];
             $current = $current->parent;
         }
@@ -118,6 +121,7 @@ class Page extends Model
             }
             $parent = $parent->parent;
         }
+
         return false;
     }
 
@@ -170,6 +174,16 @@ class Page extends Model
                     $child->save(); // Triggers saving hook recursively
                 }
             }
+        });
+
+        static::saved(function (Page $page) {
+            Cache::forget('sitemap');
+            Cache::forget('robots_txt');
+        });
+
+        static::deleted(function (Page $page) {
+            Cache::forget('sitemap');
+            Cache::forget('robots_txt');
         });
     }
 }

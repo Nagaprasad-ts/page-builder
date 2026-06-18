@@ -25,7 +25,9 @@ type Props = {
     isExistingPage: boolean;
     customHeader: boolean;
     customFooter: boolean;
+    noIndex: boolean;
     onChange: (field: string, value: string) => void;
+    onNoIndexChange: (value: boolean) => void;
     onParentIdChange: (value: number | null) => void;
     onCustomHeaderChange: (value: boolean) => void;
     onCustomFooterChange: (value: boolean) => void;
@@ -43,7 +45,9 @@ export function PageSettingsSheet({
     isExistingPage,
     customHeader,
     customFooter,
+    noIndex,
     onChange,
+    onNoIndexChange,
     onParentIdChange,
     onCustomHeaderChange,
     onCustomFooterChange,
@@ -209,6 +213,27 @@ export function PageSettingsSheet({
                             </p>
 
                             <div className="space-y-5">
+                                <div className="flex items-start gap-3">
+                                    <Checkbox
+                                        id="no-index"
+                                        checked={noIndex}
+                                        onCheckedChange={(checked) =>
+                                            onNoIndexChange(checked === true)
+                                        }
+                                        className="mt-0.5"
+                                    />
+                                    <div>
+                                        <Label
+                                            htmlFor="no-index"
+                                            className="cursor-pointer text-sm font-medium"
+                                        >
+                                            No index
+                                        </Label>
+                                        <p className="text-xs text-muted-foreground">
+                                            Prevent this page from being indexed by search engines and exclude it from the sitemap.
+                                        </p>
+                                    </div>
+                                </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="meta-title" className="text-sm font-medium">
                                         Meta title

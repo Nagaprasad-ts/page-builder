@@ -171,6 +171,8 @@ export default function EditPage({ page, sections, pages }: Props & { pages: Pag
                 isExistingPage={true}
                 customHeader={builder.customHeader}
                 customFooter={builder.customFooter}
+                noIndex={builder.noIndex}
+                onNoIndexChange={builder.setNoIndex}
                 onChange={(field, value) => {
                     if (field === 'slug') {
                         builder.setSlug(value);

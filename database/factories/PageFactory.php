@@ -29,6 +29,7 @@ class PageFactory extends Factory
             'meta_keywords' => null,
             'status' => 'draft',
             'published_at' => null,
+            'no_index' => false,
             'created_by' => User::factory(),
             'updated_by' => User::factory(),
         ];
@@ -53,6 +54,16 @@ class PageFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => 'draft',
             'published_at' => null,
+        ]);
+    }
+
+    /**
+     * Indicate the page should not be indexed.
+     */
+    public function noIndex(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'no_index' => true,
         ]);
     }
 }

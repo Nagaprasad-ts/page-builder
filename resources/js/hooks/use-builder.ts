@@ -18,6 +18,7 @@ type BuilderPayload = {
     meta_keywords: string;
     custom_header: boolean;
     custom_footer: boolean;
+    no_index: boolean;
     sections: {
         region: Region;
         section_type: string;
@@ -58,6 +59,9 @@ export function useBuilder(initial: BuilderInitial = {}) {
     );
     const [customFooter, setCustomFooter] = useState(
         initial.page?.custom_footer ?? false,
+    );
+    const [noIndex, setNoIndex] = useState(
+        initial.page?.no_index ?? false,
     );
     const [activeRegion, setActiveRegion] = useState<Region>('body');
 
@@ -161,6 +165,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         meta_keywords: metaKeywords,
         custom_header: customHeader,
         custom_footer: customFooter,
+        no_index: noIndex,
         sections: sections.map((s, index) => ({
             region: s.region,
             section_type: s.section_type,
@@ -185,6 +190,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         metaKeywords,
         customHeader,
         customFooter,
+        noIndex,
         isExistingPage,
 
         // Region
@@ -212,6 +218,7 @@ export function useBuilder(initial: BuilderInitial = {}) {
         setMetaKeywords,
         setCustomHeader,
         setCustomFooter,
+        setNoIndex,
         addSection,
         removeSection,
         reorderSections,

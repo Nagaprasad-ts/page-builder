@@ -149,3 +149,60 @@ test('admin can delete a page', function (): void {
 
     $this->assertDatabaseMissing('pages', ['id' => $page->id]);
 });
+
+test('admin can create a page with no_index', function (): void {
+    $this->actingAs($this->admin)
+        ->post('/admin/pages', [
+            'title' => 'No Index Page',
+            'slug' => 'no-index-page',
+            'no_index' => true,
+            'sections' => [],
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('pages', [
+        'slug' => 'no-index-page',
+        'no_index' => true,
+    ]);
+});
+
+test('admin can update a page no_index status', function (): void {
+    $page = Page::factory()->create([
+        'no_index' => false,
+        'created_by' => $this->admin->id,
+        'updated_by' => $this->admin->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->put("/admin/pages/{$page->id}", [
+            'title' => 'Updated Title',
+            'slug' => $page->slug,
+            'no_index' => true,
+            'sections' => [],
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('pages', [
+        'id' => $page->id,
+        'no_index' => true,
+    ]);
+});
+
+test('page duplication preserves no_index status', function (): void {
+    $page = Page::factory()->noIndex()->create([
+        'created_by' => $this->admin->id,
+        'updated_by' => $this->admin->id,
+    ]);
+
+    $this->actingAs($this->admin)
+        ->post("/admin/pages/{$page->id}/duplicate", [
+            'title' => 'Duplicated Title',
+            'slug' => 'duplicated-slug',
+        ])
+        ->assertRedirect();
+
+    $this->assertDatabaseHas('pages', [
+        'slug' => 'duplicated-slug',
+        'no_index' => true,
+    ]);
+});

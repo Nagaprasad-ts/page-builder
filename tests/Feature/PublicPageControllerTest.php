@@ -55,3 +55,18 @@ test('unknown slug returns custom 404 page if seeded and published', function ()
             ->where('page.id', $page->id)
         );
 });
+
+test('page contains no_index property', function (): void {
+    $page = Page::factory()->published()->noIndex()->create([
+        'slug' => 'no-index-page',
+        'created_by' => $this->user->id,
+        'updated_by' => $this->user->id,
+    ]);
+
+    $this->get('/no-index-page')
+        ->assertOk()
+        ->assertInertia(fn (Assert $assert) => $assert
+            ->component('site/page')
+            ->where('page.no_index', true)
+        );
+});

@@ -61,6 +61,7 @@ export type Page = {
     published_at: string | null;
     custom_header: boolean;
     custom_footer: boolean;
+    no_index: boolean;
     created_by: number;
     updated_by: number;
     created_at: string;
