@@ -123,8 +123,8 @@ function MobileNavItem({ item, onClose }: { item: MenuItem; onClose: () => void 
 export default function NavHeaderSection({
     siteName,
     logoUrl,
-    clientLoginLabel = 'Client Login',
-    clientLoginUrl = '/login',
+    clientLoginLabel = '',
+    clientLoginUrl = '',
     ctaLabel,
     ctaUrl,
 }: Props) {
