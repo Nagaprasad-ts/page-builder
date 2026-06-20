@@ -141,7 +141,7 @@ export default function PolicyOverviewSection({
                                     </div>
                                     <h3 className="mb-2 text-sm font-extrabold leading-snug text-gray-900">{f.title}</h3>
                                     {f.description && (
-                                        <div 
+                                        <div
                                             className="text-xs prose prose-sm max-w-none"
                                             dangerouslySetInnerHTML={{ __html: f.description }}
                                         />

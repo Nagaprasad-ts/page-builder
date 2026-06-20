@@ -59,23 +59,70 @@ export default function ContactFormSection({
     formSubheading = "Fill out the form below and we'll get back to you soon.",
     buttonLabel = 'Send Message',
 }: Props) {
-    const [formData, setFormData] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        designation: '',
+        company: '',
+        description: '',
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isSubmitting) return;
 
-        if (!formData.name || !formData.email || !formData.message) {
-return;
-}
+        if (
+            !formData.name ||
+            !formData.email ||
+            !formData.phone ||
+            !formData.designation ||
+            !formData.company ||
+            !formData.description
+        ) {
+            return;
+        }
 
         setIsSubmitting(true);
-        setTimeout(() => {
+        setErrorMsg(null);
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+        try {
+            const response = await fetch('/contact/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setIsSubmitted(true);
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    designation: '',
+                    company: '',
+                    description: '',
+                });
+            } else {
+                setErrorMsg(data.message || 'Failed to submit message. Please try again.');
+            }
+        } catch (err) {
+            setErrorMsg('An error occurred. Please check your connection and try again.');
+        } finally {
             setIsSubmitting(false);
-            setIsSubmitted(true);
-            setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-        }, 1200);
+        }
     };
 
     return (
@@ -206,10 +253,11 @@ return;
                                         <input
                                             type="text"
                                             required
-                                            placeholder="Your Name*"
+                                            placeholder="Full Name*"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand"
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
@@ -218,10 +266,11 @@ return;
                                         <input
                                             type="email"
                                             required
-                                            placeholder="Your Email*"
+                                            placeholder="Email Address*"
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand"
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
@@ -229,37 +278,61 @@ return;
                                     <div className="space-y-1.5 text-left">
                                         <input
                                             type="tel"
-                                            placeholder="Phone Number"
+                                            required
+                                            placeholder="Phone Number*"
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand"
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
 
-                                    {/* Subject Input */}
+                                    {/* Designation Input */}
                                     <div className="space-y-1.5 text-left">
                                         <input
                                             type="text"
-                                            placeholder="Subject"
-                                            value={formData.subject}
-                                            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand"
+                                            required
+                                            placeholder="Designation*"
+                                            value={formData.designation}
+                                            onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
+                                        />
+                                    </div>
+
+                                    {/* Company Name Input */}
+                                    <div className="space-y-1.5 text-left sm:col-span-2">
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="Company Name*"
+                                            value={formData.company}
+                                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
                                 </div>
 
-                                {/* Message Input */}
+                                {/* Description Input */}
                                 <div className="space-y-1.5 text-left">
                                     <textarea
                                         required
-                                        placeholder="Message*"
+                                        placeholder="Description*"
                                         rows={5}
-                                        value={formData.message}
-                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand resize-none"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand resize-none disabled:opacity-50"
+                                        disabled={isSubmitting}
                                     />
                                     <p className="text-xs text-gray-400">Tell us about your project or how we can help you...</p>
                                 </div>
+
+                                {errorMsg && (
+                                    <p className="text-sm text-rose-500 font-medium text-left">
+                                        {errorMsg}
+                                    </p>
+                                )}
 
                                 {/* Submit button */}
                                 <div className="text-left">

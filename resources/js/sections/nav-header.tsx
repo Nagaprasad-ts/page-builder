@@ -23,6 +23,8 @@ export const meta: SectionMeta = {
 export const schema: SectionSchema = {
     siteName: { type: 'text', label: 'Site name', default: 'My Site' },
     logoUrl: { type: 'image', label: 'Logo' },
+    clientLoginLabel: { type: 'text', label: 'Client Login label', default: '' },
+    clientLoginUrl: { type: 'url', label: 'Client Login URL', default: '' },
     ctaLabel: { type: 'text', label: 'CTA button label', default: 'Get started' },
     ctaUrl: { type: 'url', label: 'CTA button URL', default: '/' },
 };
@@ -30,6 +32,8 @@ export const schema: SectionSchema = {
 type Props = {
     siteName?: string;
     logoUrl?: string | null;
+    clientLoginLabel?: string;
+    clientLoginUrl?: string;
     ctaLabel?: string;
     ctaUrl?: string;
 };
@@ -116,7 +120,14 @@ function MobileNavItem({ item, onClose }: { item: MenuItem; onClose: () => void 
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }: Props) {
+export default function NavHeaderSection({
+    siteName,
+    logoUrl,
+    clientLoginLabel = 'Client Login',
+    clientLoginUrl = '/login',
+    ctaLabel,
+    ctaUrl,
+}: Props) {
     const { menus } = usePage().props;
     const desktopNav = menus?.desktop_nav;
     const navItems: MenuItem[] = desktopNav?.items ?? [];
@@ -189,14 +200,14 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                                                             {item.label}
                                                         </a>
                                                     </NavigationMenuTrigger>
-                                                    <NavigationMenuContent className="min-w-[180px] rounded-xl border border-gray-100 bg-white p-1.5 shadow-lg shadow-black/[0.08]">
+                                                    <NavigationMenuContent className="min-w-[240px] rounded-xl border border-gray-100 bg-white p-1.5 shadow-lg shadow-black/[0.08]">
                                                         {item.children.map((child, idx) => (
                                                             <a
                                                                 key={child.id}
                                                                 href={itemHref(child)}
                                                                 target={child.target}
                                                                 className={cn(
-                                                                    'block rounded-lg px-4 py-2.5 text-[13.5px] font-medium text-gray-600 transition-all duration-150 hover:bg-accent-brand/[0.06] hover:text-gray-900',
+                                                                    'block rounded-lg px-4 py-2.5 text-[13.5px] font-medium text-gray-600 transition-all duration-150 hover:bg-accent-brand/[0.06] hover:text-gray-900 whitespace-nowrap',
                                                                     idx > 0 && 'mt-0.5',
                                                                 )}
                                                             >
@@ -223,7 +234,17 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                         </NavigationMenu>
                     )}
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-4">
+                        {/* Desktop Client Login */}
+                        {clientLoginLabel && clientLoginUrl && (
+                            <a
+                                href={clientLoginUrl}
+                                className="hidden md:inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors mr-1"
+                            >
+                                {clientLoginLabel}
+                            </a>
+                        )}
+
                         {/* Desktop CTA */}
                         {ctaLabel && ctaUrl && (
                             <BrandButton
@@ -295,16 +316,27 @@ export default function NavHeaderSection({ siteName, logoUrl, ctaLabel, ctaUrl }
                     ))}
                 </nav>
 
-                {/* CTA pinned at bottom */}
-                {ctaLabel && ctaUrl && (
-                    <div className="border-t border-gray-100 px-5 py-5">
-                        <BrandButton
-                            href={ctaUrl}
-                            variant="brand"
-                            className="w-full py-3 px-6 text-sm"
-                        >
-                            {ctaLabel}
-                        </BrandButton>
+                {/* CTA & Client Login pinned at bottom */}
+                {(ctaLabel || clientLoginLabel) && (
+                    <div className="border-t border-gray-100 px-5 py-5 flex flex-col gap-3">
+                        {clientLoginLabel && clientLoginUrl && (
+                            <a
+                                href={clientLoginUrl}
+                                onClick={() => setMobileOpen(false)}
+                                className="flex w-full items-center justify-center py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg transition hover:bg-gray-50/50"
+                            >
+                                {clientLoginLabel}
+                            </a>
+                        )}
+                        {ctaLabel && ctaUrl && (
+                            <BrandButton
+                                href={ctaUrl}
+                                variant="brand"
+                                className="w-full py-3 px-6 text-sm"
+                            >
+                                {ctaLabel}
+                            </BrandButton>
+                        )}
                     </div>
                 )}
             </div>

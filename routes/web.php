@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
@@ -24,3 +26,9 @@ Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 // Dynamic robots.txt
 Route::get('robots.txt', [RobotsController::class, 'index'])->name('robots');
+
+// Newsletter subscription proxy
+Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])->name('newsletter.subscribe');
+
+// Contact form submission proxy to Zoho CRM
+Route::post('contact/submit', [ContactController::class, 'submit'])->name('contact.submit');

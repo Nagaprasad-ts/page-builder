@@ -61,7 +61,7 @@ export default function PageHeroSection({
 
                     {/* Description */}
                     {description && (
-                        <div 
+                        <div
                             className="mt-6 max-w-sm text-white prose prose-invert prose-sm"
                             dangerouslySetInnerHTML={{ __html: description }}
                         />
@@ -69,15 +69,15 @@ export default function PageHeroSection({
                 </div>
 
                 {/* ── Right image + decorative shapes ── */}
-                <div className="relative hidden shrink-0 lg:flex lg:w-36 lg:items-center lg:justify-center">
-                    {/* Accent semicircle — top right */}
+                <div className="relative hidden shrink-0 lg:flex lg:w-[440px] lg:items-center lg:justify-center">
+                    {/* Accent semicircle — top left of image */}
                     <div
                         className="pointer-events-none absolute bg-accent-brand opacity-90"
                         style={{
                             width: 80,
                             height: 40,
-                            top: -10,
-                            right: -20,
+                            top: -20,
+                            left: 20,
                             borderRadius: '80px 80px 0 0',
                         }}
                     />
@@ -88,9 +88,9 @@ export default function PageHeroSection({
                         style={{
                             width: 180,
                             height: 90,
-                            bottom: -30,
-                            left: -80,
-                            borderRadius: '0 0 180px 180px',
+                            bottom: 68,
+                            left: -70,
+                            borderRadius: '180px 180px 0 0',
                         }}
                     />
 
@@ -101,7 +101,7 @@ export default function PageHeroSection({
                             width: 48,
                             height: 24,
                             bottom: 40,
-                            right: -10,
+                            right: -20,
                             borderRadius: '0 0 48px 48px',
                             backgroundColor: '#555',
                             opacity: 0.7,
@@ -113,10 +113,10 @@ export default function PageHeroSection({
                         <img
                             src={image}
                             alt={imageAlt}
-                            className="relative z-10 w-56 h-56 object-contain drop-shadow-2xl rounded-3xl"
+                            className="relative z-10 w-full h-auto max-h-[380px] object-contain drop-shadow-2xl rounded-3xl animate-in fade-in zoom-in-95 duration-500"
                         />
                     ) : (
-                        <div className="relative z-10 flex h-56 w-56 items-center justify-center rounded-2xl bg-white/5 text-white/20">
+                        <div className="relative z-10 flex h-72 w-72 items-center justify-center rounded-2xl bg-white/5 text-white/20">
                             <span className="text-sm">Add image</span>
                         </div>
                     )}

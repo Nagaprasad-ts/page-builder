@@ -175,6 +175,47 @@ export default function SiteFooterSection({
 }: Props) {
 
 
+    const [emailVal, setEmailVal] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
+        setErrorMsg(null);
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+        try {
+            const response = await fetch('/newsletter/subscribe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ email: emailVal }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setIsSubmitted(true);
+                setEmailVal('');
+            } else {
+                setErrorMsg(data.message || 'Failed to subscribe. Please try again.');
+            }
+        } catch (err) {
+            setErrorMsg('An error occurred. Please check your connection and try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     const activeSocialLinks = socialLinks.length > 0 ? socialLinks : [
         { icon: 'Linkedin', url: '#' },
         { icon: 'Instagram', url: '#' },
@@ -242,20 +283,44 @@ export default function SiteFooterSection({
                         </div>
 
                         {/* Right: Subscribe Form */}
-                        <form onSubmit={(e) => e.preventDefault()} className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
-                            <input
-                                type="email"
-                                placeholder={newsletterPlaceholder}
-                                className="w-full rounded-xl border border-white/10 bg-[#121316] px-5 py-3.5 text-sm text-white placeholder-gray-500 focus:border-accent-brand focus:outline-none focus:ring-1 focus:ring-accent-brand lg:w-80"
-                            />
-                            <BrandButton
-                                type="submit"
-                                variant="secondary"
-                                className="shrink-0 cursor-pointer px-6 py-3"
-                            >
-                                {newsletterButtonLabel}
-                            </BrandButton>
-                        </form>
+                        {isSubmitted ? (
+                            <div className="flex w-full flex-col gap-2.5 text-left lg:w-[420px] z-10 bg-[#121316] border border-white/10 p-6 rounded-2xl shadow-xl relative select-none animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                <div className="flex items-center gap-3 text-emerald-400 font-semibold text-base">
+                                    <DynamicIcon name="CheckCircle" className="h-6 w-6 shrink-0 text-emerald-400" />
+                                    <span className="text-white font-semibold">Successfully Subscribed!</span>
+                                </div>
+                                <p className="text-sm text-gray-300 leading-relaxed pl-9">
+                                    No Spamming. Just one Newsletter every two weeks.😊
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="relative flex flex-col gap-1.5 w-full lg:w-auto">
+                                <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+                                    <input
+                                        type="email"
+                                        required
+                                        value={emailVal}
+                                        onChange={(e) => setEmailVal(e.target.value)}
+                                        placeholder={newsletterPlaceholder}
+                                        className="w-full rounded-xl border border-white/10 bg-[#121316] px-5 py-3.5 text-sm text-white placeholder-gray-500 focus:border-accent-brand focus:outline-none focus:ring-1 focus:ring-accent-brand lg:w-80 disabled:opacity-50"
+                                        disabled={isSubmitting}
+                                    />
+                                    <BrandButton
+                                        type="submit"
+                                        variant="secondary"
+                                        className="shrink-0 cursor-pointer px-6 py-3"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? 'Subscribing...' : newsletterButtonLabel}
+                                    </BrandButton>
+                                </form>
+                                {errorMsg && (
+                                    <p className="absolute bottom-[-24px] left-2 text-xs text-rose-500 font-medium">
+                                        {errorMsg}
+                                    </p>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     {/* Decorative Circles */}
@@ -300,7 +365,7 @@ export default function SiteFooterSection({
 
                     {/* Columns 2-5 Container: split to keep Contact Us full-width on mobile */}
                     <div className="w-full lg:w-[68%] flex flex-col gap-10 lg:flex-row lg:justify-between lg:gap-0">
-                        
+
                         {/* Columns 2-4: Services, Company, Resources in 2x2 grid on mobile, flex on desktop */}
                         <div className="w-full lg:w-[62%] grid grid-cols-2 gap-y-10 gap-x-8 lg:flex lg:flex-row lg:justify-between lg:gap-0">
                             {/* Column 2: Services */}

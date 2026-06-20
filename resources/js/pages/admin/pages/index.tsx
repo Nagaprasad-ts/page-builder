@@ -1,5 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Copy, FilePlus, Pencil } from 'lucide-react';
+import { Copy, FilePlus, Pencil, Eye, Trash2 } from 'lucide-react';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -124,29 +125,64 @@ return;
                                         </td>
                                         <td className="px-4 py-3 text-muted-foreground">{page.creator?.name}</td>
                                         <td className="px-4 py-3">
-                                            <div className="flex items-center justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                                                <Button asChild size="sm" variant="ghost">
-                                                    <Link href={`/admin/pages/${page.id}/edit`}>
-                                                        <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                                                        Edit
-                                                    </Link>
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    onClick={() => setDuplicatingPage(page)}
-                                                >
-                                                    <Copy className="mr-1.5 h-3.5 w-3.5" />
-                                                    Duplicate
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    className="text-destructive hover:text-destructive"
-                                                    onClick={() => setDeletingPage(page)}
-                                                >
-                                                    Delete
-                                                </Button>
+                                            <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button asChild size="icon" variant="ghost" className="h-8 w-8">
+                                                            <a
+                                                                href={page.path.startsWith('/') ? page.path : `/${page.path}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                            >
+                                                                <Eye className="h-4 w-4 text-muted-foreground" />
+                                                                <span className="sr-only">View</span>
+                                                            </a>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>View page</TooltipContent>
+                                                </Tooltip>
+
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button asChild size="icon" variant="ghost" className="h-8 w-8">
+                                                            <Link href={`/admin/pages/${page.id}/edit`}>
+                                                                <Pencil className="h-4 w-4 text-muted-foreground" />
+                                                                <span className="sr-only">Edit</span>
+                                                            </Link>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Edit page</TooltipContent>
+                                                </Tooltip>
+
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-8 w-8"
+                                                            onClick={() => setDuplicatingPage(page)}
+                                                        >
+                                                            <Copy className="h-4 w-4 text-muted-foreground" />
+                                                            <span className="sr-only">Duplicate</span>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Duplicate page</TooltipContent>
+                                                </Tooltip>
+
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <Button
+                                                            size="icon"
+                                                            variant="ghost"
+                                                            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                                            onClick={() => setDeletingPage(page)}
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                            <span className="sr-only">Delete</span>
+                                                        </Button>
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>Delete page</TooltipContent>
+                                                </Tooltip>
                                             </div>
                                         </td>
                                     </tr>

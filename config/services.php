@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'zoho' => [
+        'newsletter_url' => env('ZOHO_NEWSLETTER_FORM_URL', 'https://forms.zohopublic.in/myevphq/form/evphqcomNewsletters/formperma/wcMbIongc5o3MyJUY5EAJZ59ZCAwG-BY9RemXHtPX7U/htmlRecords/submit'),
+        'newsletter_email_field' => env('ZOHO_NEWSLETTER_EMAIL_FIELD', 'Email'),
+    ],
+
+    'zoho_crm' => [
+        'client_id' => env('ZOHO_CRM_CLIENT_ID'),
+        'client_secret' => env('ZOHO_CRM_CLIENT_SECRET'),
+        'refresh_token' => env('ZOHO_CRM_REFRESH_TOKEN'),
+        'region' => env('ZOHO_CRM_REGION', 'in'),
+    ],
+
 ];
