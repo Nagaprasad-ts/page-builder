@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import { Lock, Users, ShieldAlert, CheckCircle, HelpCircle } from 'lucide-react';
 import BrandButton from '@/components/ui/brand-button';
 import { DynamicIcon } from '@/components/ui/dynamic-icon';
@@ -105,6 +106,42 @@ export default function AccessRequestSection({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+    const { recaptcha_site_key } = usePage().props as any;
+
+    useEffect(() => {
+        if (!recaptcha_site_key) return;
+
+        // Check if script is already loaded
+        if (typeof window !== 'undefined' && !document.querySelector('script[src*="recaptcha/api.js"]')) {
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=${recaptcha_site_key}`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+        }
+    }, [recaptcha_site_key]);
+
+    const executeRecaptcha = (): Promise<string | null> => {
+        return new Promise((resolve) => {
+            if (!recaptcha_site_key || typeof window === 'undefined' || !(window as any).grecaptcha) {
+                resolve(null);
+                return;
+            }
+
+            const grecaptcha = (window as any).grecaptcha;
+            grecaptcha.ready(() => {
+                grecaptcha.execute(recaptcha_site_key, { action: 'submit' })
+                    .then((token: string) => {
+                        resolve(token);
+                    })
+                    .catch(() => {
+                        resolve(null);
+                    });
+            });
+        });
+    };
 
     const renderTextWithHighlight = (text: string, highlight: string) => {
         if (!text) {
@@ -133,46 +170,58 @@ export default function AccessRequestSection({
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) {
             return;
         }
 
-        if (
-            !formData.name ||
-            !formData.email ||
-            !formData.company ||
-            !formData.designation ||
-            !formData.teamSize ||
-            !formData.linkedin ||
-            !formData.phone ||
-            !formData.whatDescribesYou ||
-            !formData.consent
-        ) {
-            setErrorMsg('Please fill in all mandatory fields and accept the terms.');
-            return;
-        }
-
         setIsSubmitting(true);
         setErrorMsg(null);
+        setErrors({});
 
-        // Simulate local form submission without calling any backend route
-        setTimeout(() => {
-            setIsSubmitting(false);
-            setIsSubmitted(true);
-            setFormData({
-                name: '',
-                email: '',
-                company: '',
-                designation: '',
-                teamSize: '',
-                linkedin: '',
-                phone: '',
-                whatDescribesYou: '',
-                consent: false,
+        const token = await executeRecaptcha();
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
+
+        try {
+            const response = await fetch('/access-request/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ ...formData, recaptcha_token: token }),
             });
-        }, 800);
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setIsSubmitted(true);
+                setFormData({
+                    name: '',
+                    email: '',
+                    company: '',
+                    designation: '',
+                    teamSize: '',
+                    linkedin: '',
+                    phone: '',
+                    whatDescribesYou: '',
+                    consent: false,
+                });
+            } else {
+                if (response.status === 422 && data.errors) {
+                    setErrors(data.errors);
+                }
+                setErrorMsg(data.message || 'Failed to submit request. Please try again.');
+            }
+        } catch (err) {
+            setErrorMsg('An error occurred. Please check your connection and try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -252,7 +301,7 @@ export default function AccessRequestSection({
                                 </BrandButton>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleSubmit} noValidate className="space-y-6">
                                 <div className="space-y-2 text-left">
                                     <h3 className="font-heading text-2xl font-bold text-brand sm:text-3xl">
                                         {renderTextWithHighlight(formTitle, formHighlightWord)}
@@ -282,6 +331,9 @@ export default function AccessRequestSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.name && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.name[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Work Email Input */}
@@ -295,6 +347,9 @@ export default function AccessRequestSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.email && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.email[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Company Input */}
@@ -308,16 +363,19 @@ export default function AccessRequestSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.company && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.company[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Row 4: Designation & Team Size (Grid) */}
                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        <div>
+                                        <div className="space-y-1">
                                             <select
                                                 required
                                                 value={formData.designation}
                                                 onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                                                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand text-gray-700 disabled:opacity-50"
+                                                className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${formData.designation === '' ? 'text-gray-400' : 'text-gray-900'}`}
                                                 disabled={isSubmitting}
                                             >
                                                 <option value="" disabled>Designation*</option>
@@ -329,14 +387,17 @@ export default function AccessRequestSection({
                                                 <option value="CEO / Executive">CEO / Executive</option>
                                                 <option value="Other">Other</option>
                                             </select>
+                                            {errors.designation && (
+                                                <p className="text-xs text-rose-600 mt-1 text-left">{errors.designation[0]}</p>
+                                            )}
                                         </div>
 
-                                        <div>
+                                        <div className="space-y-1">
                                             <select
                                                 required
                                                 value={formData.teamSize}
                                                 onChange={(e) => setFormData({ ...formData, teamSize: e.target.value })}
-                                                className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand text-gray-700 disabled:opacity-50"
+                                                className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${formData.teamSize === '' ? 'text-gray-400' : 'text-gray-900'}`}
                                                 disabled={isSubmitting}
                                             >
                                                 <option value="" disabled>Team Size*</option>
@@ -346,6 +407,9 @@ export default function AccessRequestSection({
                                                 <option value="201 - 500">201 - 500</option>
                                                 <option value="500+">500+</option>
                                             </select>
+                                            {errors.teamSize && (
+                                                <p className="text-xs text-rose-600 mt-1 text-left">{errors.teamSize[0]}</p>
+                                            )}
                                         </div>
                                     </div>
 
@@ -360,22 +424,30 @@ export default function AccessRequestSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.linkedin && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.linkedin[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Mobile Number Input with custom prefix wrapper */}
-                                    <div className="relative flex rounded-xl border border-gray-200 bg-white overflow-hidden focus-within:border-accent-brand transition-colors">
-                                        <span className="flex items-center px-4 bg-gray-50 border-r border-gray-100 text-sm font-semibold text-gray-500">
-                                            +91
-                                        </span>
-                                        <input
-                                            type="tel"
-                                            required
-                                            placeholder="Mobile Number (WhatsApp)*"
-                                            value={formData.phone}
-                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full px-4 py-3 text-sm outline-none bg-transparent disabled:opacity-50"
-                                            disabled={isSubmitting}
-                                        />
+                                    <div className="space-y-1">
+                                        <div className="relative flex rounded-xl border border-gray-200 bg-white overflow-hidden focus-within:border-accent-brand transition-colors">
+                                            <span className="flex items-center px-4 bg-gray-50 border-r border-gray-100 text-sm font-semibold text-gray-500">
+                                                +91
+                                            </span>
+                                            <input
+                                                type="tel"
+                                                required
+                                                placeholder="Mobile Number (WhatsApp)*"
+                                                value={formData.phone}
+                                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                                                className="w-full px-4 py-3 text-sm outline-none bg-transparent disabled:opacity-50"
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
+                                        {errors.phone && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.phone[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Describes You Input */}
@@ -384,7 +456,7 @@ export default function AccessRequestSection({
                                             required
                                             value={formData.whatDescribesYou}
                                             onChange={(e) => setFormData({ ...formData, whatDescribesYou: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand text-gray-700 disabled:opacity-50"
+                                            className={`w-full rounded-xl border border-gray-200 bg-white px-4 py-3.5 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${formData.whatDescribesYou === '' ? 'text-gray-400' : 'text-gray-900'}`}
                                             disabled={isSubmitting}
                                         >
                                             <option value="" disabled>What best describes you?*</option>
@@ -395,27 +467,38 @@ export default function AccessRequestSection({
                                             <option value="Job Seeker / Candidate">Job Seeker / Candidate</option>
                                             <option value="Other">Other</option>
                                         </select>
+                                        {errors.whatDescribesYou && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.whatDescribesYou[0]}</p>
+                                        )}
                                     </div>
                                 </div>
 
                                 {/* Row 9: Consent Checkbox */}
-                                <div className="flex items-start gap-3 text-left">
-                                    <input
-                                        type="checkbox"
-                                        id="consent"
-                                        required
-                                        checked={formData.consent}
-                                        onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
-                                        className="h-4 w-4 rounded border-gray-300 text-accent-brand focus:ring-accent-brand mt-1 accent-accent-brand cursor-pointer disabled:opacity-50"
-                                        disabled={isSubmitting}
-                                    />
-                                    <label htmlFor="consent" className="text-xs font-medium text-gray-500 leading-normal cursor-pointer select-none">
-                                        I agree to receive communications from EVP HQ via email and WhatsApp.
-                                    </label>
+                                <div className="space-y-1">
+                                    <div className="flex items-start gap-3 text-left">
+                                        <input
+                                            type="checkbox"
+                                            id="consent"
+                                            required
+                                            checked={formData.consent}
+                                            onChange={(e) => setFormData({ ...formData, consent: e.target.checked })}
+                                            className="h-4 w-4 rounded border-gray-300 text-accent-brand focus:ring-accent-brand mt-1 accent-accent-brand cursor-pointer disabled:opacity-50"
+                                            disabled={isSubmitting}
+                                        />
+                                        <label htmlFor="consent" className="text-xs font-medium text-gray-500 leading-normal cursor-pointer select-none">
+                                            I agree to receive communications from EVP HQ via email and WhatsApp.
+                                        </label>
+                                    </div>
+                                    {errors.consent && (
+                                        <p className="text-xs text-rose-600 mt-1 text-left">{errors.consent[0]}</p>
+                                    )}
                                 </div>
 
                                 {/* Request Access Button & Footer note */}
                                 <div className="space-y-3 pt-2">
+                                    {errors.recaptcha_token && (
+                                        <p className="text-xs text-rose-600 text-center">{errors.recaptcha_token[0]}</p>
+                                    )}
                                     <BrandButton
                                         type="submit"
                                         variant="primary"
@@ -424,9 +507,11 @@ export default function AccessRequestSection({
                                     >
                                         {isSubmitting ? 'Sending Request...' : 'Request Access'}
                                     </BrandButton>
-                                    <p className="text-center text-xs text-gray-400 font-medium">
-                                        We respect your privacy. No spam, ever.
-                                    </p>
+                                    <div className="space-y-1.5 text-center mt-2">
+                                        <p className="text-[10px] text-gray-400/60 leading-normal">
+                                            This site is protected by reCAPTCHA.
+                                        </p>
+                                    </div>
                                 </div>
                             </form>
                         )}

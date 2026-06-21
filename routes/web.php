@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccessRequestController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\PublicPageController;
@@ -32,3 +33,6 @@ Route::post('newsletter/subscribe', [NewsletterController::class, 'subscribe'])-
 
 // Contact form submission proxy to Zoho CRM
 Route::post('contact/submit', [ContactController::class, 'submit'])->name('contact.submit');
+
+// Access request form submission proxy to Zoho CRM
+Route::post('access-request/submit', [AccessRequestController::class, 'submit'])->name('access-request.submit');

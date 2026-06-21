@@ -25,6 +25,6 @@ const findSelector = (selector) => {
     }
 };
 
-findSelector('md:items-start');
-findSelector('md:text-left');
-findSelector('md:flex-row');
+findSelector('md\\:items-start');
+findSelector('md\\:text-left');
+findSelector('md\\:flex-row');

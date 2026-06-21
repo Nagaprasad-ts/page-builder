@@ -1,5 +1,6 @@
 import { Clock, Mail, MapPin, Phone, Shield, CheckCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import BrandButton from '@/components/ui/brand-button';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
@@ -70,24 +71,52 @@ export default function ContactFormSection({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+    const { recaptcha_site_key } = usePage().props as any;
+
+    useEffect(() => {
+        if (!recaptcha_site_key) return;
+
+        // Check if script is already loaded
+        if (typeof window !== 'undefined' && !document.querySelector('script[src*="recaptcha/api.js"]')) {
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=${recaptcha_site_key}`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+        }
+    }, [recaptcha_site_key]);
+
+    const executeRecaptcha = (): Promise<string | null> => {
+        return new Promise((resolve) => {
+            if (!recaptcha_site_key || typeof window === 'undefined' || !(window as any).grecaptcha) {
+                resolve(null);
+                return;
+            }
+
+            const grecaptcha = (window as any).grecaptcha;
+            grecaptcha.ready(() => {
+                grecaptcha.execute(recaptcha_site_key, { action: 'submit' })
+                    .then((token: string) => {
+                        resolve(token);
+                    })
+                    .catch(() => {
+                        resolve(null);
+                    });
+            });
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (isSubmitting) return;
 
-        if (
-            !formData.name ||
-            !formData.email ||
-            !formData.phone ||
-            !formData.designation ||
-            !formData.company ||
-            !formData.description
-        ) {
-            return;
-        }
-
         setIsSubmitting(true);
         setErrorMsg(null);
+        setErrors({});
+
+        const token = await executeRecaptcha();
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
@@ -100,7 +129,7 @@ export default function ContactFormSection({
                     'X-CSRF-TOKEN': csrfToken,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({ ...formData, recaptcha_token: token }),
             });
 
             const data = await response.json();
@@ -116,6 +145,9 @@ export default function ContactFormSection({
                     description: '',
                 });
             } else {
+                if (response.status === 422 && data.errors) {
+                    setErrors(data.errors);
+                }
                 setErrorMsg(data.message || 'Failed to submit message. Please try again.');
             }
         } catch (err) {
@@ -235,7 +267,7 @@ export default function ContactFormSection({
                                 </BrandButton>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleSubmit} noValidate className="space-y-6">
                                 <div className="space-y-2 text-left">
                                     <h3 className="font-heading text-2xl font-bold text-brand sm:text-3xl">
                                         {formHeading}
@@ -259,6 +291,9 @@ export default function ContactFormSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.name && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.name[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Email Input */}
@@ -272,6 +307,9 @@ export default function ContactFormSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.email && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.email[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Phone Input */}
@@ -285,6 +323,9 @@ export default function ContactFormSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.phone && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.phone[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Designation Input */}
@@ -298,6 +339,9 @@ export default function ContactFormSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.designation && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.designation[0]}</p>
+                                        )}
                                     </div>
 
                                     {/* Company Name Input */}
@@ -311,6 +355,9 @@ export default function ContactFormSection({
                                             className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
                                             disabled={isSubmitting}
                                         />
+                                        {errors.company && (
+                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.company[0]}</p>
+                                        )}
                                     </div>
                                 </div>
 
@@ -325,7 +372,11 @@ export default function ContactFormSection({
                                         className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand resize-none disabled:opacity-50"
                                         disabled={isSubmitting}
                                     />
-                                    <p className="text-xs text-gray-400">Tell us about your project or how we can help you...</p>
+                                    {errors.description ? (
+                                        <p className="text-xs text-rose-600 mt-1 text-left">{errors.description[0]}</p>
+                                    ) : (
+                                        <p className="text-xs text-gray-400">Tell us about your project or how we can help you...</p>
+                                    )}
                                 </div>
 
                                 {errorMsg && (
@@ -336,6 +387,9 @@ export default function ContactFormSection({
 
                                 {/* Submit button */}
                                 <div className="text-left">
+                                    {errors.recaptcha_token && (
+                                        <p className="text-xs text-rose-600 mb-2 text-left">{errors.recaptcha_token[0]}</p>
+                                    )}
                                     <BrandButton
                                         type="submit"
                                         disabled={isSubmitting}
@@ -343,6 +397,9 @@ export default function ContactFormSection({
                                     >
                                         {isSubmitting ? 'Sending...' : buttonLabel}
                                     </BrandButton>
+                                    <p className="text-[10px] text-gray-400/60 leading-normal mt-3 max-w-md">
+                                        This site is protected by reCAPTCHA.
+                                    </p>
                                 </div>
                             </form>
                         )}

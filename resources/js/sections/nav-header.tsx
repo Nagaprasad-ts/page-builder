@@ -21,7 +21,7 @@ export const meta: SectionMeta = {
 };
 
 export const schema: SectionSchema = {
-    siteName: { type: 'text', label: 'Site name', default: 'My Site' },
+    siteName: { type: 'text', label: 'Site name', default: 'EVP HQ' },
     logoUrl: { type: 'image', label: 'Logo' },
     clientLoginLabel: { type: 'text', label: 'Client Login label', default: '' },
     clientLoginUrl: { type: 'url', label: 'Client Login URL', default: '' },
@@ -241,6 +241,10 @@ export default function NavHeaderSection({
                                 href={clientLoginUrl}
                                 className="hidden md:inline-flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors mr-1"
                             >
+                                <span className="relative flex h-2 w-2 mr-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                </span>
                                 {clientLoginLabel}
                             </a>
                         )}
@@ -325,6 +329,10 @@ export default function NavHeaderSection({
                                 onClick={() => setMobileOpen(false)}
                                 className="flex w-full items-center justify-center py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 rounded-lg transition hover:bg-gray-50/50"
                             >
+                                <span className="relative flex h-2 w-2 mr-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                </span>
                                 {clientLoginLabel}
                             </a>
                         )}

@@ -90,19 +90,19 @@ export default function HowItWorksSection({
 
                         {/* Steps Flow Container */}
                         {steps && steps.length > 0 && (
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 relative w-full pt-10">
+                            <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 md:gap-4 relative w-full pt-10">
                                 {steps.map((step, idx) => (
                                     <React.Fragment key={idx}>
-                                        <div className="flex-1 flex flex-row md:flex-col justify-left items-center md:text-center bg-accent md:bg-transparent py-3 pr-2 pl-5 rounded-lg w-full gap-x-5">
+                                        <div className="flex-1 flex flex-row md:flex-col justify-start items-center md:text-center bg-accent md:bg-transparent py-3 pr-2 pl-5 md:p-0 rounded-lg md:rounded-none w-full gap-x-5">
                                             {/* Icon rounded card wrapper */}
                                             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent-brand/10 text-accent-brand">
                                                 <DynamicIcon name={step.icon} className="h-5 w-5" />
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="block text-sm font-bold text-gray-900 mt-4 leading-none">
+                                                <span className="block text-sm font-bold text-gray-900 mt-0 md:mt-4 leading-none">
                                                     {idx + 1}. {step.title}
                                                 </span>
-                                                <p className="text-xs text-gray-500 mt-2 leading-relaxed md:max-w-[300px]">
+                                                <p className="text-xs text-gray-500 mt-2 leading-relaxed md:max-w-[150px] md:mx-auto">
                                                     {step.description}
                                                 </p>
                                             </div>

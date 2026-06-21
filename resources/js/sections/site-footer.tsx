@@ -1,5 +1,6 @@
 import { DynamicIcon } from '@/components/ui/dynamic-icon';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import BrandButton from '@/components/ui/brand-button';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
 
@@ -179,6 +180,42 @@ export default function SiteFooterSection({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+    const { recaptcha_site_key } = usePage().props as any;
+
+    useEffect(() => {
+        if (!recaptcha_site_key) return;
+
+        // Check if script is already loaded
+        if (typeof window !== 'undefined' && !document.querySelector('script[src*="recaptcha/api.js"]')) {
+            const script = document.createElement('script');
+            script.src = `https://www.google.com/recaptcha/api.js?render=${recaptcha_site_key}`;
+            script.async = true;
+            script.defer = true;
+            document.body.appendChild(script);
+        }
+    }, [recaptcha_site_key]);
+
+    const executeRecaptcha = (): Promise<string | null> => {
+        return new Promise((resolve) => {
+            if (!recaptcha_site_key || typeof window === 'undefined' || !(window as any).grecaptcha) {
+                resolve(null);
+                return;
+            }
+
+            const grecaptcha = (window as any).grecaptcha;
+            grecaptcha.ready(() => {
+                grecaptcha.execute(recaptcha_site_key, { action: 'submit' })
+                    .then((token: string) => {
+                        resolve(token);
+                    })
+                    .catch(() => {
+                        resolve(null);
+                    });
+            });
+        });
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -186,6 +223,9 @@ export default function SiteFooterSection({
 
         setIsSubmitting(true);
         setErrorMsg(null);
+        setErrors({});
+
+        const token = await executeRecaptcha();
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ?? '';
 
@@ -198,7 +238,7 @@ export default function SiteFooterSection({
                     'X-CSRF-TOKEN': csrfToken,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ email: emailVal }),
+                body: JSON.stringify({ email: emailVal, recaptcha_token: token }),
             });
 
             const data = await response.json();
@@ -207,6 +247,9 @@ export default function SiteFooterSection({
                 setIsSubmitted(true);
                 setEmailVal('');
             } else {
+                if (response.status === 422 && data.errors) {
+                    setErrors(data.errors);
+                }
                 setErrorMsg(data.message || 'Failed to subscribe. Please try again.');
             }
         } catch (err) {
@@ -295,16 +338,21 @@ export default function SiteFooterSection({
                             </div>
                         ) : (
                             <div className="relative flex flex-col gap-1.5 w-full lg:w-auto">
-                                <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
-                                    <input
-                                        type="email"
-                                        required
-                                        value={emailVal}
-                                        onChange={(e) => setEmailVal(e.target.value)}
-                                        placeholder={newsletterPlaceholder}
-                                        className="w-full rounded-xl border border-white/10 bg-[#121316] px-5 py-3.5 text-sm text-white placeholder-gray-500 focus:border-accent-brand focus:outline-none focus:ring-1 focus:ring-accent-brand lg:w-80 disabled:opacity-50"
-                                        disabled={isSubmitting}
-                                    />
+                                <form onSubmit={handleSubmit} noValidate className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+                                    <div className="relative w-full lg:w-80">
+                                        <input
+                                            type="email"
+                                            required
+                                            value={emailVal}
+                                            onChange={(e) => setEmailVal(e.target.value)}
+                                            placeholder={newsletterPlaceholder}
+                                            className="w-full rounded-xl border border-white/10 bg-[#121316] px-5 py-3.5 text-sm text-white placeholder-gray-500 focus:border-accent-brand focus:outline-none focus:ring-1 focus:ring-accent-brand disabled:opacity-50"
+                                            disabled={isSubmitting}
+                                        />
+                                        {errors.email && (
+                                            <p className="text-xs text-rose-500 mt-1.5 text-left">{errors.email[0]}</p>
+                                        )}
+                                    </div>
                                     <BrandButton
                                         type="submit"
                                         variant="secondary"
@@ -314,11 +362,19 @@ export default function SiteFooterSection({
                                         {isSubmitting ? 'Subscribing...' : newsletterButtonLabel}
                                     </BrandButton>
                                 </form>
-                                {errorMsg && (
-                                    <p className="absolute bottom-[-24px] left-2 text-xs text-rose-500 font-medium">
+                                {errors.recaptcha_token && (
+                                    <p className="text-xs text-rose-500 font-medium text-left mt-1.5">
+                                        {errors.recaptcha_token[0]}
+                                    </p>
+                                )}
+                                {errorMsg && !errors.email && !errors.recaptcha_token && (
+                                    <p className="text-xs text-rose-500 font-medium text-left mt-1.5">
                                         {errorMsg}
                                     </p>
                                 )}
+                                <p className="text-[10px] text-gray-500/60 mt-2.5 text-left leading-normal lg:max-w-xs z-10">
+                                    This site is protected by reCAPTCHA.
+                                </p>
                             </div>
                         )}
                     </div>

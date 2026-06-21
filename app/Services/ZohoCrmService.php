@@ -169,4 +169,87 @@ class ZohoCrmService
             ];
         }
     }
+
+    /**
+     * Submit subscription request to Zoho CRM custom module HR_Library_Subscribers (HR Library Subscribers).
+     */
+    public function createSubscriber(array $data): array
+    {
+        // Graceful mock fallback if credentials are not configured (useful for local development/testing)
+        if (empty($this->clientId) || empty($this->clientSecret) || empty($this->refreshToken)) {
+            Log::info("Zoho CRM Subscriber Integration (Mock Fallback): Subscriber created locally: Name: {$data['name']}, Email: {$data['email']}, Phone: {$data['phone']}, Designation: {$data['designation']}, Company: {$data['company']}");
+
+            return [
+                'success' => true,
+                'message' => 'Subscriber simulated successfully (credentials not configured).',
+            ];
+        }
+
+        $accessToken = $this->getAccessToken();
+
+        if (empty($accessToken)) {
+            return [
+                'success' => false,
+                'message' => 'Unable to authenticate with Zoho CRM. Please contact administration.',
+            ];
+        }
+
+        // Build Zoho CRM HR_Library_Subscribers payload
+        $payload = [
+            'data' => [
+                [
+                    'Name' => $data['name'],
+                    'Phone' => $data['phone'],
+                    'Work_Email' => $data['email'],
+                    'LinkedIn_Profile' => $data['linkedin'],
+                    'Designation' => $data['designation'],
+                    'Company' => $data['company'],
+                    'Email_Opt_Out' => ! ($data['consent'] ?? false),
+                ],
+            ],
+        ];
+
+        try {
+            $url = "{$this->apiBaseUrl}/HR_Library_Subscribers";
+            $response = Http::withHeaders([
+                'Authorization' => "Zoho-oauthtoken {$accessToken}",
+                'Content-Type' => 'application/json',
+            ])->post($url, $payload);
+
+            if ($response->failed()) {
+                Log::error('Zoho CRM HR_Library_Subscribers API request failed: '.$response->status().' - '.$response->body());
+
+                return [
+                    'success' => false,
+                    'message' => 'Failed to create subscriber in Zoho CRM. Status: '.$response->status(),
+                ];
+            }
+
+            $resData = $response->json();
+            $recordResult = $resData['data'][0] ?? null;
+
+            if ($recordResult && ($recordResult['status'] === 'success')) {
+                Log::info('Zoho CRM Subscriber successfully inserted: ID: '.($recordResult['details']['id'] ?? 'N/A').", Email: {$data['email']}");
+
+                return [
+                    'success' => true,
+                    'message' => 'Subscriber successfully submitted to Zoho CRM.',
+                ];
+            }
+
+            Log::error('Zoho CRM Subscriber insertion reported error: '.json_encode($resData));
+
+            return [
+                'success' => false,
+                'message' => 'Zoho CRM API returned record insertion error.',
+            ];
+        } catch (Exception $e) {
+            Log::error('Zoho CRM Subscriber API exception: '.$e->getMessage());
+
+            return [
+                'success' => false,
+                'message' => 'An error occurred during Zoho CRM submission: '.$e->getMessage(),
+            ];
+        }
+    }
 }

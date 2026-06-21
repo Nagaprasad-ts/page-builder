@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'recaptcha_site_key' => config('services.recaptcha.site_key'),
              'menus' => Inertia::always(
                 fn () => Menu::with(['items.page:id,title,slug,path', 'items.children.page:id,title,slug,path'])->get()->keyBy('location')
             ),

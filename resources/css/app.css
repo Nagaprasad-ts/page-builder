@@ -206,3 +206,8 @@
 :where(.prose-sm) {
     @apply font-sans text-sm leading-relaxed [&_p]:mb-2 [&_a]:underline;
 }
+
+/* Hide Google reCAPTCHA v3 floating badge */
+.grecaptcha-badge {
+    visibility: hidden !important;
+}

@@ -15,6 +15,10 @@ class NewsletterController extends Controller
     {
         $request->validate([
             'email' => ['required', 'email', 'max:255'],
+            'recaptcha_token' => [
+                empty(config('services.recaptcha.secret_key')) ? 'nullable' : 'required',
+                new \App\Rules\Recaptcha
+            ],
         ]);
 
         $email = $request->input('email');
