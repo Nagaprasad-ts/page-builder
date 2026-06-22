@@ -48,7 +48,7 @@ export function PropertiesPanel({
             <div className="flex-1 space-y-4 overflow-y-auto p-4">
                 {Object.entries(schema).map(([key, def]) => (
                     <FieldEditor
-                        key={key}
+                        key={`${section.id}-${key}`}
                         fieldKey={key}
                         def={def}
                         value={section.props[key] ?? def.default ?? null}
