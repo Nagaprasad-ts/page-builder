@@ -1,6 +1,6 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Check, Pencil, Search, Trash2, Upload, X } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,15 @@ type Props = {
         data: MediaItem[];
         current_page: number;
         last_page: number;
+        per_page: number;
+        total: number;
+        prev_page_url: string | null;
+        next_page_url: string | null;
+        links: {
+            url: string | null;
+            label: string;
+            active: boolean;
+        }[];
     };
 };
 
@@ -33,6 +42,10 @@ export default function MediaIndex({ media }: Props) {
     const [editName, setEditName] = useState('');
     const [savingId, setSavingId] = useState<number | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        setList(media.data ?? []);
+    }, [media.data]);
 
     // Filtered list based on search
     const filtered = list.filter((item) => {
@@ -191,7 +204,7 @@ return;
                 <div className="flex flex-wrap items-center gap-3">
                     <div className="flex-1">
                         <h1 className="text-2xl font-bold text-gray-900">Media Library</h1>
-                        <p className="text-sm text-muted-foreground">{list.length} file{list.length !== 1 ? 's' : ''}</p>
+                        <p className="text-sm text-muted-foreground">{media.total} file{media.total !== 1 ? 's' : ''}</p>
                     </div>
                     <Button onClick={() => fileInputRef.current?.click()} disabled={uploading}>
                         <Upload className="mr-2 h-4 w-4" />
@@ -388,6 +401,88 @@ return;
                                 </div>
                             );
                         })}
+                    </div>
+                )}
+
+                {/* Pagination */}
+                {media.last_page > 1 && (
+                    <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
+                        <div className="flex flex-1 justify-between sm:hidden">
+                            <Button
+                                variant="outline"
+                                disabled={!media.prev_page_url}
+                                asChild={!!media.prev_page_url}
+                            >
+                                {media.prev_page_url ? (
+                                    <Link href={media.prev_page_url} preserveScroll preserveState>
+                                        Previous
+                                    </Link>
+                                ) : (
+                                    <span>Previous</span>
+                                )}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                disabled={!media.next_page_url}
+                                asChild={!!media.next_page_url}
+                            >
+                                {media.next_page_url ? (
+                                    <Link href={media.next_page_url} preserveScroll preserveState>
+                                        Next
+                                    </Link>
+                                ) : (
+                                    <span>Next</span>
+                                )}
+                            </Button>
+                        </div>
+                        <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm text-muted-foreground">
+                                    Showing <span className="font-medium">{(media.current_page - 1) * media.per_page + 1}</span> to{' '}
+                                    <span className="font-medium">
+                                        {Math.min(media.current_page * media.per_page, media.total)}
+                                    </span> of{' '}
+                                    <span className="font-medium">{media.total}</span> files
+                                </p>
+                            </div>
+                            <div>
+                                <nav className="isolate inline-flex -space-x-px rounded-md shadow-xs" aria-label="Pagination">
+                                    {media.links.map((link, index) => {
+                                        let label = link.label;
+                                        if (label.includes('Previous')) {
+                                            label = 'Previous';
+                                        } else if (label.includes('Next')) {
+                                            label = 'Next';
+                                        }
+
+                                        const isActive = link.active;
+                                        const isUrl = !!link.url;
+
+                                        return (
+                                            <Button
+                                                key={index}
+                                                variant={isActive ? 'default' : 'outline'}
+                                                disabled={!isUrl && !isActive}
+                                                className={cn(
+                                                    'h-9 rounded-none first:rounded-l-md last:rounded-r-md px-3 text-xs',
+                                                    isActive && 'z-10 !bg-brand !text-white hover:!bg-brand/90 hover:!text-white',
+                                                    !isUrl && !isActive && 'opacity-50 cursor-not-allowed'
+                                                )}
+                                                asChild={isUrl}
+                                            >
+                                                {isUrl ? (
+                                                    <Link href={link.url!} preserveScroll preserveState>
+                                                        <span dangerouslySetInnerHTML={{ __html: label }} />
+                                                    </Link>
+                                                ) : (
+                                                    <span dangerouslySetInnerHTML={{ __html: label }} />
+                                                )}
+                                            </Button>
+                                        );
+                                    })}
+                                </nav>
+                            </div>
+                        </div>
                     </div>
                 )}
 
