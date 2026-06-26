@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\Recaptcha;
 use App\Services\ZohoCrmService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -23,13 +24,15 @@ class ContactController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
-            'phone' => ['required', 'digits:10'],
+            'phone' => ['required', 'string', 'max:30'],
             'designation' => ['required', 'string', 'max:255'],
             'company' => ['required', 'string', 'max:255'],
+            'website' => ['nullable', 'url', 'max:255'],
+            'city' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string'],
             'recaptcha_token' => [
                 empty(config('services.recaptcha.secret_key')) ? 'nullable' : 'required',
-                new \App\Rules\Recaptcha
+                new Recaptcha,
             ],
         ]);
 
@@ -40,7 +43,14 @@ class ContactController extends Controller
             'company' => $validated['company'],
         ]);
 
-        $result = $this->zohoCrm->createLead($validated);
+        // Phone arrives as "+91 <digits>"; split for Zoho (Mobile field max 12 chars)
+        [$countryCode, $phoneDigits] = array_pad(explode(' ', $validated['phone'], 2), 2, '');
+        $zohoData = array_merge($validated, [
+            'phone' => trim($phoneDigits),
+            'country' => 'India',
+        ]);
+
+        $result = $this->zohoCrm->createLead($zohoData);
 
         if ($result['success']) {
             logger()->info('Contact Form Submission: Success.', [

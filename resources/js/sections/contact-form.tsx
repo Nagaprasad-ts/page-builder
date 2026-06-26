@@ -1,8 +1,46 @@
-import { Clock, Mail, MapPin, Phone, Shield, CheckCircle } from 'lucide-react';
+﻿import { Clock, Mail, MapPin, Phone, Shield, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePage } from '@inertiajs/react';
 import BrandButton from '@/components/ui/brand-button';
+import { validatePhone } from '@/lib/phone-countries';
 import type { SectionMeta, SectionSchema } from '@/types/builder';
+
+type FieldErrors = Record<string, string>;
+
+function validateField(name: string, value: string): string {
+    switch (name) {
+        case 'name':
+            if (!value.trim()) return 'Full Name is required.';
+            if (value.trim().length < 2) return 'Please enter a valid Full Name.';
+            if (!/^[a-zA-Z\s'-]+$/.test(value.trim())) return 'Full Name should only contain letters.';
+            return '';
+        case 'email':
+            if (!value.trim()) return 'Email ID is required.';
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim())) return 'Please enter a valid Email ID.';
+            return '';
+        case 'designation':
+            if (!value.trim()) return 'Designation is required.';
+            if (value.trim().length < 2) return 'Please enter a valid Designation.';
+            return '';
+        case 'company':
+            if (!value.trim()) return 'Company / Organization is required.';
+            if (value.trim().length < 2) return 'Please enter a valid Company name.';
+            return '';
+        case 'website':
+            if (!value.trim()) return ''; // optional
+            try { new URL(value.trim()); return ''; } catch { return 'Please enter a valid URL (e.g. https://example.com).'; }
+        case 'city':
+            if (!value.trim()) return 'City is required.';
+            if (value.trim().length < 2) return 'Please enter a valid City.';
+            return '';
+        case 'description':
+            if (!value.trim()) return 'Description is required.';
+            if (value.trim().length < 10) return 'Please enter at least 10 characters.';
+            return '';
+        default:
+            return '';
+    }
+}
 
 export const meta: SectionMeta = {
     name: 'contact-form',
@@ -66,12 +104,26 @@ export default function ContactFormSection({
         phone: '',
         designation: '',
         company: '',
+        website: '',
+        city: '',
         description: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [errors, setErrors] = useState<Record<string, string[]>>({});
+    const [phoneError, setPhoneError] = useState<string | null>(null);
+    const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+
+    const setFieldError = (name: string, msg: string) =>
+        setFieldErrors(prev => ({ ...prev, [name]: msg }));
+
+    const blurValidate = (name: string, value: string) =>
+        setFieldError(name, validateField(name, value));
+
+    const changeValidate = (name: string, value: string) => {
+        if (fieldErrors[name]) setFieldError(name, validateField(name, value));
+    };
 
     const { recaptcha_site_key } = usePage().props as any;
 
@@ -112,9 +164,22 @@ export default function ContactFormSection({
         e.preventDefault();
         if (isSubmitting) return;
 
+        // Validate all fields client-side
+        const fields = ['name', 'email', 'designation', 'company', 'website', 'city', 'description'] as const;
+        const newErrors: FieldErrors = {};
+        fields.forEach(f => { newErrors[f] = validateField(f, formData[f]); });
+        setFieldErrors(newErrors);
+        const hasFieldErrors = Object.values(newErrors).some(Boolean);
+
+        // Client-side phone validation (hardcoded +91)
+        const pErr = validatePhone('+91', formData.phone);
+        setPhoneError(pErr);
+        if (pErr || hasFieldErrors) return;
+
         setIsSubmitting(true);
         setErrorMsg(null);
         setErrors({});
+        setPhoneError(null);
 
         const token = await executeRecaptcha();
 
@@ -129,7 +194,11 @@ export default function ContactFormSection({
                     'X-CSRF-TOKEN': csrfToken,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({ ...formData, recaptcha_token: token }),
+                body: JSON.stringify({
+                    ...formData,
+                    phone: `+91 ${formData.phone}`,
+                    recaptcha_token: token,
+                }),
             });
 
             const data = await response.json();
@@ -142,8 +211,12 @@ export default function ContactFormSection({
                     phone: '',
                     designation: '',
                     company: '',
+                    website: '',
+                    city: '',
                     description: '',
                 });
+                setPhoneError(null);
+                setFieldErrors({});
             } else {
                 if (response.status === 422 && data.errors) {
                     setErrors(data.errors);
@@ -162,7 +235,7 @@ export default function ContactFormSection({
             <div className="mx-auto max-w-7xl px-4 md:px-7">
                 <div className="flex flex-col gap-12 lg:flex-row">
                 
-                {/* ── Left Column: Contact Channels ── */}
+                {/* â”€â”€ Left Column: Contact Channels â”€â”€ */}
                 <div className="w-full space-y-8 lg:w-2/5">
                     {/* Header */}
                     <div className="space-y-3">
@@ -242,7 +315,7 @@ export default function ContactFormSection({
                     </div>
                 </div>
 
-                {/* ── Right Column: Message Form ── */}
+                {/* â”€â”€ Right Column: Message Form â”€â”€ */}
                 <div className="w-full lg:w-3/5">
                     <div className="rounded-[2rem] border border-gray-100 bg-white p-6 sm:p-10 shadow-xs transition-shadow hover:shadow-md">
                         {isSubmitted ? (
@@ -280,102 +353,134 @@ export default function ContactFormSection({
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    {/* Name Input */}
-                                    <div className="space-y-1.5 text-left">
+
+                                    {/* Full Name */}
+                                    <div className="text-left">
                                         <input
                                             type="text"
-                                            required
                                             placeholder="Full Name*"
                                             value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            onChange={(e) => { setFormData({ ...formData, name: e.target.value }); changeValidate('name', e.target.value); }}
+                                            onBlur={(e) => blurValidate('name', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.name ? 'border-rose-400' : 'border-gray-200'}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.name && (
-                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.name[0]}</p>
-                                        )}
+                                        {(fieldErrors.name || errors.name) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.name || errors.name?.[0]}</p>}
                                     </div>
 
-                                    {/* Email Input */}
-                                    <div className="space-y-1.5 text-left">
-                                        <input
-                                            type="email"
-                                            required
-                                            placeholder="Email Address*"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.email && (
-                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.email[0]}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Phone Input */}
-                                    <div className="space-y-1.5 text-left">
-                                        <input
-                                            type="tel"
-                                            required
-                                            placeholder="Phone Number*"
-                                            value={formData.phone}
-                                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
-                                            disabled={isSubmitting}
-                                        />
-                                        {errors.phone && (
-                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.phone[0]}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Designation Input */}
-                                    <div className="space-y-1.5 text-left">
+                                    {/* Email */}
+                                    <div className="text-left">
                                         <input
                                             type="text"
-                                            required
+                                            placeholder="Email ID*"
+                                            value={formData.email}
+                                            onChange={(e) => { setFormData({ ...formData, email: e.target.value }); changeValidate('email', e.target.value); }}
+                                            onBlur={(e) => blurValidate('email', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.email ? 'border-rose-400' : 'border-gray-200'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {(fieldErrors.email || errors.email) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.email || errors.email?.[0]}</p>}
+                                    </div>
+
+                                    {/* Mobile Number with hardcoded +91 */}
+                                    <div className="text-left sm:col-span-2">
+                                        <div className={`flex overflow-hidden rounded-xl border bg-white focus-within:border-accent-brand transition-colors ${phoneError ? 'border-rose-400' : 'border-gray-200'}`}>
+                                            <span className="flex shrink-0 items-center border-r border-gray-200 pl-4 pr-4 text-sm text-gray-700 select-none">
+                                                +91
+                                            </span>
+                                            <input
+                                                type="tel"
+                                                required
+                                                placeholder="Mobile Number*"
+                                                value={formData.phone}
+                                                onChange={(e) => {
+                                                    const digits = e.target.value.replace(/\D/g, '');
+                                                    setFormData({ ...formData, phone: digits });
+                                                    if (phoneError) setPhoneError(validatePhone('+91', digits));
+                                                }}
+                                                onBlur={() => setPhoneError(validatePhone('+91', formData.phone))}
+                                                className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm outline-none disabled:opacity-50"
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
+                                        {(phoneError || errors.phone) && (
+                                            <p className="mt-1 text-xs text-rose-600">{phoneError ?? errors.phone?.[0]}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Designation */}
+                                    <div className="text-left">
+                                        <input
+                                            type="text"
                                             placeholder="Designation*"
                                             value={formData.designation}
-                                            onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            onChange={(e) => { setFormData({ ...formData, designation: e.target.value }); changeValidate('designation', e.target.value); }}
+                                            onBlur={(e) => blurValidate('designation', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.designation ? 'border-rose-400' : 'border-gray-200'}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.designation && (
-                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.designation[0]}</p>
-                                        )}
+                                        {(fieldErrors.designation || errors.designation) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.designation || errors.designation?.[0]}</p>}
                                     </div>
 
-                                    {/* Company Name Input */}
-                                    <div className="space-y-1.5 text-left sm:col-span-2">
+                                    {/* Company / Organization */}
+                                    <div className="text-left">
                                         <input
                                             type="text"
-                                            required
-                                            placeholder="Company Name*"
+                                            placeholder="Company / Organization*"
                                             value={formData.company}
-                                            onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                                            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50"
+                                            onChange={(e) => { setFormData({ ...formData, company: e.target.value }); changeValidate('company', e.target.value); }}
+                                            onBlur={(e) => blurValidate('company', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.company ? 'border-rose-400' : 'border-gray-200'}`}
                                             disabled={isSubmitting}
                                         />
-                                        {errors.company && (
-                                            <p className="text-xs text-rose-600 mt-1 text-left">{errors.company[0]}</p>
-                                        )}
+                                        {(fieldErrors.company || errors.company) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.company || errors.company?.[0]}</p>}
                                     </div>
+
+                                    {/* Website (optional) */}
+                                    <div className="text-left sm:col-span-2">
+                                        <input
+                                            type="text"
+                                            placeholder="Website (Not Mandatory)"
+                                            value={formData.website}
+                                            onChange={(e) => { setFormData({ ...formData, website: e.target.value }); changeValidate('website', e.target.value); }}
+                                            onBlur={(e) => blurValidate('website', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.website ? 'border-rose-400' : 'border-gray-200'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {(fieldErrors.website || errors.website) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.website || errors.website?.[0]}</p>}
+                                    </div>
+
+                                    {/* City */}
+                                    <div className="text-left sm:col-span-2">
+                                        <input
+                                            type="text"
+                                            placeholder="City*"
+                                            value={formData.city}
+                                            onChange={(e) => { setFormData({ ...formData, city: e.target.value }); changeValidate('city', e.target.value); }}
+                                            onBlur={(e) => blurValidate('city', e.target.value)}
+                                            className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand disabled:opacity-50 ${fieldErrors.city ? 'border-rose-400' : 'border-gray-200'}`}
+                                            disabled={isSubmitting}
+                                        />
+                                        {(fieldErrors.city || errors.city) && <p className="mt-1 text-xs text-rose-600">{fieldErrors.city || errors.city?.[0]}</p>}
+                                    </div>
+
                                 </div>
 
-                                {/* Description Input */}
-                                <div className="space-y-1.5 text-left">
+                                {/* Description */}
+                                <div className="text-left">
                                     <textarea
-                                        required
-                                        placeholder="Description*"
+                                        placeholder="Description (Your Message)*"
                                         rows={5}
                                         value={formData.description}
-                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                        className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand resize-none disabled:opacity-50"
+                                        onChange={(e) => { setFormData({ ...formData, description: e.target.value }); changeValidate('description', e.target.value); }}
+                                        onBlur={(e) => blurValidate('description', e.target.value)}
+                                        className={`w-full rounded-xl border bg-white px-4 py-3 text-sm outline-none transition-colors focus:border-accent-brand resize-none disabled:opacity-50 ${fieldErrors.description ? 'border-rose-400' : 'border-gray-200'}`}
                                         disabled={isSubmitting}
                                     />
-                                    {errors.description ? (
-                                        <p className="text-xs text-rose-600 mt-1 text-left">{errors.description[0]}</p>
+                                    {(fieldErrors.description || errors.description) ? (
+                                        <p className="mt-1 text-xs text-rose-600">{fieldErrors.description || errors.description?.[0]}</p>
                                     ) : (
-                                        <p className="text-xs text-gray-400">Tell us about your project or how we can help you...</p>
+                                        <p className="mt-1 text-xs text-gray-400">Tell us about your project or how we can help you...</p>
                                     )}
                                 </div>
 
