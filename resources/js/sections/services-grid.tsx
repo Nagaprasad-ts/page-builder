@@ -28,12 +28,8 @@ export const schema: SectionSchema = {
     },
     featuredButtonLabel: { type: 'text', label: 'Featured - Button label', default: 'Book a Call' },
     featuredButtonUrl: { type: 'url', label: 'Featured - Button URL', default: '#' },
-    featuredImage1: { type: 'image', label: 'Featured - Image 1' },
-    featuredImage1Alt: { type: 'text', label: 'Featured - Image 1 Alt Text', default: '' },
-    featuredImage2: { type: 'image', label: 'Featured - Image 2' },
-    featuredImage2Alt: { type: 'text', label: 'Featured - Image 2 Alt Text', default: '' },
-    featuredImage3: { type: 'image', label: 'Featured - Image 3' },
-    featuredImage3Alt: { type: 'text', label: 'Featured - Image 3 Alt Text', default: '' },
+    featuredImage1: { type: 'image', label: 'Featured - Image' },
+    featuredImage1Alt: { type: 'text', label: 'Featured - Image Alt Text', default: '' },
 
     // Card 2
     card2Title: { type: 'text', label: 'Card 2 - Title', default: 'Create Future-Ready Tech Identity' },
@@ -68,10 +64,6 @@ type Props = {
     featuredButtonUrl?: string;
     featuredImage1?: string | null;
     featuredImage1Alt?: string;
-    featuredImage2?: string | null;
-    featuredImage2Alt?: string;
-    featuredImage3?: string | null;
-    featuredImage3Alt?: string;
     card2Title?: string;
     card2Description?: string;
     card2ButtonLabel?: string;
@@ -102,10 +94,6 @@ export default function ServicesGridSection({
     featuredButtonUrl,
     featuredImage1,
     featuredImage1Alt,
-    featuredImage2,
-    featuredImage2Alt,
-    featuredImage3,
-    featuredImage3Alt,
     card2Title,
     card2Description,
     card2ButtonLabel,
@@ -159,25 +147,43 @@ export default function ServicesGridSection({
                             )}
                         </div>
 
-                        {/* Images - stacked */}
-                        <div className="relative flex shrink-0 items-end justify-center gap-3 md:w-80">
-                            {[
-                                { url: featuredImage1, alt: featuredImage1Alt },
-                                { url: featuredImage2, alt: featuredImage2Alt },
-                                { url: featuredImage3, alt: featuredImage3Alt },
-                            ].map((img, i) => (
-                                <div
-                                    key={i}
-                                    className="h-32 w-24 overflow-hidden rounded-xl md:h-40 md:w-28"
-                                    style={{ marginBottom: i === 1 ? '2rem' : '0' }}
-                                >
-                                    {img.url ? (
-                                        <img src={img.url} alt={img.alt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
-                                    ) : (
-                                        <PlaceholderImage />
-                                    )}
+                        {/* Mobile image: slanted top edge, bleeds bottom + sides */}
+                        <div
+                            className="relative shrink-0 overflow-hidden md:hidden"
+                            style={{
+                                height: 220,
+                                clipPath: 'polygon(0% 10%, 100% 0%, 100% 100%, 0% 100%)',
+                                marginLeft: '-2rem',
+                                marginRight: '-2rem',
+                                marginBottom: '-2rem',
+                            }}
+                        >
+                            {featuredImage1 ? (
+                                <img src={featuredImage1} alt={featuredImage1Alt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                            ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-[#1e3460]">
+                                    <span className="text-sm text-gray-500">Add image</span>
                                 </div>
-                            ))}
+                            )}
+                        </div>
+
+                        {/* Desktop image: slanted side panel, bleeds top/bottom/right */}
+                        <div
+                            className="relative hidden shrink-0 self-stretch overflow-hidden md:block md:w-96"
+                            style={{
+                                clipPath: 'polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%)',
+                                marginTop: '-2.5rem',
+                                marginBottom: '-2.5rem',
+                                marginRight: '-2.5rem',
+                            }}
+                        >
+                            {featuredImage1 ? (
+                                <img src={featuredImage1} alt={featuredImage1Alt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                            ) : (
+                                <div className="flex h-full w-full items-center justify-center bg-[#1e3460]">
+                                    <span className="text-sm text-gray-500">Add image</span>
+                                </div>
+                            )}
                         </div>
 
                     </div>
@@ -189,35 +195,92 @@ export default function ServicesGridSection({
                         { title: card2Title, description: card2Description, btnLabel: card2ButtonLabel, btnUrl: card2ButtonUrl, image: card2Image, imageAlt: card2ImageAlt },
                         { title: card3Title, description: card3Description, btnLabel: card3ButtonLabel, btnUrl: card3ButtonUrl, image: card3Image, imageAlt: card3ImageAlt },
                     ].map((card, i) => (
-                        <div key={i} className="flex flex-row items-center gap-4 rounded-2xl bg-black p-6">
+                        <div key={i} className="overflow-hidden rounded-2xl bg-black">
 
-                            {/* Text */}
-                            <div className="flex-1 space-y-3">
-                                {card.title && (
-                                    <h3 className="text-xl font-extrabold leading-snug text-white">
-                                        {card.title}
-                                    </h3>
-                                )}
-                                {card.description && (
-                                    <div 
-                                        className="text-xs text-gray-400 line-clamp-4 prose prose-invert prose-sm"
-                                        dangerouslySetInnerHTML={{ __html: card.description }}
-                                    />
-                                )}
-                                {card.btnLabel && (
-                                    <BrandButton variant="brand" href={card.btnUrl ?? '#'} className="px-6 py-2 text-xs">
-                                        {card.btnLabel}
-                                    </BrandButton>
-                                )}
+                            {/* Mobile: side-by-side — text left, image right with slant */}
+                            <div className="relative flex min-h-[180px] overflow-hidden md:hidden">
+                                {/* Text */}
+                                <div className="relative z-10 w-[58%] space-y-3 p-5">
+                                    {card.title && (
+                                        <h3 className="text-base font-extrabold leading-snug text-white">
+                                            {card.title}
+                                        </h3>
+                                    )}
+                                    {card.description && (
+                                        <div
+                                            className="text-xs text-gray-400 prose prose-invert prose-sm"
+                                            dangerouslySetInnerHTML={{ __html: card.description }}
+                                        />
+                                    )}
+                                    {card.btnLabel && (
+                                        <BrandButton variant="brand" href={card.btnUrl ?? '#'} className="px-4 py-1.5 text-xs">
+                                            {card.btnLabel}
+                                        </BrandButton>
+                                    )}
+                                </div>
+                                {/* Image fills right 42%, absolutely positioned */}
+                                <div className="absolute inset-y-0 right-0 w-[42%]">
+                                    {card.image ? (
+                                        <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center bg-[#1e3460]">
+                                            <span className="text-xs text-gray-500">Add image</span>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Skewed black mask — diagonal between text and image */}
+                                <div
+                                    className="pointer-events-none absolute inset-y-0 bg-black"
+                                    style={{
+                                        right: 'calc(42% - 36px)',
+                                        width: 60,
+                                        transform: 'skewX(-6deg)',
+                                        transformOrigin: 'top left',
+                                    }}
+                                />
                             </div>
 
-                            {/* Image */}
-                            <div className="h-36 w-32 shrink-0 overflow-hidden rounded-xl">
-                                {card.image ? (
-                                    <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
-                                ) : (
-                                    <PlaceholderImage />
-                                )}
+                            {/* Desktop: text left 58%, slanted image right 42% */}
+                            <div className="relative hidden min-h-76 md:block">
+                                {/* Image — absolute, fills right 42% */}
+                                <div className="absolute inset-y-0 right-0 w-[42%]">
+                                    {card.image ? (
+                                        <img src={card.image} alt={card.imageAlt ?? ''} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center bg-[#1e3460]">
+                                            <span className="text-sm text-gray-500">Add image</span>
+                                        </div>
+                                    )}
+                                </div>
+                                {/* Skewed black mask over left edge of image — creates the diagonal */}
+                                <div
+                                    className="pointer-events-none absolute inset-y-0 bg-black"
+                                    style={{
+                                        right: 'calc(42% - 48px)',
+                                        width: 80,
+                                        transform: 'skewX(-6deg)',
+                                        transformOrigin: 'top left',
+                                    }}
+                                />
+                                {/* Text — sits on top, left 58% */}
+                                <div className="relative z-10 w-[58%] space-y-4 p-7">
+                                    {card.title && (
+                                        <h3 className="text-xl font-extrabold leading-snug text-white">
+                                            {card.title}
+                                        </h3>
+                                    )}
+                                    {card.description && (
+                                        <div
+                                            className="text-sm text-gray-400 prose prose-invert prose-sm"
+                                            dangerouslySetInnerHTML={{ __html: card.description }}
+                                        />
+                                    )}
+                                    {card.btnLabel && (
+                                        <BrandButton variant="brand" href={card.btnUrl ?? '#'} className="px-6 py-2 text-sm">
+                                            {card.btnLabel}
+                                        </BrandButton>
+                                    )}
+                                </div>
                             </div>
 
                         </div>
