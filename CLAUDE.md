@@ -45,6 +45,9 @@ composer run ci:check
 
 - **`app/Http/Controllers/Admin/`** — `PageController`, `MediaController`, `MenuController`, `MenuItemController`, `GlobalLayoutController`
 - **`app/Http/Controllers/PublicPageController`** — `home()` finds the published page with slug `/` or `home` (or first published); `show($slug)` serves any published page
+- **`app/Http/Controllers/ContactController`** — handles `POST /contact/submit`; validates then calls `ZohoCrmService::createLead()`. Phone arrives as `+91 <digits>`, split before sending to Zoho. Country is hardcoded to `'India'`.
+- **`app/Http/Controllers/AccessRequestController`** — handles `POST /access-request/submit`; validates then calls `ZohoCrmService::createSubscriber()`. Phone arrives as `<code> <digits>`, split before sending.
+- **`app/Services/ZohoCrmService`** — OAuth token cached for ~55 min. `createLead()` posts to `/crm/v3/Leads`. `createSubscriber()` posts to `/crm/v3/HR_Library_Subscribers` (custom module). Zoho's `Phone` field in the subscriber module has a **12-character maximum** — always send digits only, never the combined `+91 8197099618` string.
 - **`app/Http/Middleware/EnsureUserHasRole.php`** — `role:admin,editor` alias; registered in `bootstrap/app.php`
 - **`app/Http/Middleware/HandleInertiaRequests.php`** — shares `auth.user`, `app.name`, `sidebarOpen`, and **`menus`** (all menus keyed by location, loaded with `Inertia::always()` so they refresh on partial reloads)
 - **`app/Models/`**: `Page` (has `sections()`, `scopePublished()`), `PageSection` (props cast to array), `LayoutSection` (global header/footer sections), `Media` (appended `url` attr rewrites http→https when request is secure), `Menu` + `MenuItem` (nested with children)
@@ -62,7 +65,7 @@ composer run ci:check
 - `getDefaultProps(sectionType)` seeds new sections with schema defaults
 - Adding a new section = drop a new `.tsx` into `resources/js/sections/` — no registration step needed
 
-**Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`, `service-package`, `testimonials`, `section-intro`, `audience-split`, `content-grid`, `featured-work`, `testimonial-cta`, `faq`, `contact-banner`, `get-in-touch`
+**Sections available**: `nav-header`, `hero`, `featured-cards`, `alternate-cards`, `features`, `cta`, `newsletter`, `site-footer`, `trusted-partners`, `quote-stats`, `services-grid`, `service-package`, `testimonials`, `section-intro`, `audience-split`, `content-grid`, `featured-work`, `testimonial-cta`, `faq`, `contact-banner`, `get-in-touch`, `contact-form`, `access-request`
 
 **Dark mode**: removed. `use-appearance.tsx` still exists but `initializeTheme()` is not called. The `dark` class is never applied. All `dark:` Tailwind classes throughout UI components are inert. Do not re-introduce dark mode.
 
@@ -85,6 +88,8 @@ composer run ci:check
 - `testimonial-cta` — two-column: left = testimonial slider with `&ldquo;` as `absolute` background, right = CTA with circle accent + image
 - `faq` — left 2/5 label/heading/description, right 3/5 accordion (one open at a time, `+`/`−` icons)
 - `contact-banner` / `get-in-touch` — dark `bg-brand` card with concentric white rings on right side (hardcoded pixel sizes, no CSS variables), glassmorphic pill buttons with metallic arrow badge
+- `contact-form` — split-column layout (left: channel cards, right: message form). Phone hardcoded to `+91` (no dropdown); country hardcoded to `India`. Submits to `POST /contact/submit` → Zoho Leads.
+- `access-request` — multi-field subscription form with full country code dropdown, auto-fills Country from selected code (editable), LinkedIn URL, designation text, city. Submits to `POST /access-request/submit` → Zoho HR_Library_Subscribers. Consent maps to `Email_Opt_Out` (inverted).
 - Right properties panel in builder pages (create/edit/layout) is collapsible via a `panelOpen` toggle button on the panel's left edge
 
 **Dynamic icon pattern** (used in `section-intro`, `audience-split`, `content-grid`):
@@ -152,6 +157,14 @@ Schema field: `{ type: 'text', label: 'Icon (Lucide name e.g. FileText)', defaul
 - **`media`** — filename, path, disk, mime_type, size, alt, uploaded_by
 - **`menus`** / **`menu_items`** — menus keyed by location; menu_items support parent_id for one level of nesting
 - **`users`** — includes `role` (admin/editor) and 2FA columns
+
+**Shared phone utility** (`resources/js/lib/phone-countries.ts`):
+- `COUNTRY_CODES: { name, code }[]` — 190 countries with dial codes
+- `COUNTRIES: string[]` — country names derived from above
+- `PHONE_RULES: Record<string, [min, max]>` — digit range per dial code for client-side validation
+- `validatePhone(code, digits): string | null` — returns error string or null
+
+**Phone field split pattern** (used in both `ContactController` and `AccessRequestController`): phone is stored and submitted as `"+91 8197099618"` (combined string, validated `max:30`). Before sending to Zoho, split with `explode(' ', $phone, 2)` and send only the digit portion to the `Phone` / `Mobile` field.
 
 ### TypeScript Types
 
